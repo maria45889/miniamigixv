@@ -1,0 +1,1387 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MiniAmigixV 💙</title>
+<link rel="icon" href="{% static 'chat/img/logo.png' %}">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Playfair+Display:wght@700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   VARIABLES & RESET — MODO OSCURO (default)
+═══════════════════════════════════════ */
+:root {
+  --bg0: #05051a;
+  --bg1: #0a0a22;
+  --bg2: #0f0f2e;
+  --acc1: #7ee8fa;
+  --acc2: #a78bfa;
+  --acc3: #34eba8;
+  --acc4: #f472b6;
+  --txt: #e8eaf6;
+  --sub: rgba(232,234,246,0.55);
+  --faint: rgba(232,234,246,0.25);
+  --card: rgba(255,255,255,0.04);
+  --card-h: rgba(255,255,255,0.08);
+  --bdr: rgba(255,255,255,0.08);
+  --bdr-acc: rgba(126,232,250,0.2);
+  --bubble-user-a: #7ee8fa;
+  --bubble-user-b: #a78bfa;
+  --bubble-bot: rgba(255,255,255,0.06);
+  --bubble-bot-bdr: rgba(255,255,255,0.11);
+  --scroll: rgba(126,232,250,0.25);
+  --modal-bg: rgba(5,5,26,0.98);
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Sora', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --blur: saturate(180%) blur(24px);
+  --r: 18px;
+  --input-bg: rgba(255,255,255,0.07);
+  --input-bdr: rgba(255,255,255,0.12);
+  --bg-canvas-clr: #05051a;
+}
+
+/* ═══════════════════════════════════════
+   MODO CLARO
+═══════════════════════════════════════ */
+body.light-mode {
+  --bg0: #eef2ff;
+  --bg1: #e8eeff;
+  --bg2: #dde4ff;
+  --txt: #1a1a3e;
+  --sub: rgba(26,26,62,0.58);
+  --faint: rgba(26,26,62,0.3);
+  --card: rgba(255,255,255,0.75);
+  --card-h: rgba(255,255,255,0.95);
+  --bdr: rgba(26,26,62,0.1);
+  --bdr-acc: rgba(126,232,250,0.4);
+  --bubble-bot: rgba(0,0,0,0.05);
+  --bubble-bot-bdr: rgba(0,0,0,0.1);
+  --scroll: rgba(126,232,250,0.35);
+  --modal-bg: rgba(240,244,255,0.99);
+  --input-bg: rgba(255,255,255,0.8);
+  --input-bdr: rgba(26,26,62,0.15);
+  --bg-canvas-clr: #eef2ff;
+}
+body.light-mode .bg-canvas {
+  background:
+    radial-gradient(ellipse 70% 50% at 8% 10%, rgba(126,232,250,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 92% 88%, rgba(167,139,250,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(52,235,168,0.07) 0%, transparent 70%),
+    #eef2ff !important;
+}
+body.light-mode .fc-daygrid-day-number { color: rgba(26,26,62,0.7) !important; }
+body.light-mode .fc-col-header-cell-cushion { color: rgba(26,26,62,0.5) !important; }
+body.light-mode .fc-toolbar-title { color: var(--txt) !important; }
+body.light-mode .fc-button { color: var(--txt) !important; }
+body.light-mode .fc-theme-standard td,
+body.light-mode .fc-theme-standard th,
+body.light-mode .fc-theme-standard .fc-scrollgrid { border-color: rgba(26,26,62,0.08) !important; }
+body.light-mode .fc-daygrid-day.fc-day-today { background: rgba(126,232,250,0.15) !important; }
+body.light-mode .modal input[type=text],
+body.light-mode .modal input[type=datetime-local],
+body.light-mode .modal input[type=url],
+body.light-mode .modal textarea,
+body.light-mode .modal select { background: rgba(255,255,255,0.9); border-color: rgba(26,26,62,0.15); color: var(--txt); }
+body.light-mode .modal select option { background: #f0f4ff; color: #1a1a3e; }
+body.light-mode .share-popup { background: rgba(240,244,255,0.98); border-color: rgba(52,235,168,0.35); }
+body.light-mode #share-url-input { background: rgba(255,255,255,0.8); border-color: rgba(26,26,62,0.15); color: var(--txt); }
+body.light-mode .lang-dropdown { background: rgba(240,244,255,0.98); border-color: rgba(126,232,250,0.3); }
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 14px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg0);
+  color: var(--txt);
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  transition: background 0.35s, color 0.35s;
+}
+button { cursor: pointer; border: none; font-family: inherit; }
+a { text-decoration: none; color: inherit; }
+
+/* ═══════════════════════════════════════
+   BACKGROUND
+═══════════════════════════════════════ */
+.bg-canvas {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 8% 10%, rgba(126,232,250,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 92% 88%, rgba(167,139,250,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(52,235,168,0.04) 0%, transparent 70%),
+    #05051a;
+  transition: background 0.35s;
+}
+.noise {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+.orb {
+  position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+  animation: floatOrb 14s ease-in-out infinite;
+  filter: blur(90px);
+}
+.orb-a { width: 500px; height: 500px; background: rgba(126,232,250,0.07); top: -150px; left: -120px; }
+.orb-b { width: 400px; height: 400px; background: rgba(167,139,250,0.07); bottom: -100px; right: -100px; animation-delay: -7s; }
+.orb-c { width: 250px; height: 250px; background: rgba(52,235,168,0.05); top: 35%; left: 42%; animation-delay: -3.5s; }
+@keyframes floatOrb { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-35px)} }
+
+.particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.particle {
+  position: absolute; border-radius: 50%; opacity: 0;
+  animation: particleRise linear infinite;
+}
+@keyframes particleRise {
+  0% { opacity: 0; transform: translateY(0) scale(0.5); }
+  15% { opacity: 0.6; }
+  85% { opacity: 0.3; }
+  100% { opacity: 0; transform: translateY(-100vh) scale(1.2); }
+}
+
+/* ═══════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════ */
+.app {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 260px 1fr 355px;
+  height: 100vh;
+  gap: 10px;
+  padding: 10px;
+}
+
+/* ═══════════════════════════════════════
+   GLASS CARD
+═══════════════════════════════════════ */
+.glass {
+  background: var(--card);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--bdr);
+  border-radius: var(--r);
+  transition: background 0.3s, border-color 0.3s;
+}
+.glass:hover { background: var(--card-h); }
+
+/* ═══════════════════════════════════════
+   LEFT PANEL
+═══════════════════════════════════════ */
+.panel-left {
+  display: flex; flex-direction: column; gap: 10px; overflow: hidden;
+}
+
+/* Profile */
+.profile-mini {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px;
+  background: rgba(126,232,250,0.06);
+  border: 1px solid rgba(126,232,250,0.14);
+  border-radius: var(--r);
+}
+.avatar-ring {
+  position: relative; flex-shrink: 0;
+  width: 42px; height: 42px;
+}
+.avatar-ring::before {
+  content: '';
+  position: absolute; inset: -2px;
+  border-radius: 50%;
+  background: conic-gradient(var(--acc1), var(--acc2), var(--acc3), var(--acc1));
+  animation: spinRing 4s linear infinite;
+  z-index: 0;
+}
+@keyframes spinRing { to { transform: rotate(360deg); } }
+.profile-img {
+  position: relative; z-index: 1;
+  width: 38px; height: 38px;
+  border-radius: 50%; object-fit: cover;
+  border: 2px solid var(--bg0);
+}
+.profile-info { flex: 1; min-width: 0; }
+.profile-name {
+  font-size: 13px; font-weight: 700; color: var(--txt);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.profile-handle { font-size: 10px; color: var(--sub); margin-top: 1px; }
+.streak-badge {
+  background: rgba(126,232,250,0.12);
+  border: 1px solid rgba(126,232,250,0.25);
+  border-radius: 8px; padding: 3px 8px;
+  font-size: 10px; color: var(--acc1); font-weight: 700; white-space: nowrap;
+}
+
+/* Clock */
+.clock-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(52,235,168,0.05);
+  border: 1px solid rgba(52,235,168,0.12);
+  border-radius: var(--r);
+}
+#reloj {
+  font-family: var(--font-mono); font-size: 22px; font-weight: 500;
+  color: var(--acc3); letter-spacing: 3px;
+}
+.clock-right { text-align: right; }
+#fecha { font-size: 9px; color: var(--sub); text-transform: capitalize; }
+#countdown { font-size: 9px; color: var(--acc1); margin-top: 2px; }
+#countdown strong { font-weight: 700; }
+
+/* Player */
+.player-card {
+  padding: 10px 13px;
+  background: rgba(167,139,250,0.05);
+  border: 1px solid rgba(167,139,250,0.12);
+  border-radius: var(--r);
+}
+.player-row { display: flex; align-items: center; gap: 9px; }
+.player-thumb {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--acc1), var(--acc2));
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.player-meta { flex: 1; min-width: 0; }
+.player-title { font-size: 11px; font-weight: 700; color: var(--txt); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-sub { font-size: 9px; color: var(--sub); display: flex; align-items: center; gap: 4px; margin-top: 1px; }
+.live-dot { width: 5px; height: 5px; background: var(--acc4); border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.player-controls { display: flex; align-items: center; gap: 5px; }
+.pctrl {
+  background: rgba(255,255,255,0.07); border-radius: 50%;
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--sub); transition: all 0.2s;
+}
+.pctrl svg { width: 11px; height: 11px; fill: currentColor; }
+.pctrl:hover { background: rgba(255,255,255,0.14); color: var(--txt); }
+.pplay {
+  background: linear-gradient(135deg, var(--acc1), var(--acc2));
+  border-radius: 50%; width: 34px; height: 34px; color: var(--bg0);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s; box-shadow: 0 4px 14px rgba(126,232,250,0.3);
+}
+.pplay:hover { transform: scale(1.1); }
+.pplay svg { width: 15px; height: 15px; fill: currentColor; }
+.player-progress {
+  width: 100%; height: 3px; background: rgba(255,255,255,0.08);
+  border-radius: 3px; margin: 8px 0 3px; cursor: pointer;
+}
+.player-progress-fill {
+  height: 100%; background: linear-gradient(90deg, var(--acc1), var(--acc2));
+  border-radius: 3px; transition: width 0.5s linear; width: 0%;
+}
+.player-times {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono); font-size: 9px; color: var(--faint); margin-bottom: 6px;
+}
+.player-vol { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+.player-vol input[type=range] { flex: 1; accent-color: var(--acc1); height: 3px; cursor: pointer; }
+.player-playlist {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 6px; margin-top: 2px;
+  display: flex; flex-direction: column; gap: 2px;
+  max-height: 70px; overflow-y: auto;
+}
+.player-playlist::-webkit-scrollbar { width: 3px; }
+.player-playlist::-webkit-scrollbar-thumb { background: rgba(126,232,250,0.2); border-radius: 3px; }
+.pl-row {
+  display: flex; align-items: center; gap: 6px;
+  padding: 3px 6px; border-radius: 7px; cursor: pointer; transition: background 0.15s;
+}
+.pl-row:hover { background: rgba(255,255,255,0.05); }
+.pl-row.pl-active { background: rgba(126,232,250,0.1); }
+.pl-num { font-size: 9px; color: var(--faint); width: 12px; text-align: center; flex-shrink: 0; }
+.pl-wave { display: flex; gap: 2px; align-items: flex-end; width: 12px; height: 12px; }
+.pl-wave span { display: block; width: 2px; background: var(--acc1); border-radius: 2px; animation: wv 0.7s ease-in-out infinite alternate; }
+.pl-wave span:nth-child(2){animation-delay:.15s}.pl-wave span:nth-child(3){animation-delay:.3s}
+@keyframes wv { from{height:2px} to{height:11px} }
+.pl-emoji { font-size: 11px; flex-shrink: 0; }
+.pl-name { flex: 1; font-size: 10px; font-weight: 600; color: var(--txt); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pl-live { font-size: 8px; color: var(--acc1); font-weight: 700; }
+
+/* Events */
+.events-card {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
+  background: var(--card); backdrop-filter: var(--blur);
+  border: 1px solid var(--bdr); border-radius: var(--r); padding: 12px; overflow: hidden;
+}
+.section-title {
+  font-size: 11px; font-weight: 700; color: var(--txt);
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 9px; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.events-list {
+  flex: 1; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 6px; padding-right: 2px;
+}
+.events-list::-webkit-scrollbar { width: 3px; }
+.events-list::-webkit-scrollbar-thumb { background: var(--scroll); border-radius: 3px; }
+.evento-item {
+  border-radius: 11px; padding: 8px 11px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-left: 3px solid var(--acc1);
+  transition: transform 0.2s, background 0.2s;
+}
+.evento-item:hover { transform: translateX(2px); background: rgba(255,255,255,0.07); }
+.etitulo { font-size: 11px; font-weight: 700; color: var(--txt); }
+.efecha { font-size: 9px; color: var(--sub); margin-top: 1px; font-family: var(--font-mono); }
+.ecategoria { font-size: 9px; color: var(--faint); margin-top: 1px; }
+.evento-actions { margin-top: 6px; display: flex; gap: 6px; }
+
+/* ═══════════════════════════════════════
+   BOTTOM BAR — más espacio entre botones
+═══════════════════════════════════════ */
+.panel-bottom { display: flex; gap: 10px; }
+.btn-bar {
+  flex: 1; padding: 11px 10px; border-radius: 14px;
+  font-size: 11px; font-weight: 700;
+  background: var(--card); backdrop-filter: var(--blur);
+  border: 1px solid var(--bdr); color: var(--txt);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-bar:hover { background: var(--card-h); transform: translateY(-2px); }
+.btn-bar.danger { border-color: rgba(244,114,182,0.2); color: #fda4c8; }
+.btn-bar.danger:hover { background: rgba(244,114,182,0.08); }
+
+/* ═══════════════════════════════════════
+   CHAT
+═══════════════════════════════════════ */
+.chat-wrap {
+  display: flex; flex-direction: column;
+  background: var(--card); backdrop-filter: var(--blur);
+  border: 1px solid var(--bdr); border-radius: 22px; overflow: hidden;
+}
+.chat-header {
+  display: flex; align-items: center; gap: 11px;
+  padding: 12px 17px;
+  background: rgba(126,232,250,0.04);
+  border-bottom: 1px solid var(--bdr);
+}
+.chat-header-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 2px solid var(--acc1); object-fit: cover;
+  box-shadow: 0 0 18px rgba(126,232,250,0.3);
+}
+.hname { font-size: 14px; font-weight: 700; color: var(--txt); }
+.hstatus { font-size: 10px; color: var(--sub); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+.dot-green { width: 6px; height: 6px; background: var(--acc3); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+
+/* ── Header actions más espaciados ── */
+.header-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.btn-icon {
+  background: var(--card); border: 1px solid var(--bdr);
+  color: var(--sub); border-radius: 11px; padding: 8px 12px;
+  font-size: 14px; transition: all 0.2s; min-width: 40px; text-align: center;
+}
+.btn-icon:hover { background: var(--card-h); color: var(--txt); transform: scale(1.05); }
+.btn-icon.active {
+  background: rgba(126,232,250,0.2); color: var(--acc1);
+  border-color: rgba(126,232,250,0.3);
+  animation: iconPulse 1.2s ease-in-out infinite;
+}
+@keyframes iconPulse { 0%,100%{box-shadow:0 0 0 0 rgba(126,232,250,0.4)} 50%{box-shadow:0 0 0 6px rgba(126,232,250,0)} }
+
+/* Chat messages */
+#chat-box {
+  flex: 1; overflow-y: auto;
+  padding: 16px 18px; display: flex; flex-direction: column; gap: 9px;
+}
+#chat-box::-webkit-scrollbar { width: 4px; }
+#chat-box::-webkit-scrollbar-thumb { background: var(--scroll); border-radius: 4px; }
+.message {
+  max-width: 72%; border-radius: 18px; padding: 10px 15px;
+  font-size: 13px; line-height: 1.55; word-break: break-word;
+  animation: msgIn 0.28s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes msgIn { from{opacity:0;transform:translateY(8px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+.message.user {
+  background: linear-gradient(135deg, var(--bubble-user-a), var(--bubble-user-b));
+  color: #05051a; align-self: flex-end; border-bottom-right-radius: 5px;
+  box-shadow: 0 5px 20px rgba(126,232,250,0.25);
+}
+.message.bot {
+  background: var(--bubble-bot); border: 1px solid var(--bubble-bot-bdr);
+  color: var(--txt); align-self: flex-start; border-bottom-left-radius: 5px;
+}
+.meta { font-size: 9px; opacity: 0.4; margin-top: 4px; font-family: var(--font-mono); }
+.typing {
+  display: flex; gap: 4px; padding: 10px 15px;
+  background: var(--bubble-bot); border: 1px solid var(--bubble-bot-bdr);
+  border-radius: 18px; border-bottom-left-radius: 5px; width: fit-content;
+  align-self: flex-start;
+}
+.typing span {
+  width: 5px; height: 5px; background: var(--acc1); border-radius: 50%;
+  animation: blink 1s infinite;
+}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink { 0%,100%{opacity:.2;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.2)} }
+
+/* ── INPUT AREA con idioma abajo ── */
+.input-area {
+  padding: 12px 14px;
+  border-top: 1px solid var(--bdr);
+  background: rgba(255,255,255,0.02);
+}
+.input-row { display: flex; gap: 8px; align-items: center; margin-bottom: 9px; }
+#message-input {
+  flex: 1; background: var(--input-bg);
+  border: 1.5px solid var(--input-bdr);
+  border-radius: 15px; padding: 10px 16px;
+  color: var(--txt); font-family: var(--font-body);
+  font-size: 13px; font-weight: 500; outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+#message-input::placeholder { color: var(--faint); }
+#message-input:focus { border-color: var(--acc1); background: rgba(126,232,250,0.05); }
+.send-btn {
+  background: linear-gradient(135deg, var(--acc1), var(--acc2));
+  color: #05051a; border-radius: 13px; padding: 10px 14px; font-size: 16px;
+  box-shadow: 0 5px 18px rgba(126,232,250,0.3);
+  transition: transform 0.2s, box-shadow 0.2s; flex-shrink: 0;
+}
+.send-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 26px rgba(126,232,250,0.45); }
+
+/* ── BARRA DE IDIOMA (abajo del input) ── */
+.lang-bar {
+  display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+  padding-top: 2px;
+}
+.lang-bar-label {
+  font-size: 10px; color: var(--faint); font-weight: 700;
+  margin-right: 3px; flex-shrink: 0;
+}
+.lang-option {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--bdr);
+  color: var(--sub); border-radius: 8px; padding: 4px 9px;
+  font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; gap: 3px;
+}
+.lang-option:hover { background: rgba(126,232,250,0.1); color: var(--txt); border-color: rgba(126,232,250,0.2); }
+.lang-option.active { background: rgba(126,232,250,0.18); border-color: rgba(126,232,250,0.4); color: var(--acc1); }
+
+/* ═══════════════════════════════════════
+   RIGHT PANEL - CALENDAR
+═══════════════════════════════════════ */
+.panel-right { display: flex; flex-direction: column; overflow: hidden; }
+.calendar-card {
+  flex: 1; min-height: 0; display: flex; flex-direction: column;
+  background: var(--card); backdrop-filter: var(--blur);
+  border: 1px solid var(--bdr); border-radius: 22px; padding: 16px; overflow: hidden;
+}
+#calendar { flex: 1; overflow: hidden; min-height: 0; }
+.fc-toolbar-title { font-size: 15px !important; color: var(--txt) !important; font-family: var(--font-body) !important; font-weight: 700 !important; }
+.fc-button { font-size: 11px !important; padding: 4px 10px !important; background: rgba(126,232,250,0.18) !important; border: none !important; border-radius: 8px !important; color: var(--txt) !important; }
+.fc-button:hover { background: rgba(126,232,250,0.3) !important; }
+.fc-button-active { background: rgba(126,232,250,0.35) !important; }
+.fc-daygrid-day-number { color: rgba(232,234,246,0.6) !important; font-size: 11px !important; font-weight: 600 !important; }
+.fc-col-header-cell-cushion { color: rgba(232,234,246,0.45) !important; font-size: 10px !important; font-weight: 700 !important; text-transform: uppercase; letter-spacing: 0.05em; }
+.fc-daygrid-day.fc-day-today { background: rgba(126,232,250,0.1) !important; border-radius: 8px !important; }
+.fc-event { border: none !important; border-radius: 6px !important; font-size: 10px !important; font-weight: 600 !important; }
+.fc { color: var(--sub); }
+.fc-theme-standard td, .fc-theme-standard th, .fc-theme-standard .fc-scrollgrid { border-color: rgba(255,255,255,0.05) !important; }
+
+/* ═══════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════ */
+.btn-sm {
+  background: rgba(126,232,250,0.15); border: 1px solid rgba(126,232,250,0.3);
+  color: var(--txt); border-radius: 9px; padding: 4px 11px;
+  font-size: 10px; font-weight: 700; transition: all 0.2s;
+}
+.btn-sm:hover { background: rgba(126,232,250,0.28); transform: scale(1.02); }
+.btn-edit {
+  background: rgba(167,139,250,0.12); color: #c4b5fd;
+  border: 1px solid rgba(167,139,250,0.28); padding: 3px 9px;
+  border-radius: 7px; font-size: 10px; font-weight: 700; transition: background 0.2s;
+}
+.btn-edit:hover { background: rgba(167,139,250,0.25); }
+.btn-delete {
+  background: rgba(244,114,182,0.1); color: #fda4c8;
+  border: 1px solid rgba(244,114,182,0.25); padding: 3px 9px;
+  border-radius: 7px; font-size: 10px; font-weight: 700; transition: background 0.2s;
+}
+.btn-delete:hover { background: rgba(244,114,182,0.22); }
+
+/* ═══════════════════════════════════════
+   NGROK PANEL
+═══════════════════════════════════════ */
+.ngrok-panel {
+  position: fixed; bottom: 16px; right: 16px; z-index: 500;
+  display: flex; flex-direction: column; gap: 6px; align-items: flex-end;
+}
+.ngrok-btn {
+  background: linear-gradient(135deg, rgba(52,235,168,0.2), rgba(126,232,250,0.2));
+  border: 1px solid rgba(52,235,168,0.4); color: var(--acc3);
+  border-radius: 12px; padding: 8px 14px;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; gap: 6px;
+  backdrop-filter: var(--blur);
+  transition: all 0.2s; box-shadow: 0 4px 16px rgba(52,235,168,0.15);
+}
+.ngrok-btn:hover { background: linear-gradient(135deg, rgba(52,235,168,0.3), rgba(126,232,250,0.3)); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(52,235,168,0.25); }
+.ngrok-btn .ngrok-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--acc3); animation: pulse 1.5s ease-in-out infinite; }
+.share-popup {
+  display: none;
+  background: rgba(5,5,26,0.97); border: 1px solid rgba(52,235,168,0.25);
+  border-radius: 14px; padding: 14px 16px; width: 280px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+.share-popup.open { display: block; animation: dropIn 0.2s ease; }
+@keyframes dropIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.share-popup h4 { font-size: 12px; font-weight: 700; color: var(--txt); margin-bottom: 10px; }
+.share-url-row { display: flex; gap: 6px; }
+#share-url-input {
+  flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; padding: 7px 10px; color: var(--txt);
+  font-family: var(--font-mono); font-size: 10px; outline: none;
+}
+.copy-btn {
+  background: rgba(52,235,168,0.2); border: 1px solid rgba(52,235,168,0.35);
+  color: var(--acc3); border-radius: 8px; padding: 7px 11px;
+  font-size: 11px; font-weight: 700; transition: all 0.2s; cursor: pointer;
+}
+.copy-btn:hover { background: rgba(52,235,168,0.35); }
+.share-info { font-size: 10px; color: var(--sub); margin-top: 8px; line-height: 1.4; }
+.share-info a { color: var(--acc1); }
+.ngrok-status { font-size: 9px; font-weight: 700; margin-top: 6px; }
+.ngrok-status.ok { color: var(--acc3); }
+.ngrok-status.err { color: var(--acc4); }
+
+/* ═══════════════════════════════════════
+   MODALS
+═══════════════════════════════════════ */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,0.72); backdrop-filter: blur(10px);
+  justify-content: center; align-items: center;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: var(--modal-bg); border: 1px solid rgba(126,232,250,0.2);
+  border-radius: 24px; padding: 26px 28px; width: 400px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.75);
+  animation: slideUp 0.28s cubic-bezier(.16,1,.3,1) both;
+  max-height: 90vh; overflow-y: auto;
+}
+@keyframes slideUp { from{opacity:0;transform:translateY(24px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+.modal h3 { font-size: 17px; font-weight: 700; color: var(--txt); margin-bottom: 16px; }
+.modal label {
+  display: block; font-size: 9px; font-weight: 700;
+  color: var(--sub); letter-spacing: 0.07em; text-transform: uppercase;
+  margin-bottom: 4px; margin-top: 10px;
+}
+.modal input[type=text], .modal input[type=datetime-local],
+.modal input[type=url], .modal textarea, .modal select {
+  width: 100%; background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px;
+  padding: 9px 13px; color: var(--txt);
+  font-family: var(--font-body); font-size: 13px; font-weight: 500; outline: none;
+  transition: border-color 0.2s; margin-bottom: 2px;
+}
+.modal input:focus, .modal textarea:focus, .modal select:focus { border-color: var(--acc1); }
+.modal select option { background: var(--bg0); }
+.modal input[type=checkbox] { width: auto; margin-right: 5px; accent-color: var(--acc1); }
+.modal input[type=color] { width: 40px; height: 30px; border: none; border-radius: 8px; cursor: pointer; padding: 2px; background: transparent; }
+
+/* Settings */
+.settings-tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.stab {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 9px; padding: 5px 12px; font-size: 10px; font-weight: 700;
+  color: var(--sub); cursor: pointer; transition: all 0.2s;
+}
+.stab.active { background: rgba(126,232,250,0.15); border-color: rgba(126,232,250,0.4); color: var(--txt); }
+.stab-panel { display: none; }
+.stab-panel.active { display: block; }
+
+.lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px; }
+.lang-opt-s {
+  padding: 7px 10px; border-radius: 9px; border: 1px solid var(--bdr);
+  background: rgba(255,255,255,0.03); color: var(--sub); font-size: 11px;
+  cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s; font-weight: 600;
+}
+.lang-opt-s:hover { background: rgba(126,232,250,0.1); color: var(--txt); }
+.lang-opt-s.active { background: rgba(126,232,250,0.15); border-color: rgba(126,232,250,0.35); color: var(--txt); }
+
+.voice-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px; background: rgba(52,235,168,0.05);
+  border: 1px solid rgba(52,235,168,0.14); border-radius: 10px; margin-top: 10px;
+}
+.vr-title { font-size: 12px; font-weight: 700; color: var(--txt); }
+.vr-sub { font-size: 10px; color: var(--sub); margin-top: 2px; }
+.toggle-btn {
+  width: 38px; height: 21px; border-radius: 11px;
+  background: rgba(52,235,168,0.3); border: none; cursor: pointer;
+  position: relative; transition: background 0.2s; flex-shrink: 0;
+}
+.toggle-btn.off { background: rgba(255,255,255,0.1); }
+.toggle-btn::after {
+  content: ''; position: absolute; top: 2.5px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--acc3); left: 20px; transition: left 0.2s, background 0.2s;
+}
+.toggle-btn.off::after { left: 2.5px; background: rgba(255,255,255,0.35); }
+
+.color-swatches { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 6px; }
+.swatch {
+  width: 25px; height: 25px; border-radius: 50%; cursor: pointer;
+  border: 2px solid transparent; transition: all 0.2s;
+}
+.swatch:hover, .swatch.selected { border-color: var(--txt); transform: scale(1.15); }
+
+.font-opts { display: flex; flex-direction: column; gap: 5px; margin-top: 5px; }
+.font-opt {
+  background: rgba(255,255,255,0.04); border: 1px solid var(--bdr);
+  border-radius: 10px; padding: 8px 13px; cursor: pointer; font-size: 13px;
+  color: var(--txt); transition: all 0.2s;
+}
+.font-opt.selected { background: rgba(167,139,250,0.15); border-color: rgba(167,139,250,0.35); }
+
+.agenda-item {
+  padding: 9px 11px; background: rgba(255,255,255,0.04);
+  border-radius: 10px; border-left: 3px solid var(--acc1); margin-bottom: 5px;
+}
+.agenda-dia { font-size: 9px; color: var(--sub); text-transform: capitalize; }
+.agenda-titulo { font-size: 12px; font-weight: 700; color: var(--txt); margin-top: 2px; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--scroll); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-canvas"></div>
+<div class="noise"></div>
+<div class="orb orb-a"></div>
+<div class="orb orb-b"></div>
+<div class="orb orb-c"></div>
+<div class="particles" id="particles"></div>
+
+<audio id="lofi-audio"></audio>
+<audio id="msg-sound" preload="auto">
+  <source src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" type="audio/mpeg">
+</audio>
+
+<div class="app">
+
+  <!-- ══ PANEL IZQUIERDO ══ -->
+  <div class="panel-left">
+
+    <!-- Profile -->
+    <div class="profile-mini">
+      <div class="avatar-ring">
+        <img src="{% static 'chat/img/logo.png' %}" alt="Avatar" id="profile-img" class="profile-img">
+      </div>
+      <div class="profile-info">
+        <div class="profile-name">{{ request.user.username }} 💙</div>
+        <div class="profile-handle">MiniAmigixV</div>
+      </div>
+      <div class="streak-badge">🔥 <span id="racha-num">0</span>d</div>
+    </div>
+
+    <!-- Clock -->
+    <div class="clock-bar glass">
+      <div id="reloj">00:00</div>
+      <div class="clock-right">
+        <div id="fecha">cargando...</div>
+        <div id="countdown"><span id="countdown-text">...</span></div>
+      </div>
+    </div>
+
+    <!-- Player -->
+    <div class="player-card glass">
+      <div class="player-row">
+        <div class="player-thumb" id="player-thumb">📻</div>
+        <div class="player-meta">
+          <div class="player-title" id="player-title">Zeno Lofi Radio</div>
+          <div class="player-sub">
+            <span class="live-dot"></span>
+            <span id="player-sub">Lofi · En vivo</span>
+          </div>
+        </div>
+        <div class="player-controls">
+          <button class="pctrl" id="player-prev">
+            <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+          </button>
+          <button class="pplay" id="player-play">
+            <svg id="player-play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <button class="pctrl" id="player-next">
+            <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6h2v12h-2z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="player-progress" id="player-progress">
+        <div class="player-progress-fill" id="player-progress-fill"></div>
+      </div>
+      <div class="player-times">
+        <span id="player-time-cur">0:00</span>
+        <span id="player-time-tot">En vivo</span>
+      </div>
+      <div class="player-vol">
+        <span>🔈</span>
+        <input type="range" id="player-vol" min="0" max="1" step="0.05" value="0.3">
+        <span>🔊</span>
+      </div>
+      <div class="player-playlist" id="player-playlist"></div>
+    </div>
+
+    <!-- Events -->
+    <div class="events-card">
+      <div class="section-title">
+        📅 <span data-i18n="eventos_titulo">Eventos</span>
+        <button class="btn-sm" id="add-event-btn">➕ <span data-i18n="nuevo">Nuevo</span></button>
+      </div>
+      <div class="events-list" id="eventos-list">
+        {% for e in eventos %}
+        <div class="evento-item" style="border-left-color:{{ e.color }};">
+          <div class="etitulo">{{ e.titulo }}</div>
+          <div class="efecha">{{ e.fecha|date:"d/m/Y H:i" }}</div>
+          <div class="ecategoria">{{ e.get_categoria_display }}</div>
+          <div class="evento-actions">
+            <button class="btn-edit"
+              data-id="{{ e.id }}"
+              data-titulo="{{ e.titulo|escapejs }}"
+              data-descripcion="{{ e.descripcion|default_if_none:''|escapejs }}"
+              data-fecha="{{ e.fecha|date:'Y-m-d\TH:i' }}"
+              data-recordatorio="{{ e.recordatorio|yesno:'true,false' }}"
+              data-color="{{ e.color }}"
+              data-categoria="{{ e.categoria }}">✏️ Editar</button>
+            <button class="btn-delete" data-id="{{ e.id }}" data-titulo="{{ e.titulo|escapejs }}">🗑️ Borrar</button>
+          </div>
+        </div>
+        {% empty %}
+        <p style="font-size:11px;color:var(--faint);text-align:center;margin-top:16px;font-weight:600;" data-i18n="sin_eventos">No hay eventos 🌊</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Bottom buttons -->
+    <div class="panel-bottom">
+      <button class="btn-bar" id="settings-btn">⚙️ <span data-i18n="ajustes">Ajustes</span></button>
+      <a href="{% url 'logout' %}" style="flex:1;display:flex;">
+        <button class="btn-bar danger" style="width:100%;">🚪 <span data-i18n="salir">Salir</span></button>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- ══ CHAT ══ -->
+  <div class="chat-wrap">
+    <div class="chat-header">
+      <img src="{% static 'chat/img/logo.png' %}" alt="Bot" id="bot-avatar" class="chat-header-avatar">
+      <div>
+        <div class="hname" id="bot-nombre-display">MiniAmigixV 💙</div>
+        <div class="hstatus"><span class="dot-green"></span> <span data-i18n="en_linea">En línea</span></div>
+      </div>
+      <!-- Header: solo botones funcionales, sin selector de idioma aquí -->
+      <div class="header-actions">
+        <button class="btn-icon" id="voz-btn" title="Leer última respuesta">🔊</button>
+        <button class="btn-icon" id="musica-btn" title="Música lofi">🎵</button>
+        <button class="btn-icon" id="agenda-btn" title="Próximos 7 días">📋</button>
+        <button class="btn-icon" id="dark-btn" title="Cambiar modo">🌙</button>
+      </div>
+    </div>
+
+    <div id="chat-box">
+      {% for m in mensajes %}
+        {% if m.sender_type != 'event_notification' %}
+        <div class="message {% if m.sender_type == 'user' %}user{% else %}bot{% endif %}">
+          <div>{{ m.content }}</div>
+          <div class="meta">{{ m.created_at|date:"H:i" }}</div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Input + idioma abajo -->
+    <div class="input-area">
+      <form id="chat-form" style="margin:0;">
+        {% csrf_token %}
+        <div class="input-row">
+          <input type="text" id="message-input" placeholder="Escribe algo bonito... 💌" autocomplete="off">
+          <button type="submit" class="send-btn">💌</button>
+        </div>
+      </form>
+      <!-- Selector de idioma justo debajo del input -->
+      <div class="lang-bar" id="lang-bar">
+        <span class="lang-bar-label">🌐</span>
+        <div class="lang-option active" data-lang="es">🇪🇸 ES</div>
+        <div class="lang-option" data-lang="en">🇬🇧 EN</div>
+        <div class="lang-option" data-lang="fr">🇫🇷 FR</div>
+        <div class="lang-option" data-lang="pt">🇧🇷 PT</div>
+        <div class="lang-option" data-lang="de">🇩🇪 DE</div>
+        <div class="lang-option" data-lang="it">🇮🇹 IT</div>
+        <div class="lang-option" data-lang="ja">🇯🇵 JA</div>
+        <div class="lang-option" data-lang="ko">🇰🇷 KO</div>
+        <div class="lang-option" data-lang="zh">🇨🇳 ZH</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PANEL DERECHO ══ -->
+  <div class="panel-right">
+    <div class="calendar-card">
+      <div class="section-title" style="margin-bottom:12px;">📆 <span data-i18n="calendario">Calendario</span></div>
+      <div id="calendar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NGROK / SHARE PANEL ══ -->
+<div class="ngrok-panel" id="ngrok-panel">
+  <div class="share-popup glass" id="share-popup">
+    <h4>🔗 Compartir MiniAmigixV</h4>
+    <div class="share-url-row">
+      <input type="text" id="share-url-input" readonly placeholder="Configura ngrok primero...">
+      <button class="copy-btn" id="copy-url-btn">📋 Copiar</button>
+    </div>
+    <div class="share-info">
+      Para compartir ejecuta en tu terminal:<br>
+      <code style="color:var(--acc1);font-size:10px;">ngrok http 8000</code><br>
+      Luego pega la URL pública aquí:
+    </div>
+    <div class="share-url-row" style="margin-top:8px;">
+      <input type="text" id="ngrok-url-manual" placeholder="https://xxxx.ngrok-free.app">
+      <button class="copy-btn" id="save-ngrok-btn" style="background:rgba(126,232,250,0.2);border-color:rgba(126,232,250,0.35);color:var(--acc1);">✓ Ok</button>
+    </div>
+    <div id="ngrok-status-msg" class="ngrok-status"></div>
+  </div>
+  <button class="ngrok-btn" id="ngrok-toggle-btn">
+    <span class="ngrok-dot" id="ngrok-dot"></span>
+    🌐 Compartir app
+  </button>
+</div>
+
+<!-- ══ MODAL NUEVO EVENTO ══ -->
+<div class="modal-overlay" id="event-modal">
+  <div class="modal">
+    <h3>✨ Nuevo Evento</h3>
+    <form id="event-form">
+      {% csrf_token %}
+      <label>Título</label>
+      <input type="text" name="titulo" required placeholder="Nombre del evento">
+      <label>Descripción</label>
+      <textarea name="descripcion" rows="2" placeholder="Descripción opcional..."></textarea>
+      <label>Fecha y hora</label>
+      <input type="datetime-local" name="fecha" required>
+      <label>Categoría</label>
+      <select name="categoria">
+        <option value="general">📌 General</option>
+        <option value="trabajo">💼 Trabajo</option>
+        <option value="salud">💊 Salud</option>
+        <option value="social">🎉 Social</option>
+        <option value="cumple">🎂 Cumpleaños</option>
+        <option value="viaje">✈️ Viaje</option>
+        <option value="otro">🔖 Otro</option>
+      </select>
+      <label>Color</label>
+      <input type="color" name="color" value="#7ee8fa">
+      <label style="display:flex;align-items:center;flex-direction:row;text-transform:none;font-size:12px;margin-top:12px;">
+        <input type="checkbox" name="recordatorio" checked>
+        <span>Recordatorio automático (5d / 1d / hoy)</span>
+      </label>
+      <div style="margin-top:18px;display:flex;justify-content:flex-end;gap:7px;">
+        <button type="button" class="btn-sm" id="close-modal">Cancelar</button>
+        <button type="submit" class="btn-sm" style="background:rgba(126,232,250,0.25);border-color:rgba(126,232,250,0.5);">💾 Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══ MODAL EDITAR EVENTO ══ -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <h3>✏️ Editar Evento</h3>
+    <form id="edit-form">
+      {% csrf_token %}
+      <input type="hidden" id="edit-evento-id">
+      <label>Título</label>
+      <input type="text" id="edit-titulo" required>
+      <label>Descripción</label>
+      <textarea id="edit-descripcion" rows="2"></textarea>
+      <label>Fecha y hora</label>
+      <input type="datetime-local" id="edit-fecha" required>
+      <label>Categoría</label>
+      <select id="edit-categoria">
+        <option value="general">📌 General</option>
+        <option value="trabajo">💼 Trabajo</option>
+        <option value="salud">💊 Salud</option>
+        <option value="social">🎉 Social</option>
+        <option value="cumple">🎂 Cumpleaños</option>
+        <option value="viaje">✈️ Viaje</option>
+        <option value="otro">🔖 Otro</option>
+      </select>
+      <label>Color</label>
+      <input type="color" id="edit-color" value="#7ee8fa">
+      <label style="display:flex;align-items:center;flex-direction:row;text-transform:none;font-size:12px;margin-top:12px;">
+        <input type="checkbox" id="edit-recordatorio">
+        <span>Activar recordatorio</span>
+      </label>
+      <div style="margin-top:18px;display:flex;justify-content:flex-end;gap:7px;">
+        <button type="button" class="btn-sm" id="close-edit-modal">Cancelar</button>
+        <button type="submit" class="btn-sm" style="background:rgba(126,232,250,0.25);border-color:rgba(126,232,250,0.5);">💾 Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══ MODAL AGENDA ══ -->
+<div class="modal-overlay" id="agenda-modal">
+  <div class="modal">
+    <h3>📋 Próximos 7 días</h3>
+    <div id="agenda-list"></div>
+    <div style="margin-top:16px;text-align:right;">
+      <button class="btn-sm" id="close-agenda">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL AJUSTES ══ -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal" style="width:420px;">
+    <h3>⚙️ Ajustes</h3>
+    <div class="settings-tabs">
+      <button class="stab active" data-tab="bot">🤖 Bot</button>
+      <button class="stab" data-tab="fondo">🎨 Fondo</button>
+      <button class="stab" data-tab="fuente">✍️ Fuente</button>
+      <button class="stab" data-tab="lang">🌐 Idioma</button>
+      <button class="stab" data-tab="notif">🔔 Notif.</button>
+    </div>
+
+    <!-- Bot -->
+    <div class="stab-panel active" id="tab-bot">
+      <label>Nombre del bot</label>
+      <input type="text" id="bot-nombre-input" placeholder="MiniAmigixV">
+      <label>Foto del bot (URL)</label>
+      <input type="url" id="bot-foto-input" placeholder="https://...">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(126,232,250,0.05);border:1px solid rgba(126,232,250,0.12);border-radius:11px;margin-top:11px;">
+        <img id="bot-preview-img" src="{% static 'chat/img/logo.png' %}" style="width:34px;height:34px;border-radius:50%;border:2px solid rgba(126,232,250,0.4);object-fit:cover;">
+        <div>
+          <div id="bot-preview-name" style="font-size:12px;font-weight:700;color:var(--txt);">MiniAmigixV 💙</div>
+          <div style="font-size:10px;color:var(--sub);">Previsualización</div>
+        </div>
+      </div>
+      <button class="btn-sm" id="save-bot-btn" style="margin-top:13px;width:100%;padding:9px;">💾 Guardar</button>
+    </div>
+
+    <!-- Fondo -->
+    <div class="stab-panel" id="tab-fondo">
+      <label>Color predefinido</label>
+      <div class="color-swatches">
+        <div class="swatch selected" style="background:#05051a;" data-val="#05051a"></div>
+        <div class="swatch" style="background:#0a0a0f;" data-val="#0a0a0f"></div>
+        <div class="swatch" style="background:#001a1a;" data-val="#001a1a"></div>
+        <div class="swatch" style="background:#0a001a;" data-val="#0a001a"></div>
+        <div class="swatch" style="background:#1a0a00;" data-val="#1a0a00"></div>
+        <div class="swatch" style="background:#001a0a;" data-val="#001a0a"></div>
+        <div class="swatch" style="background:#1a1a00;" data-val="#1a1a00"></div>
+      </div>
+      <label style="margin-top:12px;">O imagen de fondo (URL)</label>
+      <input type="url" id="fondo-url-input" placeholder="https://...imagen.jpg">
+      <button class="btn-sm" id="save-fondo-btn" style="margin-top:11px;width:100%;padding:9px;">🎨 Aplicar</button>
+      <button class="btn-sm" id="reset-fondo-btn" style="margin-top:5px;width:100%;padding:9px;background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1);">↩ Restablecer</button>
+    </div>
+
+    <!-- Fuente -->
+    <div class="stab-panel" id="tab-fuente">
+      <label>Fuente del chat</label>
+      <div class="font-opts">
+        <div class="font-opt selected" data-font="'Sora',sans-serif" style="font-family:'Sora',sans-serif;">Sora — moderno</div>
+        <div class="font-opt" data-font="'Playfair Display',serif" style="font-family:'Playfair Display',serif;">Playfair — elegante</div>
+        <div class="font-opt" data-font="'DM Mono',monospace" style="font-family:'DM Mono',monospace;">DM Mono — técnico</div>
+      </div>
+    </div>
+
+    <!-- Idioma + Voz -->
+    <div class="stab-panel" id="tab-lang">
+      <label>Idioma de la interfaz</label>
+      <div class="lang-grid" id="lang-grid-settings">
+        <div class="lang-opt-s active" data-lang="es">🇪🇸 Español</div>
+        <div class="lang-opt-s" data-lang="en">🇬🇧 English</div>
+        <div class="lang-opt-s" data-lang="fr">🇫🇷 Français</div>
+        <div class="lang-opt-s" data-lang="pt">🇧🇷 Português</div>
+        <div class="lang-opt-s" data-lang="de">🇩🇪 Deutsch</div>
+        <div class="lang-opt-s" data-lang="it">🇮🇹 Italiano</div>
+        <div class="lang-opt-s" data-lang="ja">🇯🇵 日本語</div>
+        <div class="lang-opt-s" data-lang="ko">🇰🇷 한국어</div>
+        <div class="lang-opt-s" data-lang="zh">🇨🇳 中文</div>
+      </div>
+      <div class="voice-row">
+        <div>
+          <div class="vr-title">Leer respuestas en voz alta</div>
+          <div class="vr-sub">Usa la voz del idioma seleccionado</div>
+        </div>
+        <button class="toggle-btn" id="voice-toggle-btn"></button>
+      </div>
+    </div>
+
+    <!-- Notif -->
+    <div class="stab-panel" id="tab-notif">
+      <p style="color:var(--sub);font-size:12px;font-weight:500;line-height:1.5;">Recibe notificaciones del navegador para recordatorios de eventos.</p>
+      <button class="btn-sm" id="req-notif-btn" style="width:100%;padding:9px;margin-top:10px;">🔔 Activar notificaciones</button>
+      <div id="notif-status" style="color:var(--sub);font-size:11px;margin-top:7px;"></div>
+    </div>
+
+    <div style="margin-top:17px;text-align:right;">
+      <button class="btn-sm" id="close-settings">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  // ── Particles ──
+  var pCont = document.getElementById('particles');
+  var COLORS = ['rgba(126,232,250,0.5)','rgba(167,139,250,0.5)','rgba(52,235,168,0.4)','rgba(244,114,182,0.35)'];
+  for (var i = 0; i < 30; i++) {
+    var p = document.createElement('div');
+    p.className = 'particle';
+    var sz = 1.5 + Math.random() * 3;
+    p.style.cssText = 'left:' + (Math.random()*100) + '%;width:' + sz + 'px;height:' + sz + 'px;background:' + COLORS[i%COLORS.length] + ';animation-duration:' + (10+Math.random()*15) + 's;animation-delay:-' + (Math.random()*20) + 's;';
+    pCont.appendChild(p);
+  }
+
+  var URL_SEND   = "{% url 'send_message' %}";
+  var URL_CREATE = "{% url 'create_event' %}";
+  function getCsrf() { var e = document.querySelector('[name=csrfmiddlewaretoken]'); return e ? e.value : ''; }
+
+  // ── Translations ──
+  var T = {
+    es:{sin_eventos_proximos:'Sin eventos próximos 🌊',countdown_para:'para',sin_eventos_7:'Sin eventos en 7 días 🌊',racha_dias:'días',eventos_titulo:'Eventos',nuevo:'Nuevo',ajustes:'Ajustes',salir:'Salir',en_linea:'En línea',calendario:'Calendario',placeholder:'Escribe algo bonito... 💌',sin_eventos:'No hay eventos 🌊',alert_guardado:'Guardado 💙',alert_error_evento:'Error al crear evento 😢',alert_error_update:'Error al actualizar 😢',alert_error_borrar:'Error al borrar 😢',confirm_borrar:'¿Eliminar "{titulo}"? 💔',error_servidor:'Error del servidor 😢',error_conexion:'Error de conexión 😢',notif_activadas:'✅ Notificaciones activadas',notif_bloqueadas:'❌ Bloqueadas en ajustes del navegador',notif_presiona:'Presiona el botón para activar',notif_no_soporta:'❌ Navegador no compatible'},
+    en:{sin_eventos_proximos:'No upcoming events 🌊',countdown_para:'until',sin_eventos_7:'No events in 7 days 🌊',racha_dias:'days',eventos_titulo:'Events',nuevo:'New',ajustes:'Settings',salir:'Log out',en_linea:'Online',calendario:'Calendar',placeholder:'Write something nice... 💌',sin_eventos:'No events 🌊',alert_guardado:'Saved 💙',alert_error_evento:'Error creating event 😢',alert_error_update:'Error updating 😢',alert_error_borrar:'Error deleting 😢',confirm_borrar:'Delete "{titulo}"? 💔',error_servidor:'Server error 😢',error_conexion:'Connection error 😢',notif_activadas:'✅ Notifications enabled',notif_bloqueadas:'❌ Blocked in browser settings',notif_presiona:'Press button to enable',notif_no_soporta:'❌ Browser not supported'},
+    fr:{sin_eventos_proximos:'Aucun événement 🌊',countdown_para:'pour',eventos_titulo:'Événements',nuevo:'Nouveau',ajustes:'Paramètres',salir:'Déconnexion',en_linea:'En ligne',calendario:'Calendrier',placeholder:'Écris quelque chose... 💌',sin_eventos:'Pas d\'événements 🌊',alert_guardado:'Sauvegardé 💙',confirm_borrar:'Supprimer "{titulo}"? 💔',error_servidor:'Erreur serveur 😢',error_conexion:'Erreur connexion 😢'},
+    pt:{sin_eventos_proximos:'Sem eventos 🌊',countdown_para:'para',eventos_titulo:'Eventos',nuevo:'Novo',ajustes:'Configurações',salir:'Sair',en_linea:'Online',calendario:'Calendário',placeholder:'Escreve algo bonito... 💌',sin_eventos:'Sem eventos 🌊',alert_guardado:'Salvo 💙',confirm_borrar:'Excluir "{titulo}"? 💔',error_servidor:'Erro servidor 😢',error_conexion:'Erro conexão 😢'},
+    de:{sin_eventos_proximos:'Keine Ereignisse 🌊',countdown_para:'bis',eventos_titulo:'Ereignisse',nuevo:'Neu',ajustes:'Einstellungen',salir:'Abmelden',en_linea:'Online',calendario:'Kalender',placeholder:'Schreib etwas... 💌',sin_eventos:'Keine Ereignisse 🌊',alert_guardado:'Gespeichert 💙',confirm_borrar:'"{titulo}" löschen? 💔',error_servidor:'Serverfehler 😢',error_conexion:'Verbindungsfehler 😢'},
+    it:{sin_eventos_proximos:'Nessun evento 🌊',countdown_para:'per',eventos_titulo:'Eventi',nuevo:'Nuovo',ajustes:'Impostazioni',salir:'Uscire',en_linea:'Online',calendario:'Calendario',placeholder:'Scrivi qualcosa... 💌',sin_eventos:'Nessun evento 🌊',alert_guardado:'Salvato 💙',confirm_borrar:'Eliminare "{titulo}"? 💔',error_servidor:'Errore server 😢',error_conexion:'Errore connessione 😢'},
+    ja:{eventos_titulo:'イベント',nuevo:'新規',ajustes:'設定',salir:'ログアウト',en_linea:'オンライン',calendario:'カレンダー',placeholder:'何か書いてください... 💌',sin_eventos:'イベントなし 🌊',alert_guardado:'保存しました 💙',confirm_borrar:'"{titulo}"を削除? 💔',error_servidor:'サーバーエラー 😢',error_conexion:'接続エラー 😢'},
+    ko:{eventos_titulo:'이벤트',nuevo:'새로',ajustes:'설정',salir:'로그아웃',en_linea:'온라인',calendario:'달력',placeholder:'무언가 적어주세요... 💌',sin_eventos:'이벤트 없음 🌊',alert_guardado:'저장됨 💙',confirm_borrar:'"{titulo}" 삭제? 💔',error_servidor:'서버 오류 😢',error_conexion:'연결 오류 😢'},
+    zh:{eventos_titulo:'事件',nuevo:'新建',ajustes:'设置',salir:'登出',en_linea:'在线',calendario:'日历',placeholder:'写点什么... 💌',sin_eventos:'暂无事件 🌊',alert_guardado:'已保存 💙',confirm_borrar:'删除"{titulo}"? 💔',error_servidor:'服务器错误 😢',error_conexion:'连接错误 😢'}
+  };
+  var currentLang = localStorage.getItem('appLang') || 'es';
+  var voiceEnabled = localStorage.getItem('voiceEnabled') !== 'false';
+  function t(k) { var d = T[currentLang]||{}; return d[k]||T.es[k]||k; }
+
+  // ── Clock ──
+  var LOCALE_MAP = {es:'es-EC',en:'en-US',fr:'fr-FR',pt:'pt-BR',de:'de-DE',it:'it-IT',ja:'ja-JP',ko:'ko-KR',zh:'zh-CN'};
+  function updateClock() {
+    var now = new Date(), loc = LOCALE_MAP[currentLang]||'es-EC';
+    document.getElementById('reloj').textContent = now.toLocaleTimeString(loc,{hour:'2-digit',minute:'2-digit',hour12:false});
+    document.getElementById('fecha').textContent = now.toLocaleDateString(loc,{weekday:'short',day:'numeric',month:'short'});
+  }
+  setInterval(updateClock, 1000); updateClock();
+
+  // ── Dark / Light mode (ARREGLADO) ──
+  var darkBtn = document.getElementById('dark-btn');
+  var isLight = localStorage.getItem('lightMode') === 'true';
+  function applyMode(light) {
+    isLight = light;
+    document.body.classList.toggle('light-mode', light);
+    darkBtn.textContent = light ? '🌙' : '☀️';
+    localStorage.setItem('lightMode', light);
+  }
+  applyMode(isLight);
+  darkBtn.addEventListener('click', function() { applyMode(!isLight); });
+
+  // ── Streak ──
+  (function() {
+    var hoy = new Date().toDateString(), ultima = localStorage.getItem('ultima_visita'), racha = parseInt(localStorage.getItem('racha_dias')||'0');
+    if (!ultima) { racha = 1; } else if (ultima !== hoy) { var diff = Math.round((new Date(hoy)-new Date(ultima))/86400000); racha = diff===1 ? racha+1 : 1; }
+    localStorage.setItem('racha_dias', racha); localStorage.setItem('ultima_visita', hoy);
+    document.getElementById('racha-num').textContent = racha;
+  })();
+
+  // ── Events data ──
+  var eventosJS = [{% for e in eventos %}{id:'{{ e.id }}',titulo:'{{ e.titulo|escapejs }}',start:'{{ e.fecha|date:"Y-m-d\TH:i:s" }}',color:'{{ e.color }}',categoria:'{{ e.categoria }}'},{% endfor %}];
+
+  // ── Countdown ──
+  function actualizarCountdown() {
+    var ahora = new Date(), futuros = eventosJS.filter(function(e){return new Date(e.start)>ahora;});
+    var el = document.getElementById('countdown-text');
+    if (!futuros.length) { el.textContent = t('sin_eventos_proximos'); return; }
+    futuros.sort(function(a,b){return new Date(a.start)-new Date(b.start);});
+    var p = futuros[0], diff = new Date(p.start)-ahora;
+    var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000);
+    var txt = d>0 ? d+'d '+h+'h' : h>0 ? h+'h '+m+'m' : m+'m';
+    el.innerHTML = '⏳ '+txt+' '+t('countdown_para')+' <strong>'+p.titulo+'</strong>';
+  }
+  actualizarCountdown(); setInterval(actualizarCountdown, 60000);
+
+  // ── Calendar ──
+  var calEl = document.getElementById('calendar'), cal = null;
+  if (calEl) {
+    cal = new FullCalendar.Calendar(calEl, {
+      initialView: 'dayGridMonth', height: '100%',
+      headerToolbar: {left:'prev,next today', center:'title', right:''},
+      editable: true,
+      events: eventosJS.map(function(e){return{id:e.id,title:e.titulo,start:e.start,backgroundColor:e.color,borderColor:e.color};}),
+      eventDrop: async function(info) {
+        try { await fetch('/eventos/editar/'+info.event.id+'/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},body:JSON.stringify({fecha:info.event.startStr})}); } catch(e){info.revert();}
+      }
+    });
+    cal.render();
+  }
+
+  // ── Agenda modal ──
+  document.getElementById('agenda-btn').addEventListener('click', function() {
+    var ahora = new Date(), limite = new Date(); limite.setDate(limite.getDate()+7);
+    var prox = eventosJS.filter(function(e){var d=new Date(e.start);return d>=ahora&&d<=limite;});
+    prox.sort(function(a,b){return new Date(a.start)-new Date(b.start);});
+    var list = document.getElementById('agenda-list'), loc = LOCALE_MAP[currentLang]||'es-EC';
+    list.innerHTML = '';
+    if (!prox.length) { list.innerHTML='<p style="font-size:11px;color:var(--faint);font-weight:600;">'+t('sin_eventos_7')+'</p>'; }
+    else { prox.forEach(function(e){ var d=new Date(e.start); var el=document.createElement('div'); el.className='agenda-item'; el.style.borderLeftColor=e.color; el.innerHTML='<div class="agenda-dia">'+d.toLocaleDateString(loc,{weekday:'long',day:'numeric',month:'short'})+' · '+d.toLocaleTimeString(loc,{hour:'2-digit',minute:'2-digit',hour12:false})+'</div><div class="agenda-titulo">'+e.titulo+'</div>'; list.appendChild(el); }); }
+    document.getElementById('agenda-modal').classList.add('active');
+  });
+  document.getElementById('close-agenda').addEventListener('click', function(){document.getElementById('agenda-modal').classList.remove('active');});
+
+  // ── Voice ──
+  var vozBtn = document.getElementById('voz-btn'), hablando = false;
+  var LANG_SPEECH = {es:'es-ES',en:'en-US',fr:'fr-FR',pt:'pt-BR',de:'de-DE',it:'it-IT',ja:'ja-JP',ko:'ko-KR',zh:'zh-CN'};
+  function stripEmoji(tx) { return tx.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{2300}-\u{23FF}\u{FE00}-\u{FEFF}]/gu,'').replace(/\s{2,}/g,' ').trim(); }
+  function hablar(texto) {
+    if (!voiceEnabled || !('speechSynthesis' in window) || !texto) return;
+    window.speechSynthesis.cancel();
+    var utt = new SpeechSynthesisUtterance(texto);
+    utt.lang = LANG_SPEECH[currentLang]||'es-ES'; utt.rate = 1; utt.pitch = 1.1;
+    utt.onstart = function(){ hablando=true; vozBtn.classList.add('active'); };
+    utt.onend = utt.onerror = function(){ hablando=false; vozBtn.classList.remove('active'); };
+    window.speechSynthesis.speak(utt);
+  }
+  vozBtn.addEventListener('click', function() {
+    if (hablando) { window.speechSynthesis.cancel(); hablando=false; vozBtn.classList.remove('active'); return; }
+    var msgs = document.querySelectorAll('.message.bot');
+    if (msgs.length) { var last=msgs[msgs.length-1]; hablar(stripEmoji((last.querySelector('div')||last).textContent.trim())); }
+  });
+  var vtBtn = document.getElementById('voice-toggle-btn');
+  function updateVT() { vtBtn.classList.toggle('off', !voiceEnabled); }
+  updateVT();
+  vtBtn.addEventListener('click', function(){ voiceEnabled=!voiceEnabled; localStorage.setItem('voiceEnabled',voiceEnabled); updateVT(); });
+
+  // ── Sound ──
+  var msgSound = document.getElementById('msg-sound');
+  function playSound() { if (!msgSound) return; msgSound.volume=0.18; msgSound.currentTime=0; msgSound.play().catch(function(){}); }
+
+  // ── Notification ──
+  function mostrarNotif(titulo, cuerpo) { if (Notification.permission==='granted') new Notification(titulo,{body:cuerpo,icon:'{% static "chat/img/logo.png" %}'}); }
+
+  // ── Chat ──
+  var chatBox = document.getElementById('chat-box');
+  function scrollBottom() { if (chatBox) chatBox.scrollTop = chatBox.scrollHeight; }
+  scrollBottom();
+  function addMessage(text, type) {
+    if (!chatBox) return;
+    var div = document.createElement('div'); div.className = 'message '+type;
+    var now = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    div.innerHTML = '<div>'+text+'</div><div class="meta">'+now+'</div>';
+    chatBox.appendChild(div); scrollBottom();
+  }
+  function mostrarTyping() { if (!chatBox||document.getElementById('typing')) return; var tx=document.createElement('div'); tx.className='typing'; tx.id='typing'; tx.innerHTML='<span></span><span></span><span></span>'; chatBox.appendChild(tx); scrollBottom(); }
+  function quitarTyping() { var tx=document.getElementById('typing'); if(tx)tx.remove(); }
+
+  var enviando = false, msgInput = document.getElementById('message-input');
+  async function enviarMensaje(msg) {
+    if (enviando || !msg) return; enviando = true;
+    addMessage(msg, 'user'); if(msgInput)msgInput.value=''; mostrarTyping();
+    try {
+      var res = await fetch(URL_SEND,{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},body:JSON.stringify({content:msg})});
+      quitarTyping();
+      if (res.ok) { var data=await res.json(); var reply=data.reply||'...'; addMessage(reply,'bot'); playSound(); hablar(stripEmoji(reply)); mostrarNotif('MiniAmigixV 💙',stripEmoji(reply)); }
+      else { addMessage(t('error_servidor'),'bot'); }
+    } catch(err) { quitarTyping(); addMessage(t('error_conexion'),'bot'); }
+    finally { enviando=false; }
+  }
+  var chatForm = document.getElementById('chat-form');
+  if (chatForm) chatForm.addEventListener('submit', async function(e) { e.preventDefault(); var msg=msgInput?msgInput.value.trim():''; if(msg)await enviarMensaje(msg); });
+
+  // ── Event modals ──
+  var eventModal = document.getElementById('event-modal'), editModal = document.getElementById('edit-modal');
+  document.getElementById('add-event-btn').addEventListener('click', function(){eventModal.classList.add('active');});
+  document.getElementById('close-modal').addEventListener('click', function(){eventModal.classList.remove('active');});
+  document.getElementById('close-edit-modal').addEventListener('click', function(){editModal.classList.remove('active');});
+
+  var eventForm = document.getElementById('event-form');
+  if (eventForm) eventForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var data={titulo:eventForm.titulo.value,descripcion:eventForm.descripcion.value,fecha:eventForm.fecha.value,recordatorio:eventForm.recordatorio.checked,color:eventForm.color.value,categoria:eventForm.categoria.value};
+    var res = await fetch(URL_CREATE,{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},body:JSON.stringify(data)});
+    if(res.ok){eventModal.classList.remove('active');eventForm.reset();location.reload();}else alert(t('alert_error_evento'));
+  });
+
+  document.querySelectorAll('.btn-edit').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.getElementById('edit-evento-id').value = btn.dataset.id;
+      document.getElementById('edit-titulo').value = btn.dataset.titulo;
+      document.getElementById('edit-descripcion').value = btn.dataset.descripcion;
+      document.getElementById('edit-fecha').value = btn.dataset.fecha;
+      document.getElementById('edit-recordatorio').checked = btn.dataset.recordatorio==='true';
+      document.getElementById('edit-color').value = btn.dataset.color||'#7ee8fa';
+      document.getElementById('edit-categoria').value = btn.dataset.categoria||'general';
+      editModal.classList.add('active');
+    });
+  });
+
+  var editForm = document.getElementById('edit-form');
+  if (editForm) editForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var id = document.getElementById('edit-evento-id').value;
+    var data={titulo:document.getElementById('edit-titulo').value,descripcion:document.getElementById('edit-descripcion').value,fecha:document.getElementById('edit-fecha').value,recordatorio:document.getElementById('edit-recordatorio').checked,color:document.getElementById('edit-color').value,categoria:document.getElementById('edit-categoria').value};
+    var res = await fetch('/eventos/editar/'+id+'/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},body:JSON.stringify(data)});
+    if(res.ok){editModal.classList.remove('active');location.reload();}else alert(t('alert_error_update'));
+  });
+
+  document.querySelectorAll('.btn-delete').forEach(function(btn) {
+    btn.addEventListener('click', async function() {
+      var msg = t('confirm_borrar').replace('{titulo}', btn.dataset.titulo);
+      if (!confirm(msg)) return;
+      var res = await fetch('/eventos/eliminar/'+btn.dataset.id+'/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},body:JSON.stringify({id:btn.dataset.id})});
+      if(res.ok)location.reload();else alert(t('alert_error_borrar'));
+    });
+  });
+
+  // ── Language — ahora desde la barra de abajo del input ──
+  function applyLang(lang) {
+    currentLang = lang; localStorage.setItem('appLang', lang);
+    if (msgInput) msgInput.placeholder = t('placeholder');
+    // Actualiza todos los selectores de idioma
+    document.querySelectorAll('.lang-option, .lang-opt-s').forEach(function(o){
+      o.classList.toggle('active', o.dataset.lang===lang);
+    });
+    document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n');var v=t(k);if(v)el.textContent=v;});
+    updateClock(); actualizarCountdown(); checkNotif();
+  }
+  // Listeners para la barra de idioma debajo del input
+  document.querySelectorAll('#lang-bar .lang-option').forEach(function(o){
+    o.addEventListener('click', function(){ applyLang(o.dataset.lang); });
+  });
+  // Listeners para el modal de ajustes
+  document.querySelectorAll('.lang-opt-s').forEach(function(o){
+    o.addEventListener('click', function(){ applyLang(o.dataset.lang); });
+  });
+  applyLang(currentLang);
+
+  // ── Player ──
+  var lofi = document.getElementById('lofi-audio'); lofi.volume = 0.3;
+  var TRACKS = [
+    {title:'Zeno Lofi Radio',sub:'Lofi Radio',emoji:'📻',url:'https://stream.zeno.fm/f3wvbbqmdg8uv',live:true},
+    {title:'Lofi Café',sub:'Chill Beats',emoji:'☕',url:'https://stream.zeno.fm/0r0xa792kwzuv',live:true},
+    {title:'Lofi Hip Hop',sub:'Study & Relax',emoji:'🎧',url:'https://streams.ilovemusic.de/iloveradio17.mp3',live:true},
+    {title:'Chillhop Radio',sub:'Chillhop Music',emoji:'🌿',url:'https://streams.fluxfm.de/Chillhop/mp3-320/streams.fluxfm.de/',live:true},
+    {title:'Lofi Girl Radio',sub:'Beats to study',emoji:'🌙',url:'https://relay.slayradio.org:8000/',live:true}
+  ];
+  var pCurrent=0,pPlaying=false;
+  var pThumb=document.getElementById('player-thumb'),pTitle=document.getElementById('player-title'),pSub=document.getElementById('player-sub');
+  var pFill=document.getElementById('player-progress-fill'),pTimeCur=document.getElementById('player-time-cur'),pTimeTot=document.getElementById('player-time-tot');
+  var pPlayBtn=document.getElementById('player-play'),pPlayIcon=document.getElementById('player-play-icon');
+  var pVol=document.getElementById('player-vol'),pProgress=document.getElementById('player-progress');
+  var musicaBtn=document.getElementById('musica-btn');
+  function fmtTime(s){if(!s||isNaN(s))return'—';return Math.floor(s/60)+':'+(Math.floor(s%60)<10?'0':'')+Math.floor(s%60);}
+  function loadTrack(idx){pCurrent=idx;var tr=TRACKS[idx];pThumb.textContent=tr.emoji;pTitle.textContent=tr.title;pSub.textContent=tr.sub+(tr.live?' · En vivo':'');lofi.src=tr.url;pFill.style.width='0%';pTimeCur.textContent='0:00';pTimeTot.textContent=tr.live?'🔴 En vivo':'—';renderPlaylist();}
+  function renderPlaylist(){var pl=document.getElementById('player-playlist');pl.innerHTML='';TRACKS.forEach(function(tr,i){var row=document.createElement('div');row.className='pl-row'+(i===pCurrent?' pl-active':'');var numHtml=(i===pCurrent&&pPlaying)?'<div class="pl-wave"><span></span><span></span><span></span></div>':'<span class="pl-num">'+(i+1)+'</span>';row.innerHTML=numHtml+'<span class="pl-emoji">'+tr.emoji+'</span><span class="pl-name">'+tr.title+'</span>'+(tr.live?'<span class="pl-live">LIVE</span>':'');row.addEventListener('click',function(){loadTrack(i);startPlay();});pl.appendChild(row);});}
+  function startPlay(){lofi.play().catch(function(){});pPlaying=true;pPlayIcon.setAttribute('d','M6 19h4V5H6v14zm8-14v14h4V5h-4z');musicaBtn.classList.add('active');renderPlaylist();}
+  function pausePlay(){lofi.pause();pPlaying=false;pPlayIcon.setAttribute('d','M8 5v14l11-7z');musicaBtn.classList.remove('active');renderPlaylist();}
+  pPlayBtn.addEventListener('click',function(){if(pPlaying)pausePlay();else startPlay();});
+  musicaBtn.addEventListener('click',function(){if(pPlaying)pausePlay();else startPlay();});
+  document.getElementById('player-prev').addEventListener('click',function(){loadTrack((pCurrent-1+TRACKS.length)%TRACKS.length);if(pPlaying)startPlay();});
+  document.getElementById('player-next').addEventListener('click',function(){loadTrack((pCurrent+1)%TRACKS.length);if(pPlaying)startPlay();});
+  pVol.addEventListener('input',function(){lofi.volume=parseFloat(this.value);});
+  lofi.addEventListener('timeupdate',function(){if(!lofi.duration)return;pFill.style.width=(lofi.currentTime/lofi.duration*100)+'%';pTimeCur.textContent=fmtTime(lofi.currentTime);pTimeTot.textContent=fmtTime(lofi.duration);});
+  pProgress.addEventListener('click',function(e){if(!lofi.duration)return;var rect=pProgress.getBoundingClientRect();lofi.currentTime=((e.clientX-rect.left)/rect.width)*lofi.duration;});
+  lofi.addEventListener('ended',function(){loadTrack((pCurrent+1)%TRACKS.length);startPlay();});
+  loadTrack(0); renderPlaylist();
+
+  // ── Settings ──
+  var settingsModal = document.getElementById('settings-modal');
+  document.getElementById('settings-btn').addEventListener('click',function(){settingsModal.classList.add('active');});
+  document.getElementById('close-settings').addEventListener('click',function(){settingsModal.classList.remove('active');});
+  document.querySelectorAll('.stab').forEach(function(tab){
+    tab.addEventListener('click',function(){
+      document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('active');});
+      document.querySelectorAll('.stab-panel').forEach(function(p){p.classList.remove('active');});
+      tab.classList.add('active');
+      document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Bot settings
+  var botDisplay=document.getElementById('bot-nombre-display'),botAvatar=document.getElementById('bot-avatar');
+  var botPreviewImg=document.getElementById('bot-preview-img'),botPreviewName=document.getElementById('bot-preview-name');
+  (function(){var n=localStorage.getItem('bot_nombre'),f=localStorage.getItem('bot_foto');if(n){botDisplay.textContent=n+' 💙';document.getElementById('bot-nombre-input').value=n;botPreviewName.textContent=n+' 💙';}if(f){botAvatar.src=f;document.getElementById('bot-foto-input').value=f;botPreviewImg.src=f;}})();
+  document.getElementById('bot-nombre-input').addEventListener('input',function(){botPreviewName.textContent=(this.value||'MiniAmigixV')+' 💙';});
+  document.getElementById('bot-foto-input').addEventListener('input',function(){if(this.value)botPreviewImg.src=this.value;});
+  document.getElementById('save-bot-btn').addEventListener('click',function(){var n=document.getElementById('bot-nombre-input').value.trim(),f=document.getElementById('bot-foto-input').value.trim();if(n){localStorage.setItem('bot_nombre',n);botDisplay.textContent=n+' 💙';}if(f){localStorage.setItem('bot_foto',f);botAvatar.src=f;}alert(t('alert_guardado'));});
+
+  // Background
+  var bgCanvas = document.querySelector('.bg-canvas');
+  (function(){var tp=localStorage.getItem('fondo_tipo'),vl=localStorage.getItem('fondo_valor');if(tp&&vl){if(tp==='color'){bgCanvas.style.background=vl;}else if(tp==='image'){bgCanvas.style.backgroundImage='url("'+vl+'")';bgCanvas.style.backgroundSize='cover';bgCanvas.style.backgroundPosition='center';}}})();
+  document.querySelectorAll('.swatch').forEach(function(s){s.addEventListener('click',function(){document.querySelectorAll('.swatch').forEach(function(x){x.classList.remove('selected');});s.classList.add('selected');});});
+  document.getElementById('save-fondo-btn').addEventListener('click',function(){var url=document.getElementById('fondo-url-input').value.trim();if(url){bgCanvas.style.backgroundImage='url("'+url+'")';bgCanvas.style.backgroundSize='cover';bgCanvas.style.backgroundPosition='center';localStorage.setItem('fondo_tipo','image');localStorage.setItem('fondo_valor',url);}else{var sel=document.querySelector('.swatch.selected');if(sel){bgCanvas.style.background=sel.dataset.val;localStorage.setItem('fondo_tipo','color');localStorage.setItem('fondo_valor',sel.dataset.val);}}});
+  document.getElementById('reset-fondo-btn').addEventListener('click',function(){bgCanvas.style.background='';bgCanvas.style.backgroundImage='';localStorage.removeItem('fondo_tipo');localStorage.removeItem('fondo_valor');});
+
+  // Font
+  (function(){var f=localStorage.getItem('chat_font');if(f){document.documentElement.style.setProperty('--font-body',f);document.querySelectorAll('.font-opt').forEach(function(o){o.classList.toggle('selected',o.dataset.font===f);});}})();
+  document.querySelectorAll('.font-opt').forEach(function(opt){opt.addEventListener('click',function(){document.querySelectorAll('.font-opt').forEach(function(o){o.classList.remove('selected');});opt.classList.add('selected');document.documentElement.style.setProperty('--font-body',opt.dataset.font);localStorage.setItem('chat_font',opt.dataset.font);});});
+
+  // Notifications
+  function checkNotif() {
+    var st = document.getElementById('notif-status');
+    if (!('Notification' in window)) { st.textContent=t('notif_no_soporta'); return; }
+    if (Notification.permission==='granted') st.textContent=t('notif_activadas');
+    else if (Notification.permission==='denied') st.textContent=t('notif_bloqueadas');
+    else st.textContent=t('notif_presiona');
+  }
+  checkNotif();
+  document.getElementById('req-notif-btn').addEventListener('click',function(){Notification.requestPermission().then(function(p){checkNotif();if(p==='granted')new Notification('MiniAmigixV 💙',{body:t('notif_activadas')});});});
+
+  // ── NGROK / Share panel ──
+  var ngrokToggle = document.getElementById('ngrok-toggle-btn');
+  var sharePopup  = document.getElementById('share-popup');
+  var ngrokDot    = document.getElementById('ngrok-dot');
+  var shareInput  = document.getElementById('share-url-input');
+  var copyBtn     = document.getElementById('copy-url-btn');
+  var saveNgrokBtn = document.getElementById('save-ngrok-btn');
+  var ngrokManual = document.getElementById('ngrok-url-manual');
+  var ngrokStatusMsg = document.getElementById('ngrok-status-msg');
+
+  var savedNgrok = localStorage.getItem('ngrok_url') || '';
+  if (savedNgrok) { shareInput.value = savedNgrok; ngrokDot.style.background = 'var(--acc3)'; }
+
+  ngrokToggle.addEventListener('click', function() {
+    sharePopup.classList.toggle('open');
+    if (sharePopup.classList.contains('open') && ngrokManual) ngrokManual.value = savedNgrok;
+  });
+  document.addEventListener('click', function(e) {
+    if (!document.getElementById('ngrok-panel').contains(e.target)) sharePopup.classList.remove('open');
+  });
+  saveNgrokBtn.addEventListener('click', async function() {
+    var url = ngrokManual.value.trim().replace(/\/$/, '');
+    if (!url) { ngrokStatusMsg.textContent='⚠️ Ingresa una URL'; ngrokStatusMsg.className='ngrok-status err'; return; }
+    if (!url.startsWith('http')) { ngrokStatusMsg.textContent='⚠️ URL inválida'; ngrokStatusMsg.className='ngrok-status err'; return; }
+    localStorage.setItem('ngrok_url', url); savedNgrok=url; shareInput.value=url;
+    ngrokDot.style.background='var(--acc3)';
+    ngrokStatusMsg.textContent='✅ URL guardada y lista para compartir'; ngrokStatusMsg.className='ngrok-status ok';
+  });
+  copyBtn.addEventListener('click', function() {
+    if (!shareInput.value) { alert('Primero guarda tu URL de ngrok'); return; }
+    navigator.clipboard.writeText(shareInput.value).then(function() {
+      copyBtn.textContent='✅ Copiado'; setTimeout(function(){copyBtn.textContent='📋 Copiar';}, 2000);
+    }).catch(function() { shareInput.select(); document.execCommand('copy'); copyBtn.textContent='✅ Copiado'; setTimeout(function(){copyBtn.textContent='📋 Copiar';}, 2000); });
+  });
+
+});
+</script>
+</body>
+</html>
