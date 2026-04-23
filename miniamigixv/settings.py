@@ -22,21 +22,21 @@ ALLOWED_HOSTS = [
 ]
 
 # ==============================
-# 🔐 CSRF (IMPORTANTE PARA NGROK)
+# 🔐 CSRF
 # ==============================
 CSRF_TRUSTED_ORIGINS = [
     'https://*.ngrok-free.dev',
     'https://*.ngrok.io',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
 ]
 
 # ==============================
-# 🔒 SEGURIDAD (CLAVE PARA EVITAR ERROR BLANCO)
+# 🔒 SEGURIDAD
 # ==============================
-SECURE_SSL_REDIRECT = False   # ❗ IMPORTANTE para ngrok
+SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
-
-# ⚡ SOLUCIONA errores de HTTPS detrás de ngrok
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # ==============================
@@ -49,8 +49,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'django.contrib.sites',
+    'django_extensions',
+    'sslserver',
     'chat',
+    # 🔐 Allauth (Google OAuth)
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 # ==============================
@@ -58,16 +65,14 @@ INSTALLED_APPS = [
 # ==============================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-
-    # 🔥 AGREGA ESTO (MUY IMPORTANTE)
     'whitenoise.middleware.WhiteNoiseMiddleware',
-
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'miniamigixv.urls'
@@ -122,7 +127,7 @@ USE_I18N = True
 USE_TZ = True
 
 # ==============================
-# 📁 ARCHIVOS ESTÁTICOS (CLAVE)
+# 📁 ARCHIVOS ESTÁTICOS
 # ==============================
 STATIC_URL = '/static/'
 
@@ -131,13 +136,11 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# 🔥 IMPORTANTE PARA WHITENOISE
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ==============================
 # 📂 MEDIA
-# ==============================
+# ============================
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -154,3 +157,36 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ==============================
+# 🌐 DJANGO-ALLAUTH (Google OAuth)
+# ==============================
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Configuración de allauth
+ACCOUNT_LOGIN_URL = '/login/'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/login/'
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+# Configuración del proveedor Google
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+        'APP': {
+            'client_id': os.getenv('GOOGLE_CLIENT_ID', ''),
+            'secret': os.getenv('GOOGLE_CLIENT_SECRET', ''),
+        },
+    }
+}
+
+# Redirigir después de login social
+SOCIALACCOUNT_LOGIN_ON_GET = True

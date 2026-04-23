@@ -7,6 +7,9 @@ urlpatterns = [
     # 🔧 Admin
     path('admin/', admin.site.urls),
 
+    # 🔑 Google OAuth (allauth)
+    path('accounts/', include('allauth.urls')),
+
     # 💬 App principal
     path('', include('chat.urls')),
 ]
