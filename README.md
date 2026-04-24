@@ -33,9 +33,3 @@ o
 ## 🚀 Productivity meets beauty
 
 ---
-
-# Si quieres... también puedo hacerte el **README nivel empresa millonaria / startup Silicon Valley**, para que cuando entren digan:
-
-> "WOW esta chica sí sabe"
-
-Y también puedo :contentReference[oaicite:0]{index=0}.
