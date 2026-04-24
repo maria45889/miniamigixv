@@ -1,35 +1,31 @@
+# 💖 MiniAmigixV
 
----
+![Banner](imagen)
 
-# 🔥 Muchísimo mejor porque:
+## ✨ Descripción
+MiniAmigixV es una plataforma social moderna desarrollada con Django...
 
-✅ Limpio  
-✅ Elegante  
-✅ Profesional  
-✅ Moderno  
-✅ Fácil de leer  
-✅ Dan ganas de probarlo
+## 🚀 Características
+✅ Login Google  
+✅ Chat inteligente  
+✅ Usuarios reales  
+✅ Diseño responsive  
+✅ Seguridad moderna  
 
----
+## 🛠 Tecnologías
+- Python
+- Django
+- HTML
+- CSS
+- JavaScript
+- SQLite
 
-# 💎 Mi recomendación real
+## 📷 Capturas
+(imágenes)
 
-Quita eso de:
+## ⚙ Instalación
+git clone ...
+pip install -r requirements.txt
 
-> Python Django Google Auth Status
-
-Se ve robotizado.
-
-Mejor algo como:
-
-## ✨ Smart Assistant powered by Django
-
-o
-
-## 💖 Tu espacio inteligente personal
-
-o
-
-## 🚀 Productivity meets beauty
-
----
+## 👩‍💻 Autor
+María José Taco Calle
