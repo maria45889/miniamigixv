@@ -34,22 +34,96 @@
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .stat-card { background: var(--bg-card); border: 1px solid var(--bdr); border-radius: var(--radius); padding: 20px; }
-        .player-card { background: linear-gradient(145deg, #1a1a3a, #0a0a1a); border: 1px solid var(--bdr); border-radius: var(--radius); padding: 24px; text-align: center; }
-        .disc { width: 100px; height: 100px; border-radius: 50%; background: #111; border: 6px solid #222; margin: 0 auto 15px; animation: rotate 5s linear infinite; animation-play-state: paused; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-        .disc.playing { animation-play-state: running; box-shadow: 0 0 30px var(--acc-pink); }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--bdr); border-radius: var(--radius); padding: 20px; transition: 0.3s; }
+        .stat-card:hover { border-color: var(--acc-blue); }
+
+        .player-card { background: linear-gradient(165deg, #0f0f2d, #050510); border: 1px solid rgba(255,126,179,0.15); border-radius: 40px; padding: 40px; text-align: center; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.6); position: relative; overflow: hidden; transition: 0.4s; }
+        .player-card:hover { border-color: rgba(255,126,179,0.3); transform: translateY(-5px); }
+        .player-card::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,126,179,0.05) 0%, transparent 70%); pointer-events: none; }
+        
+        .disc { width: 160px; height: 160px; border-radius: 50%; background: #000; border: 10px solid #1a1a1a; margin: 0 auto 32px; animation: rotate 10s linear infinite; animation-play-state: paused; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 0 0 12px rgba(255,255,255,0.01); }
+        .disc::before { content: ''; position: absolute; width: 40px; height: 40px; border-radius: 50%; background: #1a1a1a; border: 5px solid #000; z-index: 2; }
+        .disc.playing { animation-play-state: running; box-shadow: 0 0 60px rgba(255, 126, 179, 0.3), 0 0 0 12px rgba(255,255,255,0.02); border-color: var(--acc-pink); }
+        
+        .control-btn { width: 56px; height: 56px; border-radius: 18px; border: 1px solid var(--bdr); background: rgba(255,255,255,0.03); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1.2rem; }
+        .control-btn:hover { background: rgba(255,255,255,0.08); border-color: var(--acc-pink); transform: scale(1.1); box-shadow: 0 0 20px rgba(255,126,179,0.2); }
+        .control-btn.main { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--acc-pink), var(--acc-purple)); color: #000; border: none; font-size: 1.6rem; box-shadow: 0 15px 30px rgba(255,126,179,0.4); }
+        .control-btn.main:hover { transform: scale(1.15) translateY(-2px); box-shadow: 0 20px 40px rgba(255,126,179,0.5); }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .playlist { background: var(--bg-card); border: 1px solid var(--bdr); border-radius: var(--radius); padding: 16px; max-height: 400px; overflow-y: auto; }
-        .song-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; cursor: pointer; transition: 0.3s; margin-bottom: 6px; border: 1px solid transparent; }
-        .song-item:hover { background: rgba(255, 126, 179, 0.1); border-color: rgba(255,126,179,0.2); }
-        .song-actions { display: none; gap: 6px; }
+        .playlist { background: rgba(255,255,255,0.01); border: 1px solid var(--bdr); border-radius: var(--radius); padding: 8px; max-height: 500px; overflow-y: auto; }
+        .song-item { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 18px; cursor: pointer; transition: 0.3s; margin-bottom: 8px; border: 1px solid transparent; background: rgba(255,255,255,0.02); }
+        .song-item:hover { background: rgba(255, 126, 179, 0.08); border-color: rgba(255,126,179,0.2); transform: translateX(5px); }
+        .song-item.active { background: linear-gradient(90deg, rgba(255,126,179,0.15), transparent); border-left: 4px solid var(--acc-pink); }
+        .song-actions { display: none; gap: 8px; }
         .song-item:hover .song-actions { display: flex; }
-        .action-icon { width: 26px; height: 26px; border-radius: 8px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
-        .action-icon:hover { background: var(--acc-pink); color: #000; }
+        .action-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: 0.2s; }
+        .action-icon:hover { background: var(--acc-pink); color: #000; transform: scale(1.1); }
 
-        .btn-action { width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, var(--acc-pink), var(--acc-purple)); color: #000; font-weight: 800; border: none; cursor: pointer; transition: 0.3s; }
-        .btn-action:hover { transform: scale(1.02); filter: brightness(1.1); }
+        .btn-action { width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, var(--acc-pink), var(--acc-purple)); color: #000; font-weight: 800; border: none; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 20px rgba(255,126,179,0.2); }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(255,126,179,0.3); filter: brightness(1.1); }
+
+        /* Glassmorphism Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.3s ease; }
+        .modal-card { background: rgba(15, 15, 35, 0.98); border: 1px solid var(--bdr); border-radius: 32px; width: 95%; max-width: 480px; padding: 40px; box-shadow: 0 40px 100px -20px rgba(0,0,0,0.8); position: relative; overflow: hidden; }
+        .modal-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: linear-gradient(90deg, var(--acc-pink), var(--acc-purple), var(--acc-blue)); }
+        .modal-card h2 { margin-bottom: 28px; font-weight: 800; font-size: 1.8rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--acc-pink), var(--acc-purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .input-group { margin-bottom: 24px; }
+        .input-group label { display: block; font-size: 0.75rem; color: var(--txt-sub); margin-bottom: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .input-group input, .input-group select, .input-group textarea { width: 100%; background: rgba(255,255,255,0.03); border: 2px solid var(--bdr); border-radius: 16px; padding: 14px 18px; color: #fff; outline: none; font-family: inherit; font-size: 0.95rem; transition: 0.3s; }
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--acc-pink); background: rgba(255,255,255,0.06); box-shadow: 0 0 20px rgba(255,126,179,0.1); }
+        
+        .event-detail-item { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .event-detail-icon { width: 44px; height: 44px; border-radius: 14px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        
+        .glass-card { background: var(--bg-card); border: 1px solid var(--bdr); border-radius: var(--radius); backdrop-filter: blur(10px); transition: 0.3s; }
+        .glass-card:hover { border-color: rgba(255,126,179,0.3); transform: translateY(-5px); }
+
+        /* Arcade Styles */
+        .arcade-grid { display: grid; grid-template-columns: repeat(3, 100px); grid-template-rows: repeat(3, 100px); gap: 15px; margin: 0 auto; width: fit-content; }
+        .game-cell { background: rgba(255,255,255,0.03); border: 2px solid var(--bdr); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 2.8rem; cursor: pointer; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 800; font-family: 'Sora', sans-serif; }
+        .game-cell:hover { background: rgba(255,255,255,0.08); border-color: var(--acc-pink); box-shadow: 0 0 25px rgba(255,126,179,0.25); transform: scale(1.05); }
+        .game-cell.x { color: var(--acc-pink); text-shadow: 0 0 20px var(--acc-pink); }
+        .game-cell.o { color: var(--acc-blue); text-shadow: 0 0 20px var(--acc-blue); }
+
+        /* Memory Game Styles */
+        .memory-grid { display: grid; grid-template-columns: repeat(4, 100px); gap: 15px; perspective: 1000px; max-width: 500px; margin: 0 auto; }
+        .memory-card { height: 100px; position: relative; transform-style: preserve-3d; transition: transform 0.6s; cursor: pointer; }
+        .memory-card.flipped { transform: rotateY(180deg); }
+        .memory-card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; border: 2px solid var(--bdr); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .memory-card-front { background: rgba(255,255,255,0.05); color: var(--txt-sub); font-weight: 800; }
+        .memory-card-back { background: linear-gradient(135deg, var(--acc-purple), var(--acc-pink)); color: #000; transform: rotateY(180deg); }
+        .memory-card.matched { cursor: default; }
+        .memory-card.matched .memory-card-back { background: rgba(255,255,255,0.1); color: #fff; border-color: var(--acc-blue); box-shadow: 0 0 20px rgba(126, 232, 250, 0.2); }
+
+        .game-tab { padding: 12px 24px; border-radius: 16px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.05); opacity: 0.5; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .game-tab.active { background: rgba(255,126,179,0.15); border-color: var(--acc-pink); opacity: 1; color: var(--acc-pink); box-shadow: 0 0 20px rgba(255,126,179,0.1); }
+
+        /* 2048 Styles */
+        .grid-2048 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; width: 340px; height: 340px; margin: 0 auto; }
+        .cell-2048 { background: rgba(255,255,255,0.03); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 800; color: #fff; transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
+        .cell-2048[data-value="2"] { background: #eee4da; color: #776e65; }
+        .cell-2048[data-value="4"] { background: #ede0c8; color: #776e65; }
+        .cell-2048[data-value="8"] { background: #f2b179; color: #f9f6f2; }
+        .cell-2048[data-value="16"] { background: #f59563; color: #f9f6f2; }
+        .cell-2048[data-value="32"] { background: #f67c5f; color: #f9f6f2; }
+        .cell-2048[data-value="64"] { background: #f65e3b; color: #f9f6f2; }
+        .cell-2048[data-value="128"] { background: #edcf72; color: #f9f6f2; font-size: 1.5rem; box-shadow: 0 0 10px #edcf72; }
+        .cell-2048[data-value="256"] { background: #edcc61; color: #f9f6f2; font-size: 1.5rem; box-shadow: 0 0 15px #edcc61; }
+        .cell-2048[data-value="512"] { background: #edc850; color: #f9f6f2; font-size: 1.5rem; box-shadow: 0 0 20px #edc850; }
+        .cell-2048[data-value="1024"] { background: #edc53f; color: #f9f6f2; font-size: 1.2rem; box-shadow: 0 0 25px #edc53f; }
+        .cell-2048[data-value="2048"] { background: #edc22e; color: #f9f6f2; font-size: 1.2rem; box-shadow: 0 0 30px #edc22e; }
+
+        .quest-item { background: rgba(255,255,255,0.02); border: 1px solid var(--bdr); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; transition: 0.3s; margin-bottom: 8px; }
+        .quest-item:hover { border-color: var(--acc-purple); background: rgba(167, 139, 250, 0.05); }
+        .quest-item.completed { opacity: 0.6; filter: grayscale(1); border-color: transparent; }
+        .quest-item.completed strong { text-decoration: line-through; }
+
+        /* Weather Specific */
+        .weather-card { background: linear-gradient(135deg, rgba(126, 232, 250, 0.1), rgba(126, 232, 250, 0.02)); border: 1px solid rgba(126, 232, 250, 0.2); }
+        .weather-temp { font-size: 2.2rem; font-weight: 800; color: var(--acc-blue); line-height: 1; }
+        .weather-city { cursor: pointer; border-bottom: 1px dashed rgba(255,255,255,0.2); transition: 0.2s; }
+        .weather-city:hover { color: var(--acc-blue); border-color: var(--acc-blue); }
     </style>
 </head>
 <body onload="initDashboard()">
@@ -63,7 +137,15 @@
             <div class="nav-item active" onclick="switchView('home', this)">🏠 Inicio</div>
             <div class="nav-item" onclick="switchView('chat', this)">🤖 Neural Chat</div>
             <div class="nav-item" onclick="switchView('eventos', this)">📅 Mis Eventos</div>
-            <div class="nav-item" onclick="switchView('musica', this)">🎵 Sound Wave</div>
+            <div class="nav-item" onclick="switchView('musica', this)">
+                <span>🎵</span> Sound Wave
+            </div>
+            <div class="nav-item" onclick="switchView('clima', this)">
+                <span>🌤️</span> Sky Cast
+            </div>
+            <div class="nav-item" onclick="switchView('juegos', this)">
+                <span>🎮</span> Arcade Zone
+            </div>
         </nav>
         <div style="margin-top:auto;"><a href="{% url 'logout' %}" class="nav-item" style="color:#f87171;">🚪 Logout</a></div>
     </aside>
@@ -77,76 +159,452 @@
         <div class="content-body">
             
             <section id="view-home" class="view-section active">
-                <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 32px;">Hola, {{ request.user.username }}! ✨</h1>
-                <div style="display: grid; grid-template-columns: 1fr 2.2fr; gap: 32px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px;">
                     <div>
-                        <div class="stat-card" style="margin-bottom:20px; display:flex; justify-content:space-around; align-items:center;">
-                            <div style="text-align:center;"><span>🔥</span><div style="font-size:1.5rem; font-weight:800;" id="val-racha">1</div></div>
-                            <div style="text-align:center;"><span>📅</span><div style="font-size:1.5rem; font-weight:800;" id="val-eventos-home">0</div></div>
-                        </div>
-                        <div class="stat-card" id="home-events-list"></div>
+                        <h1 style="font-size: 2.8rem; font-weight: 800; margin-bottom: 4px;">Hola, {{ request.user.username }}! ✨</h1>
+                        <p style="color: var(--txt-sub); font-size: 0.9rem;">Bienvenido de vuelta a tu centro de mando.</p>
                     </div>
-                    <div style="background:linear-gradient(145deg, rgba(255,126,179,0.08), rgba(167,139,250,0.05)); border:1px solid rgba(255,126,179,0.2); border-radius:var(--radius); padding:24px;">
-                        <div style="display:flex; align-items:center; gap:20px; margin-bottom:20px;">
-                            <img src="{% static 'chat/img/asistente_cute.png' %}" style="width:80px; height:80px; border-radius:20px;">
-                            <div><h4 style="color:var(--acc-pink);">Mi Espacio Personal</h4><p style="color:var(--txt-sub); font-size:0.8rem;">Sincronizado con tus sueños...</p></div>
+                    
+                    <div class="glass-card weather-card" style="padding: 16px 24px; display: flex; align-items: center; gap: 20px;">
+                        <div id="weather-icon" style="font-size: 2.5rem;">☀️</div>
+                        <div>
+                            <div class="weather-temp" id="weather-temp">--°C</div>
+                            <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">
+                                <span id="weather-desc">Cargando...</span> | 
+                                <span class="weather-city" id="weather-city" onclick="updateCity()">Quito</span>
+                            </div>
                         </div>
-                        <div style="height:260px;"><canvas id="progressChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 2.2fr; gap: 32px;">
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        <div class="glass-card" style="padding: 24px; display: flex; justify-content: space-around; align-items: center; background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));">
+                            <div style="text-align:center;">
+                                <span style="font-size: 1.2rem; display: block; margin-bottom: 4px;">🔥</span>
+                                <div style="font-size:1.8rem; font-weight:800; color: var(--acc-pink);" id="val-racha">1</div>
+                                <small style="color: var(--txt-sub); font-size: 0.6rem; text-transform: uppercase;">Racha</small>
+                            </div>
+                            <div style="height: 40px; width: 1px; background: var(--bdr);"></div>
+                            <div style="text-align:center;">
+                                <span style="font-size: 1.2rem; display: block; margin-bottom: 4px;">📅</span>
+                                <div style="font-size:1.8rem; font-weight:800; color: var(--acc-purple);" id="val-eventos-home">0</div>
+                                <small style="color: var(--txt-sub); font-size: 0.6rem; text-transform: uppercase;">Eventos</small>
+                            </div>
+                        </div>
+
+                        <div class="glass-card" style="padding: 24px;">
+                            <h4 style="margin-bottom: 16px; font-size: 0.9rem; color: var(--acc-blue);">Próximos Eventos</h4>
+                            <div id="home-events-list" style="display: flex; flex-direction: column; gap: 12px;">
+                                <!-- Eventos se cargan aquí -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="padding: 32px; background: linear-gradient(145deg, rgba(255,126,179,0.05), rgba(167,139,250,0.03));">
+                        <div style="display:flex; align-items:center; gap:20px; margin-bottom:30px;">
+                            <div style="position: relative;">
+                                <img src="{% static 'chat/img/asistente_cute.png' %}" style="width:70px; height:70px; border-radius:22px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+                                <div style="position: absolute; bottom: -5px; right: -5px; width: 20px; height: 20px; background: #10b981; border: 3px solid var(--bg-deep); border-radius: 50%;"></div>
+                            </div>
+                            <div>
+                                <h4 style="color:var(--acc-pink); font-size: 1.2rem;">Mi Espacio Personal</h4>
+                                <p style="color:var(--txt-sub); font-size:0.85rem;">Sincronizado con tus metas diarias...</p>
+                            </div>
+                        </div>
+                        <div style="height:280px;"><canvas id="progressChart"></canvas></div>
                     </div>
                 </div>
             </section>
 
             <section id="view-musica" class="view-section">
-                <h2 style="margin-bottom: 24px;">🎵 Sound Wave Player</h2>
-                <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+                    <h2 style="font-size: 2rem; font-weight: 800;">🎵 Sound Wave Player</h2>
+                    <div style="background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 12px; font-size: 0.8rem; color: var(--acc-blue); border: 1px solid var(--bdr);">Playlist v2.0</div>
+                </div>
+                
+                <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:40px;">
                     <div class="player-card">
-                        <div id="disc-player" class="disc"><img src="{% static 'chat/img/logo.png' %}" style="width:25px; opacity:0.3;"></div>
-                        <h3 id="current-song-title" style="margin-bottom:5px;">Selecciona Música</h3>
-                        <p id="current-song-status" style="color:var(--acc-pink); font-size:0.7rem; margin-bottom:15px;">Listo para sonar...</p>
+                        <div id="disc-player" class="disc">
+                            <div style="width: 100%; height: 100%; border-radius: 50%; background: repeating-radial-gradient(circle, #111, #111 2px, #000 2px, #000 4px); opacity: 0.4;"></div>
+                        </div>
+                        <h3 id="current-song-title" style="margin-bottom:8px; font-weight: 800; font-size: 1.6rem; letter-spacing: -0.5px;">Selecciona Música</h3>
+                        <p id="current-song-status" style="color: var(--acc-pink); font-size:0.75rem; font-weight: 800; margin-bottom:32px; text-transform: uppercase; letter-spacing: 3px; opacity: 0.8;">OFFLINE</p>
                         
-                        <div id="yt-api-wrap" style="border-radius:20px; overflow:hidden; width:100%; height:240px; background:#000; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+                        <div id="yt-api-wrap" style="border-radius:32px; overflow:hidden; width:100%; height:280px; background:#000; position:relative; box-shadow:0 25px 50px rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.05);">
                             <div id="player"></div>
                         </div>
 
-                        <div id="yt-emergency" style="margin-top:15px; display:flex; flex-direction:column; gap:10px;">
-                            <button id="btn-yt-direct" onclick="openOnYoutube()" class="btn-action" style="display:none; background:var(--acc-blue); color:#000;">VER EN YOUTUBE ↗️</button>
-                            <p id="yt-hint" style="display:none; color:var(--acc-pink); font-size:0.7rem;">Este video podría estar bloqueado por derechos de autor.</p>
+                        <!-- Controles de Reproducción Refinados -->
+                        <div style="margin-top: 32px; display: flex; justify-content: center; align-items: center; gap: 24px;">
+                            <button onclick="playPrev()" class="control-btn" title="Anterior">⏮</button>
+                            <button onclick="togglePlay()" id="btn-play-pause" class="control-btn main" title="Play/Pause">⏸</button>
+                            <button onclick="playNext()" class="control-btn" title="Siguiente">⏭</button>
+                        </div>
+
+                        <div id="yt-emergency" style="margin-top:20px; display:flex; flex-direction:column; gap:12px;">
+                            <button id="btn-yt-direct" onclick="openOnYoutube()" class="btn-action" style="display:none; background:rgba(126, 232, 250, 0.1); color:var(--acc-blue); border: 1px solid var(--acc-blue);">ABRIR EN YOUTUBE ↗️</button>
+                            <p id="yt-hint" style="display:none; color:rgba(255,255,255,0.4); font-size:0.7rem;">Derechos de autor podrían restringir la reproducción aquí.</p>
                         </div>
                     </div>
 
-                    <div>
-                        <div class="stat-card" style="margin-bottom:24px;">
-                            <h4 style="margin-bottom:15px; color:var(--acc-pink);">Añadir Canción</h4>
-                            <form onsubmit="handleMusicSubmit(event)">
-                                <input id="song-titulo" placeholder="Nombre" required style="width:100%; padding:10px; margin-bottom:8px; background:rgba(255,255,255,0.05); border:1px solid var(--bdr); border-radius:10px; color:#fff;">
-                                <input id="song-url" placeholder="Link YouTube" required style="width:100%; padding:10px; margin-bottom:12px; background:rgba(255,255,255,0.05); border:1px solid var(--bdr); border-radius:10px; color:#fff;">
+                    <div style="display: flex; flex-direction: column; gap: 32px;">
+                        <div class="glass-card" style="padding: 28px;">
+                            <h4 style="margin-bottom:20px; font-weight: 800; color: var(--acc-pink); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">+ Añadir a la Ola</h4>
+                            <form onsubmit="handleMusicSubmit(event)" style="display: flex; flex-direction: column; gap: 14px;">
+                                <div class="input-group" style="margin-bottom: 0;">
+                                    <input id="song-titulo" placeholder="Nombre de la canción" required>
+                                </div>
+                                <div class="input-group" style="margin-bottom: 6px;">
+                                    <input id="song-url" placeholder="Pega el link de YouTube aquí..." required>
+                                </div>
                                 <button type="submit" class="btn-action">AÑADIR A PLAYLIST</button>
                             </form>
                         </div>
-                        <div class="playlist" id="playlist-content"></div>
+                        
+                        <div>
+                            <h4 style="margin-bottom:16px; font-size: 0.85rem; color: var(--txt-sub); padding-left: 10px;">Tu Colección</h4>
+                            <div class="playlist" id="playlist-content">
+                                <!-- Canciones se cargan aquí -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
             <section id="view-eventos" class="view-section">
-                <h2 style="margin-bottom:24px;">📅 Mis Eventos</h2>
-                <div style="display:grid; grid-template-columns: 2fr 1.2fr; gap:30px;">
-                    <div id="calendar-container"><div id="calendar" style="background:var(--bg-card); padding:20px; border-radius:20px;"></div></div>
-                    <div id="full-events-list"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+                    <h2 style="font-size: 2rem; font-weight: 800;">📅 Mis Eventos</h2>
+                    <button class="btn-action" style="width: auto; padding: 12px 24px;" onclick="openEventModal()">➕ NUEVO EVENTO</button>
+                </div>
+                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:32px;">
+                    <div id="calendar-container">
+                        <div id="calendar" class="glass-card" style="padding:24px;"></div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        <div class="glass-card" style="padding: 24px; min-height: 400px;">
+                            <h4 style="margin-bottom: 20px; font-size: 1rem; color: var(--acc-purple); font-weight: 800;">AGENDA PRÓXIMA</h4>
+                            <div id="full-events-list" style="display: flex; flex-direction: column; gap: 16px;">
+                                <!-- Eventos detallados se cargan aquí -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-clima" class="view-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+                    <h2 style="font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, var(--acc-blue), var(--acc-purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">🌤️ Sky Cast Station</h2>
+                    <div style="display:flex; gap:12px;">
+                        <input id="city-search" placeholder="Buscar ciudad..." style="background:rgba(255,255,255,0.05); border:1px solid var(--bdr); border-radius:12px; padding:10px 20px; color:#fff; outline:none; width:250px; border: 2px solid var(--bdr);">
+                        <button class="btn-action" style="width:auto; padding:10px 25px;" onclick="changeCitySearch()">BUSCAR</button>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px;">
+                    <div class="glass-card" style="padding: 50px; text-align: center; background: linear-gradient(145deg, rgba(126, 232, 250, 0.12), rgba(167, 139, 250, 0.08));">
+                        <div id="full-weather-icon" style="font-size: 9rem; margin-bottom: 24px; filter: drop-shadow(0 0 40px rgba(126, 232, 250, 0.5));">☀️</div>
+                        <h1 id="full-weather-temp" style="font-size: 6rem; font-weight: 800; margin-bottom: 10px; line-height: 1;">--°C</h1>
+                        <h3 id="full-weather-city" style="font-size: 1.8rem; color: var(--acc-blue); text-transform: uppercase; letter-spacing: 4px; font-weight: 800;">QUITO</h3>
+                        <p id="full-weather-desc" style="font-size: 1.2rem; opacity: 0.7; margin-top: 15px; font-weight: 600;">CONSULTANDO SATÉLITES...</p>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 32px;">
+                        <div class="glass-card" style="padding: 32px;">
+                            <h4 style="color: var(--acc-pink); margin-bottom: 24px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 800;">📡 Detalles Atmosféricos</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                                <div style="background: rgba(255,255,255,0.03); padding: 24px; border-radius: 24px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+                                    <div style="font-size: 2rem;">💧</div>
+                                    <div id="full-weather-hum" style="font-size: 1.6rem; font-weight: 800; margin-top: 10px;">--%</div>
+                                    <small style="color: var(--txt-sub); text-transform: uppercase; font-size: 0.65rem; font-weight: 700;">Humedad</small>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.03); padding: 24px; border-radius: 24px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+                                    <div style="font-size: 2rem;">🌬️</div>
+                                    <div id="full-weather-wind" style="font-size: 1.6rem; font-weight: 800; margin-top: 10px;">-- km/h</div>
+                                    <small style="color: var(--txt-sub); text-transform: uppercase; font-size: 0.65rem; font-weight: 700;">Viento</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card" style="padding: 32px; flex: 1; border-left: 4px solid var(--acc-blue);">
+                            <h4 style="color: var(--acc-blue); margin-bottom: 24px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 800;">🤖 Consejo de IA</h4>
+                            <div id="weather-tip" style="font-size: 1.1rem; line-height: 1.7; opacity: 0.9; font-style: italic;">
+                                Analizando patrones climáticos para optimizar tu jornada...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="view-juegos" class="view-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <h2 style="font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, var(--acc-pink), var(--acc-blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">🎮 Arcade Zone</h2>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <div class="game-tab active" onclick="switchGame('ttt', this)">Gato</div>
+                            <div class="game-tab" onclick="switchGame('memory', this)">Memoria</div>
+                            <div class="game-tab" onclick="switchGame('rps', this)">PPT</div>
+                            <div class="game-tab" onclick="switchGame('hangman', this)">Ahorcado</div>
+                            <div class="game-tab" onclick="switchGame('snake', this)">Serpiente</div>
+                            <div class="game-tab" onclick="switchGame('g2048', this)">2048</div>
+                        </div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.05); padding: 8px 20px; border-radius: 20px; border: 1px solid var(--bdr); font-size: 0.8rem; color: var(--acc-pink); font-weight: 800;">READY PLAYER ONE</div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 2.2fr; gap: 32px;">
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        <div id="info-ttt" class="glass-card game-info-panel active" style="padding: 32px; border-left: 4px solid var(--acc-pink);">
+                            <h3 style="margin-bottom: 12px; font-weight: 800;">Tic-Tac-Toe Neón</h3>
+                            <p style="color: var(--txt-sub); font-size: 0.9rem; margin-bottom: 24px;">Un clásico renovado. Desafía a un amigo o a nuestra IA neural.</p>
+                            <button id="toggle-cpu" class="btn-action" style="background:rgba(255,255,255,0.05); color:#fff; margin-bottom:15px; font-size:0.75rem; padding:8px;" onclick="toggleCPUMode()">MODO: HUMANO VS HUMANO 👥</button>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                                <div style="text-align:center;"><div style="color:var(--acc-pink); font-weight:800;">PLAYER X</div><div id="score-x" style="font-size:1.5rem;">0</div></div>
+                                <div style="text-align:center;"><div style="color:var(--acc-blue); font-weight:800;" id="label-o">PLAYER O</div><div id="score-o" style="font-size:1.5rem;">0</div></div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <button class="btn-action" onclick="resetGame()">TABLERO</button>
+                                <button class="btn-action" style="background:rgba(255,255,255,0.05); color:#fff;" onclick="resetScoresTTT()">PUNTAJES</button>
+                            </div>
+                        </div>
+
+                        <div id="info-memory" class="glass-card game-info-panel" style="padding: 32px; border-left: 4px solid var(--acc-blue); display: none;">
+                            <h3 style="margin-bottom: 12px; font-weight: 800;">Memory Match</h3>
+                            <p style="color: var(--txt-sub); font-size: 0.9rem; margin-bottom: 24px;">Encuentra todas las parejas.</p>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                                <div style="text-align:center;"><div style="color:var(--acc-blue); font-weight:800;">MOVS</div><div id="moves-count" style="font-size:1.5rem;">0</div></div>
+                                <div style="text-align:center;"><div style="color:var(--acc-pink); font-weight:800;">PARES</div><div id="matches-count" style="font-size:1.5rem;">0</div></div>
+                            </div>
+                            <button class="btn-action" onclick="resetMemory()">NUEVA PARTIDA</button>
+                        </div>
+
+                        <div id="info-rps" class="glass-card game-info-panel" style="padding: 32px; border-left: 4px solid #fbbf24; display: none;">
+                            <h3 style="margin-bottom: 12px; font-weight: 800;">Piedra, Papel o Tijera</h3>
+                            <p style="color: var(--txt-sub); font-size: 0.9rem; margin-bottom: 24px;">El duelo supremo. Juega contra la IA o contra un amigo en la misma pantalla.</p>
+                            <button id="toggle-cpu-rps" class="btn-action" style="background:rgba(255,255,255,0.05); color:#fff; margin-bottom:15px; font-size:0.75rem; padding:8px;" onclick="toggleCPUModeRPS()">MODO: VS ROBOT 🤖</button>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                                <div style="text-align:center;"><div style="color:#fbbf24; font-weight:800;" id="label-rps-p1">TÚ</div><div id="score-rps-user" style="font-size:1.5rem;">0</div></div>
+                                <div style="text-align:center;"><div style="color:#f87171; font-weight:800;" id="label-rps-p2">IA</div><div id="score-rps-ia" style="font-size:1.5rem;">0</div></div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <button class="btn-action" onclick="resetRPS()">REINTENTAR</button>
+                                <button class="btn-action" style="background:rgba(255,255,255,0.05); color:#fff;" onclick="resetScoresRPS()">PUNTAJES</button>
+                            </div>
+                        </div>
+
+                        <div id="info-hangman" class="glass-card game-info-panel" style="padding: 32px; border-left: 4px solid #f87171; display: none;">
+                            <h3 style="margin-bottom: 12px; font-weight: 800;">Ahorcado</h3>
+                            <p style="color: var(--txt-sub); font-size: 0.9rem; margin-bottom: 24px;">Adivina la palabra antes de que sea tarde.</p>
+                            <div style="text-align:center; margin-bottom: 20px;">
+                                <div style="color:#f87171; font-weight:800;">INTENTOS</div>
+                                <div id="hangman-lives" style="font-size:1.5rem;">6</div>
+                            </div>
+                            <button class="btn-action" onclick="initHangman()">NUEVA PALABRA</button>
+                        </div>
+
+                        <div id="info-snake" class="glass-card game-info-panel" style="padding: 32px; border-left: 4px solid #34d399; display: none;">
+                            <h3 style="margin-bottom: 12px; font-weight: 800;">Serpiente</h3>
+                            <p style="color: var(--txt-sub); font-size: 0.9rem; margin-bottom: 24px;">¡No muerdas tu propia cola!</p>
+                            <div style="text-align:center; margin-bottom: 20px;">
+                                <div style="color:#34d399; font-weight:800;">PUNTAJE</div>
+                                <div id="snake-score" style="font-size:1.5rem;">0</div>
+                            </div>
+                            <button class="btn-action" onclick="initSnake()">COMENZAR</button>
+                        </div>
+
+                        <div id="info-g2048" class="glass-card game-info-panel" style="padding: 32px; border-left: 4px solid #edc22e; display: none;">
+                            <h3 style="margin-bottom: 12px; font-weight: 800;">2048 Challenge</h3>
+                            <p style="color: var(--txt-sub); font-size: 0.9rem; margin-bottom: 24px;">Combina los números para llegar a 2048.</p>
+                            <div style="text-align:center; margin-bottom: 20px;">
+                                <div style="color:#edc22e; font-weight:800;">PUNTAJE</div>
+                                <div id="g2048-score" style="font-size:1.5rem;">0</div>
+                            </div>
+                            <button class="btn-action" onclick="init2048()">NUEVA PARTIDA</button>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="padding: 40px; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at center, rgba(255,126,179,0.05) 0%, transparent 70%); min-height: 450px;">
+                        <!-- Tic-Tac-Toe -->
+                        <div class="arcade-grid game-view active" id="ttt-board">
+                            <div class="game-cell" data-index="0"></div>
+                            <div class="game-cell" data-index="1"></div>
+                            <div class="game-cell" data-index="2"></div>
+                            <div class="game-cell" data-index="3"></div>
+                            <div class="game-cell" data-index="4"></div>
+                            <div class="game-cell" data-index="5"></div>
+                            <div class="game-cell" data-index="6"></div>
+                            <div class="game-cell" data-index="7"></div>
+                            <div class="game-cell" data-index="8"></div>
+                        </div>
+                        <!-- Memory Match -->
+                        <div class="memory-grid game-view" id="memory-board" style="display: none;"></div>
+                        <!-- RPS -->
+                        <div id="view-rps" class="game-view" style="display:none; text-align:center;">
+                            <div id="rps-result" style="font-size:1.5rem; margin-bottom:30px; font-weight:800; color:var(--acc-blue);">¡ELIGE TU ARMA!</div>
+                            <div style="display:flex; gap:20px; justify-content:center;">
+                                <button onclick="playRPS('🪨')" class="control-btn main" style="width:100px; height:100px; font-size:3rem;">🪨</button>
+                                <button onclick="playRPS('📜')" class="control-btn main" style="width:100px; height:100px; font-size:3rem; background:var(--acc-blue);">📜</button>
+                                <button onclick="playRPS('✂️')" class="control-btn main" style="width:100px; height:100px; font-size:3rem; background:#f87171;">✂️</button>
+                            </div>
+                        </div>
+                        <!-- Hangman -->
+                        <div id="view-hangman" class="game-view" style="display:none; text-align:center; width:100%;">
+                            <div id="hangman-word" style="font-size:3rem; letter-spacing:10px; margin-bottom:30px; font-family:monospace; font-weight:800; color:var(--acc-pink);">_ _ _ _</div>
+                            <div id="hangman-keyboard" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:400px; margin:0 auto;"></div>
+                        </div>
+                        <!-- Snake -->
+                        <div id="view-snake" class="game-view" style="display:none; background:#000; border:2px solid #333; border-radius:10px;">
+                            <canvas id="snake-canvas" width="400" height="400"></canvas>
+                        </div>
+                        <!-- 2048 -->
+                        <div id="view-g2048" class="game-view" style="display:none;">
+                            <div class="grid-2048" id="g2048-board">
+                                <!-- Celdas se generan por JS -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>
     </main>
+
+    <!-- Modal para Nuevo Evento -->
+    <div id="event-modal" class="modal-overlay" onclick="if(event.target == this) closeEventModal()">
+        <div class="modal-card">
+            <h2>📅 Nuevo Evento</h2>
+            <form id="event-form" onsubmit="handleEventSubmit(event)">
+                <div class="input-group">
+                    <label>TÍTULO</label>
+                    <input type="text" id="event-titulo" placeholder="Ej: Reunión importante" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="input-group">
+                        <label>FECHA Y HORA</label>
+                        <input type="datetime-local" id="event-fecha" required>
+                    </div>
+                    <div class="input-group">
+                        <label>CATEGORÍA</label>
+                        <select id="event-categoria">
+                            <option value="general">📌 General</option>
+                            <option value="trabajo">💼 Trabajo</option>
+                            <option value="salud">💊 Salud</option>
+                            <option value="social">🎉 Social</option>
+                            <option value="cumple">🎂 Cumpleaños</option>
+                            <option value="viaje">✈️ Viaje</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>DESCRIPCIÓN (OPCIONAL)</label>
+                    <textarea id="event-descripcion" rows="3" placeholder="Detalles del evento..."></textarea>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 10px;">
+                    <button type="button" class="btn-action" style="background: rgba(255,255,255,0.05); color: #fff;" onclick="closeEventModal()">CANCELAR</button>
+                    <button type="submit" class="btn-action">CREAR EVENTO</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Detalle de Evento -->
+    <div id="view-event-modal" class="modal-overlay" onclick="if(event.target == this) closeViewEventModal()">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <h2 id="view-event-title" style="margin-bottom: 30px;">Detalles del Evento</h2>
+                <div id="view-event-cat-badge" style="padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; background: rgba(255,255,255,0.1);">Categoría</div>
+            </div>
+
+            <div class="event-detail-item">
+                <div class="event-detail-icon">📅</div>
+                <div>
+                    <div style="font-size: 0.7rem; color: var(--txt-sub); text-transform: uppercase; font-weight: 700;">Fecha y Hora</div>
+                    <div id="view-event-time" style="font-weight: 600; font-size: 1.1rem;">-</div>
+                </div>
+            </div>
+
+            <div class="event-detail-item">
+                <div class="event-detail-icon">📝</div>
+                <div style="flex: 1;">
+                    <div style="font-size: 0.7rem; color: var(--txt-sub); text-transform: uppercase; font-weight: 700;">Descripción</div>
+                    <div id="view-event-desc" style="font-size: 0.95rem; opacity: 0.8; line-height: 1.5;">Sin descripción.</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 30px;">
+                <button class="btn-action" style="background: rgba(248, 113, 113, 0.1); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.2);" id="btn-delete-event">ELIMINAR</button>
+                <button class="btn-action" onclick="closeViewEventModal()">CERRAR</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         let currentUrl = "";
         let ytPlayer;
         let calendar;
         let playTimeout;
+        let playlistData = [];
+        let activeSongId = null;
 
         function initDashboard() {
-            syncEvents(); renderChart();
+            syncEvents(); renderChart(); syncWeather();
             setInterval(() => document.getElementById('reloj-top').textContent = new Date().toLocaleTimeString('es-EC'), 1000);
+            setInterval(syncWeather, 600000); // Actualizar cada 10 min
+        }
+
+        async function syncWeather(isFull = false) {
+            try {
+                const res = await fetch('/clima/obtener/');
+                const data = await res.json();
+                
+                // Widget pequeño (Home)
+                document.getElementById('weather-temp').textContent = `${data.temp}°C`;
+                document.getElementById('weather-desc').textContent = data.desc;
+                document.getElementById('weather-city').textContent = data.city;
+                document.getElementById('weather-icon').textContent = data.icon;
+
+                // Vista Completa (Sky Cast)
+                if(isFull || document.getElementById('view-clima').classList.contains('active')) {
+                    document.getElementById('full-weather-temp').textContent = `${data.temp}°C`;
+                    document.getElementById('full-weather-city').textContent = data.city;
+                    document.getElementById('full-weather-desc').textContent = data.desc;
+                    document.getElementById('full-weather-icon').textContent = data.icon;
+                    document.getElementById('full-weather-hum').textContent = `${data.humidity}%`;
+                    document.getElementById('full-weather-wind').textContent = `${data.wind} km/h`;
+                    
+                    // Tips dinámicos
+                    let tip = "Día perfecto para tus planes al aire libre. ☀️";
+                    if(data.temp < 15) tip = "Hace algo de frío, ¡no olvides tu abrigo favorito! 🧥";
+                    if(data.temp > 28) tip = "Día caluroso, mantente hidratado y busca la sombra. 🥤";
+                    if(data.icon === "🌧️") tip = "Hay lluvia en el radar, mejor lleva un paraguas contigo. ☂️";
+                    document.getElementById('weather-tip').textContent = tip;
+                }
+            } catch(e) { console.error("Error clima", e); }
+        }
+
+        async function changeCitySearch() {
+            const nueva = document.getElementById('city-search').value;
+            if(nueva) {
+                const r = await fetch('/clima/actualizar_ciudad/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                    body: JSON.stringify({ ciudad: nueva })
+                });
+                if((await r.json()).status === 'ok') {
+                    document.getElementById('city-search').value = "";
+                    syncWeather(true);
+                }
+            }
+        }
+
+        async function updateCity() {
+            const nueva = prompt("¿De qué ciudad quieres ver el clima?", document.getElementById('weather-city').textContent);
+            if(nueva) {
+                const r = await fetch('/clima/actualizar_ciudad/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                    body: JSON.stringify({ ciudad: nueva })
+                });
+                if((await r.json()).status === 'ok') syncWeather();
+            }
         }
 
         function onYouTubeIframeAPIReady() {
@@ -157,16 +615,68 @@
             });
         }
 
+        function openOnYoutube() { if(currentUrl) window.open(currentUrl, '_blank'); }
+
+        function switchView(id, el) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('view-' + id).classList.add('active');
+            if(el) el.classList.add('active');
+            if(id === 'musica') syncMusic();
+            if(id === 'eventos') setTimeout(renderCalendar, 100);
+            if(id === 'clima') syncWeather(true);
+            if(id === 'juegos') {
+                switchGame('ttt', document.querySelector('.game-tab.active'));
+            }
+        }
+
         function onPlayerStateChange(event) {
             clearTimeout(playTimeout);
+            const btn = document.getElementById('btn-play-pause');
+            
             if (event.data === YT.PlayerState.PLAYING) {
                 document.getElementById('disc-player').classList.add('playing');
                 document.getElementById('yt-hint').style.display = 'none';
                 document.getElementById('btn-yt-direct').style.display = 'none';
-                document.getElementById('current-song-status').textContent = "Reproduciendo... 🎶";
+                document.getElementById('current-song-status').textContent = "REPRODUCIENDO 🎶";
+                btn.textContent = "⏸";
+                btn.style.paddingLeft = "0";
+            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.BUFFERING) {
+                document.getElementById('disc-player').classList.remove('playing');
+                if (event.data === YT.PlayerState.PAUSED) {
+                    document.getElementById('current-song-status').textContent = "PAUSADO";
+                    btn.textContent = "▶";
+                    btn.style.paddingLeft = "5px";
+                }
+            } else if (event.data === YT.PlayerState.ENDED) {
+                document.getElementById('disc-player').classList.remove('playing');
+                playNext(); // Autoplay al finalizar
             } else {
                 document.getElementById('disc-player').classList.remove('playing');
             }
+        }
+
+        function togglePlay() {
+            if (!ytPlayer) return;
+            const state = ytPlayer.getPlayerState();
+            if (state === YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
+            else ytPlayer.playVideo();
+        }
+
+        function playNext() {
+            if (!playlistData.length) return;
+            let index = playlistData.findIndex(s => s.id === activeSongId);
+            index = (index + 1) % playlistData.length;
+            const next = playlistData[index];
+            playSong(next.youtube_url, next.titulo, next.id);
+        }
+
+        function playPrev() {
+            if (!playlistData.length) return;
+            let index = playlistData.findIndex(s => s.id === activeSongId);
+            index = (index - 1 + playlistData.length) % playlistData.length;
+            const prev = playlistData[index];
+            playSong(prev.youtube_url, prev.titulo, prev.id);
         }
 
         function showEmergency() {
@@ -175,15 +685,24 @@
             document.getElementById('current-song-status').textContent = "⚠️ Restricción de YouTube";
         }
 
-        function playSong(url, title) {
+        function playSong(url, title, id) {
             const vMatch = url.match(/(?:v=|\/embed\/|\/11\/|\/v\/|youtu\.be\/|shorts\/|\/watch\?v=)([^#\&\?]{11})/);
             const lMatch = url.match(/[&?]list=([^#\&\?]+)/);
             if(vMatch && ytPlayer) {
                 currentUrl = url;
-                document.getElementById('current-song-title').textContent = title;
-                document.getElementById('current-song-status').textContent = "Cargando... ⏳";
                 
-                // Si en 4 segundos no suena, mostramos el botón de emergencia
+                // Manejar clase activa
+                if(activeSongId) {
+                    const old = document.getElementById(`song-${activeSongId}`);
+                    if(old) old.classList.remove('active');
+                }
+                activeSongId = id;
+                const activeEl = document.getElementById(`song-${id}`);
+                if(activeEl) activeEl.classList.add('active');
+
+                document.getElementById('current-song-title').textContent = title;
+                document.getElementById('current-song-status').textContent = "Sintonizando... ⚡";
+                
                 clearTimeout(playTimeout);
                 playTimeout = setTimeout(() => {
                     if (ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING) showEmergency();
@@ -196,33 +715,472 @@
             }
         }
 
-        function openOnYoutube() { if(currentUrl) window.open(currentUrl, '_blank'); }
 
-        function switchView(id, el) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('view-' + id).classList.add('active');
-            if(el) el.classList.add('active');
-            if(id === 'musica') syncMusic();
-            if(id === 'eventos') setTimeout(renderCalendar, 100);
+        /* --- LOGICA ARCADE --- */
+        let currentPlayer = 'X';
+        let gameState = ["", "", "", "", "", "", "", "", ""];
+        let scores = { X: 0, O: 0 };
+        let vsCPU = false;
+        let gameActive = true;
+
+        function initArcade() {
+            const cells = document.querySelectorAll('.game-cell');
+            cells.forEach(cell => {
+                cell.onclick = () => handleCellClick(cell);
+                cell.textContent = "";
+                cell.className = "game-cell";
+            });
+            gameState = ["", "", "", "", "", "", "", "", ""];
+            currentPlayer = 'X';
+            gameActive = true;
         }
+
+        function toggleCPUMode() {
+            vsCPU = !vsCPU;
+            const btn = document.getElementById('toggle-cpu');
+            const labelO = document.getElementById('label-o');
+            btn.textContent = vsCPU ? "MODO: VS ROBOT 🤖" : "MODO: HUMANO VS HUMANO 👥";
+            btn.style.background = vsCPU ? "rgba(167, 139, 250, 0.2)" : "rgba(255,255,255,0.05)";
+            labelO.textContent = vsCPU ? "ROBOT O" : "PLAYER O";
+            resetGame();
+        }
+
+        function handleCellClick(cell) {
+            const index = cell.getAttribute('data-index');
+            if (gameState[index] !== "" || !gameActive) return;
+            
+            if (vsCPU && currentPlayer === 'O') return; // Esperar al bot
+
+            makeMove(index);
+            
+            if (vsCPU && gameActive && currentPlayer === 'O') {
+                setTimeout(cpuMove, 600);
+            }
+        }
+
+        function makeMove(index) {
+            if (gameState[index] !== "" || !gameActive) return;
+            gameState[index] = currentPlayer;
+            const cell = document.querySelector(`.game-cell[data-index="${index}"]`);
+            cell.textContent = currentPlayer;
+            cell.classList.add(currentPlayer.toLowerCase());
+            checkWinner();
+        }
+
+        function cpuMove() {
+            if (!gameActive) return;
+            
+            const winConditions = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            
+            // 1. Intentar ganar
+            for (let condition of winConditions) {
+                const [a, b, c] = condition;
+                const vals = [gameState[a], gameState[b], gameState[c]];
+                if (vals.filter(v => v === 'O').length === 2 && vals.filter(v => v === '').length === 1) {
+                    makeMove(condition[vals.indexOf('')]);
+                    return;
+                }
+            }
+            
+            // 2. Bloquear al jugador
+            for (let condition of winConditions) {
+                const [a, b, c] = condition;
+                const vals = [gameState[a], gameState[b], gameState[c]];
+                if (vals.filter(v => v === 'X').length === 2 && vals.filter(v => v === '').length === 1) {
+                    makeMove(condition[vals.indexOf('')]);
+                    return;
+                }
+            }
+            
+            // 3. Tomar el centro
+            if (gameState[4] === "") {
+                makeMove(4);
+                return;
+            }
+            
+            // 4. Aleatorio
+            const emptyCells = gameState.map((v, i) => v === "" ? i : null).filter(v => v !== null);
+            if (emptyCells.length > 0) {
+                makeMove(emptyCells[Math.floor(Math.random() * emptyCells.length)]);
+            }
+        }
+
+        function checkWinner() {
+            const winConditions = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            let roundWon = false;
+            for (let i = 0; i <= 7; i++) {
+                const [a, b, c] = winConditions[i];
+                if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+                    roundWon = true; break;
+                }
+            }
+            if (roundWon) {
+                scores[currentPlayer]++;
+                document.getElementById(`score-${currentPlayer.toLowerCase()}`).textContent = scores[currentPlayer];
+                gameActive = false;
+                setTimeout(() => alert(`¡El Jugador ${currentPlayer} ha ganado!`), 100);
+                return;
+            }
+            if (!gameState.includes("")) {
+                setTimeout(() => alert("¡Empate!"), 100);
+                gameActive = false;
+                return;
+            }
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+        }
+
+        function resetGame() { initArcade(); }
+
+        function resetScoresTTT() {
+            scores = { X: 0, O: 0 };
+            document.getElementById('score-x').textContent = "0";
+            document.getElementById('score-o').textContent = "0";
+            resetGame();
+        }
+
+        /* --- MEMORY --- */
+        let memoryCards = [];
+        let flippedCards = [];
+        let memoryMatches = 0;
+        let memoryMoves = 0;
+        const emojis = ['🎮','👾','🚀','🛸','👽','🤖','🔥','⭐'];
+
+        function initMemory() {
+            const board = document.getElementById('memory-board');
+            board.innerHTML = "";
+            memoryCards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+            flippedCards = [];
+            memoryMatches = 0;
+            memoryMoves = 0;
+            document.getElementById('moves-count').textContent = "0";
+            document.getElementById('matches-count').textContent = "0";
+
+            memoryCards.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.innerHTML = `
+                    <div class="memory-card-face memory-card-front">?</div>
+                    <div class="memory-card-face memory-card-back">${emoji}</div>
+                `;
+                card.onclick = () => {
+                    if (flippedCards.length === 2 || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+                    card.classList.add('flipped');
+                    flippedCards.push({ card, emoji });
+                    if (flippedCards.length === 2) {
+                        memoryMoves++;
+                        document.getElementById('moves-count').textContent = memoryMoves;
+                        const [c1, c2] = flippedCards;
+                        if (c1.emoji === c2.emoji) {
+                            c1.card.classList.add('matched');
+                            c2.card.classList.add('matched');
+                            memoryMatches++;
+                            document.getElementById('matches-count').textContent = memoryMatches;
+                            flippedCards = [];
+                            if (memoryMatches === emojis.length) setTimeout(() => alert(`🎉 ¡Felicidades! Completado en ${memoryMoves} movimientos.`), 500);
+                        } else {
+                            setTimeout(() => { c1.card.classList.remove('flipped'); c2.card.classList.remove('flipped'); flippedCards = []; }, 1000);
+                        }
+                    }
+                };
+                board.appendChild(card);
+            });
+        }
+
+        function resetMemory() { initMemory(); }
+
+        /* --- RPS (PPT) --- */
+        let rpsScore = { user: 0, ia: 0 };
+        let vsCPURPS = true;
+        let rpsP1Choice = null;
+
+        function toggleCPUModeRPS() {
+            vsCPURPS = !vsCPURPS;
+            const btn = document.getElementById('toggle-cpu-rps');
+            const l1 = document.getElementById('label-rps-p1');
+            const l2 = document.getElementById('label-rps-p2');
+            btn.textContent = vsCPURPS ? "MODO: VS ROBOT 🤖" : "MODO: HUMANO VS HUMANO 👥";
+            btn.style.background = vsCPURPS ? "rgba(255,255,255,0.05)" : "rgba(167, 139, 250, 0.2)";
+            l1.textContent = vsCPURPS ? "TÚ" : "P1";
+            l2.textContent = vsCPURPS ? "IA" : "P2";
+            resetRPS();
+        }
+
+        function resetRPS() {
+            rpsP1Choice = null;
+            document.getElementById('rps-result').innerHTML = vsCPURPS ? "¡ELIGE TU ARMA!" : "P1: ¡ELIGE!";
+            document.getElementById('rps-result').style.color = "var(--acc-blue)";
+        }
+
+        function resetScoresRPS() {
+            rpsScore = { user: 0, ia: 0 };
+            document.getElementById('score-rps-user').textContent = "0";
+            document.getElementById('score-rps-ia').textContent = "0";
+            resetRPS();
+        }
+
+        function playRPS(choice) {
+            if (vsCPURPS) {
+                const choices = ['🪨', '📜', '✂️'];
+                const iaChoice = choices[Math.floor(Math.random() * 3)];
+                calculateRPSWinner(choice, iaChoice, "TÚ", "IA");
+            } else {
+                if (!rpsP1Choice) {
+                    rpsP1Choice = choice;
+                    document.getElementById('rps-result').innerHTML = "P1 ELIGIÓ... <br> P2: ¡TU TURNO!";
+                    document.getElementById('rps-result').style.color = "var(--acc-pink)";
+                } else {
+                    calculateRPSWinner(rpsP1Choice, choice, "P1", "P2");
+                    rpsP1Choice = null;
+                }
+            }
+        }
+
+        function calculateRPSWinner(p1Choice, p2Choice, p1Name, p2Name) {
+            let result = "";
+            let winColor = "var(--acc-blue)";
+            
+            if (p1Choice === p2Choice) {
+                result = "¡EMPATE! 🤝";
+                winColor = "#fff";
+            } else if (
+                (p1Choice === '🪨' && p2Choice === '✂️') ||
+                (p1Choice === '📜' && p2Choice === '🪨') ||
+                (p1Choice === '✂️' && p2Choice === '📜')
+            ) {
+                result = `¡${p1Name} GANA! 🎉`;
+                rpsScore.user++;
+                winColor = "var(--acc-pink)";
+            } else {
+                result = `¡${p2Name} GANA! 🤖`;
+                rpsScore.ia++;
+                winColor = "var(--acc-blue)";
+            }
+            
+            document.getElementById('rps-result').innerHTML = `${p1Choice} vs ${p2Choice}<br>${result}`;
+            document.getElementById('rps-result').style.color = winColor;
+            document.getElementById('score-rps-user').textContent = rpsScore.user;
+            document.getElementById('score-rps-ia').textContent = rpsScore.ia;
+            
+            if (!vsCPURPS) {
+                setTimeout(() => {
+                    if (!rpsP1Choice) document.getElementById('rps-result').innerHTML += "<br><small style='font-size:0.8rem; opacity:0.5;'>Próxima ronda: P1 ELIGE</small>";
+                }, 2000);
+            }
+        }
+
+        /* --- 2048 --- */
+        let g2048Board = [];
+        let g2048Score = 0;
+        function init2048() {
+            g2048Board = Array(16).fill(0);
+            g2048Score = 0;
+            document.getElementById('g2048-score').textContent = 0;
+            addRandom2048(); addRandom2048();
+            render2048();
+            document.addEventListener('keydown', handle2048Key);
+        }
+        function addRandom2048() {
+            const empty = g2048Board.map((v, i) => v === 0 ? i : null).filter(v => v !== null);
+            if(empty.length) g2048Board[empty[Math.floor(Math.random() * empty.length)]] = Math.random() < 0.9 ? 2 : 4;
+        }
+        function render2048() {
+            const container = document.getElementById('g2048-board');
+            container.innerHTML = g2048Board.map(v => `<div class="cell-2048" data-value="${v}">${v || ''}</div>`).join('');
+        }
+        function handle2048Key(e) {
+            if(!document.getElementById('view-g2048').style.display || document.getElementById('view-g2048').style.display === 'none') return;
+            let moved = false;
+            const prev = [...g2048Board];
+            if(e.key === 'ArrowUp') moved = move2048('up');
+            if(e.key === 'ArrowDown') moved = move2048('down');
+            if(e.key === 'ArrowLeft') moved = move2048('left');
+            if(e.key === 'ArrowRight') moved = move2048('right');
+            if(moved) { addRandom2048(); render2048(); checkGameOver2048(); }
+        }
+        function move2048(dir) {
+            let moved = false;
+            for(let i=0; i<4; i++) {
+                let line = [];
+                for(let j=0; j<4; j++) {
+                    let idx = (dir === 'up' || dir === 'down') ? (dir === 'up' ? j*4+i : (3-j)*4+i) : (dir === 'left' ? i*4+j : i*4+(3-j));
+                    if(g2048Board[idx] !== 0) line.push(g2048Board[idx]);
+                }
+                let merged = [];
+                for(let j=0; j<line.length; j++) {
+                    if(line[j] === line[j+1]) { merged.push(line[j]*2); g2048Score += line[j]*2; j++; moved = true; }
+                    else merged.push(line[j]);
+                }
+                while(merged.length < 4) merged.push(0);
+                for(let j=0; j<4; j++) {
+                    let idx = (dir === 'up' || dir === 'down') ? (dir === 'up' ? j*4+i : (3-j)*4+i) : (dir === 'left' ? i*4+j : i*4+(3-j));
+                    if(g2048Board[idx] !== merged[j]) moved = true;
+                    g2048Board[idx] = merged[j];
+                }
+            }
+            document.getElementById('g2048-score').textContent = g2048Score;
+            return moved;
+        }
+        function checkGameOver2048() {
+            if(!g2048Board.includes(0)) {
+                // Check if any merge possible
+                let possible = false;
+                for(let i=0; i<16; i++) {
+                    if(i%4 < 3 && g2048Board[i] === g2048Board[i+1]) possible = true;
+                    if(i < 12 && g2048Board[i] === g2048Board[i+4]) possible = true;
+                }
+                if(!possible) alert('Game Over! Score: ' + g2048Score);
+            }
+        }
+
+        /* --- HANGMAN --- */
+        let hangmanWord = "";
+        let hangmanGuessed = [];
+        let hangmanLives = 6;
+        const words = ["DJANGO", "PYTHON", "JAVA", "HTML", "CSS", "REACT", "GOOGLE", "AI", "CODIGO", "MINIAMIGIXV"];
+        
+        function initHangman() {
+            hangmanWord = words[Math.floor(Math.random() * words.length)];
+            hangmanGuessed = [];
+            hangmanLives = 6;
+            document.getElementById('hangman-lives').textContent = hangmanLives;
+            renderHangman();
+            renderHangmanKeyboard();
+        }
+
+        function renderHangman() {
+            const display = hangmanWord.split('').map(letter => hangmanGuessed.includes(letter) ? letter : "_").join(' ');
+            document.getElementById('hangman-word').textContent = display;
+            if (!display.includes("_")) { setTimeout(() => alert("¡Ganaste! Adivinaste la palabra."), 200); initHangman(); }
+        }
+
+        function renderHangmanKeyboard() {
+            const kb = document.getElementById('hangman-keyboard');
+            kb.innerHTML = "";
+            "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split('').forEach(l => {
+                const b = document.createElement('button');
+                b.className = "game-tab";
+                b.textContent = l;
+                b.style.opacity = hangmanGuessed.includes(l) ? "0.3" : "1";
+                b.onclick = () => {
+                    if (hangmanGuessed.includes(l) || hangmanLives <= 0) return;
+                    hangmanGuessed.push(l);
+                    if (!hangmanWord.includes(l)) {
+                        hangmanLives--;
+                        document.getElementById('hangman-lives').textContent = hangmanLives;
+                    }
+                    if (hangmanLives <= 0) {
+                        alert(`Perdiste. La palabra era ${hangmanWord}`);
+                        initHangman();
+                    } else {
+                        renderHangman();
+                        b.style.opacity = "0.3";
+                    }
+                };
+                kb.appendChild(b);
+            });
+        }
+
+        /* --- SNAKE --- */
+        let snake = [];
+        let food = {};
+        let dx = 20, dy = 0;
+        let snakeScore = 0;
+        let snakeInterval;
+        const canvas = document.getElementById('snake-canvas');
+        const ctx = canvas?.getContext('2d');
+
+        function initSnake() {
+            clearInterval(snakeInterval);
+            snake = [{x: 200, y: 200}, {x: 180, y: 200}, {x: 160, y: 200}];
+            food = {x: 300, y: 300};
+            dx = 20; dy = 0;
+            snakeScore = 0;
+            document.getElementById('snake-score').textContent = 0;
+            document.addEventListener('keydown', changeDirection);
+            snakeInterval = setInterval(stepSnake, 150);
+        }
+
+        function stepSnake() {
+            if (didGameEnd()) { clearInterval(snakeInterval); alert("Game Over"); return; }
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+            snake.unshift(head);
+            if (head.x === food.x && head.y === food.y) {
+                snakeScore += 10;
+                document.getElementById('snake-score').textContent = snakeScore;
+                createFood();
+            } else { snake.pop(); }
+            drawSnake();
+        }
+
+        function drawSnake() {
+            ctx.fillStyle = "black"; ctx.fillRect(0,0,400,400);
+            ctx.fillStyle = "#34d399"; ctx.strokeStyle = "black";
+            snake.forEach(p => { ctx.fillRect(p.x, p.y, 20, 20); ctx.strokeRect(p.x, p.y, 20, 20); });
+            ctx.fillStyle = "#f87171"; ctx.fillRect(food.x, food.y, 20, 20);
+        }
+
+        function createFood() {
+            food.x = Math.floor(Math.random() * 20) * 20;
+            food.y = Math.floor(Math.random() * 20) * 20;
+        }
+
+        function changeDirection(e) {
+            const LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
+            const W = 87, A = 65, S = 83, D = 68;
+            const key = e.keyCode;
+            if ((key === LEFT || key === A) && dx === 0) { dx = -20; dy = 0; }
+            if ((key === UP || key === W) && dy === 0) { dx = 0; dy = -20; }
+            if ((key === RIGHT || key === D) && dx === 0) { dx = 20; dy = 0; }
+            if ((key === DOWN || key === S) && dy === 0) { dx = 0; dy = 20; }
+        }
+
+        function didGameEnd() {
+            for(let i=4; i<snake.length; i++) if(snake[i].x===snake[0].x && snake[i].y===snake[0].y) return true;
+            return snake[0].x<0 || snake[0].x>380 || snake[0].y<0 || snake[0].y>380;
+        }
+
+        /* --- GLOBAL --- */
+        function switchGame(type, el) {
+            document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('.game-view').forEach(v => v.style.display = 'none');
+            document.querySelectorAll('.game-info-panel').forEach(p => p.style.display = 'none');
+            
+            const v = document.getElementById('view-' + type) || document.getElementById(type + '-board');
+            if(v) v.style.display = (type === 'snake' ? 'block' : 'grid');
+            if(type === 'rps') document.getElementById('view-rps').style.display = 'block';
+            if(type === 'hangman') document.getElementById('view-hangman').style.display = 'block';
+
+            document.getElementById('info-' + type).style.display = 'block';
+            
+            if(type === 'ttt') initArcade();
+            if(type === 'memory') initMemory();
+            if(type === 'hangman') initHangman();
+            if(type === 'snake') initSnake();
+            if(type === 'g2048') init2048();
+        }
+
 
         async function syncMusic() {
             const res = await fetch('/musica/listar/');
             const data = await res.json();
-            const list = data.canciones || data;
-            document.getElementById('playlist-content').innerHTML = list.map(s => `
-                <div class="song-item">
-                    <div onclick="playSong('${s.youtube_url}', '${s.titulo}')" style="flex:1; display:flex; align-items:center; gap:8px;">
-                        <div style="width:26px; height:26px; background:rgba(255,255,255,0.05); border-radius:8px; display:flex; align-items:center; justify-content:center;">🎧</div>
-                        <strong style="font-size:0.8rem;">${s.titulo}</strong>
+            playlistData = data.canciones || data;
+            
+            document.getElementById('playlist-content').innerHTML = playlistData.map(s => `
+                <div class="song-item" id="song-${s.id}" style="background: rgba(255,255,255,0.03); padding: 12px 16px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255,255,255,0.05);">
+                    <div onclick="playSong('${s.youtube_url}', '${s.titulo}', ${s.id})" style="flex:1; display:flex; align-items:center; gap:12px; cursor: pointer;">
+                        <div style="width:36px; height:36px; background:rgba(255,255,255,0.03); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size: 1rem;">🎧</div>
+                        <div style="display: flex; flex-direction: column;">
+                            <strong style="font-size:0.85rem; color: #fff;">${s.titulo}</strong>
+                            <small style="font-size:0.65rem; color: var(--txt-sub);">YouTube Music</small>
+                        </div>
                     </div>
-                    <div class="song-actions">
-                        <div class="action-icon" onclick="editSong(${s.id}, '${s.titulo}')">✏️</div>
-                        <div class="action-icon" onclick="deleteSong(${s.id})" style="color:#f87171;">🗑️</div>
+                    <div class="song-actions" style="display: flex; gap: 8px;">
+                        <div class="action-icon" onclick="editSong(${s.id}, '${s.titulo}')" style="cursor:pointer; padding: 4px;">✏️</div>
+                        <div class="action-icon" onclick="deleteSong(${s.id})" style="cursor:pointer; color:#f87171; padding: 4px;">🗑️</div>
                     </div>
                 </div>
-            `).join('') || '<p>Lista vacía.</p>';
+            `).join('') || '<p style="padding:20px; font-size:0.8rem; color:var(--txt-sub); text-align:center;">Tu playlist está vacía 🎼</p>';
         }
 
         async function handleMusicSubmit(e) {
@@ -244,16 +1202,124 @@
         function renderCalendar() {
             const el = document.getElementById('calendar');
             if(calendar) calendar.destroy();
-            calendar = new FullCalendar.Calendar(el, { initialView: 'dayGridMonth', locale: 'es', events: '/eventos/listar/', eventContent: () => ({ domNodes: [Object.assign(document.createElement('div'), {className:'event-dot'})] }) });
+            calendar = new FullCalendar.Calendar(el, { 
+                initialView: 'dayGridMonth', 
+                locale: 'es', 
+                events: '/eventos/listar/',
+                headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,dayGridWeek' },
+                eventClick: (info) => showEventDetails(info.event),
+                eventContent: (arg) => {
+                    return { html: `<div style="background:${arg.event.backgroundColor || '#ff7eb3'}; width:8px; height:8px; border-radius:50%; margin: 0 auto;"></div>` };
+                }
+            });
             calendar.render(); syncEvents();
         }
+
+        function showEventDetails(event) {
+            document.getElementById('view-event-title').textContent = event.title;
+            const date = new Date(event.start);
+            document.getElementById('view-event-time').textContent = date.toLocaleString('es-EC', { dateStyle: 'full', timeStyle: 'short' });
+            document.getElementById('view-event-desc').textContent = event.extendedProps.description || "Sin descripción adicional.";
+            document.getElementById('view-event-cat-badge').textContent = event.extendedProps.categoria || "General";
+            
+            document.getElementById('btn-delete-event').onclick = async () => {
+                if(confirm('¿Estás seguro de que quieres eliminar este evento?')) {
+                    const res = await fetch(`/eventos/eliminar/${event.id}/`, { method: 'POST', headers: { 'X-CSRFToken': '{{ csrf_token }}' } });
+                    if((await res.json()).status === 'ok') {
+                        closeViewEventModal();
+                        calendar.refetchEvents();
+                        syncEvents();
+                    }
+                }
+            };
+
+            document.getElementById('view-event-modal').style.display = 'flex';
+        }
+
+        function closeViewEventModal() { document.getElementById('view-event-modal').style.display = 'none'; }
 
         async function syncEvents() {
             const res = await fetch('/eventos/listar/');
             const data = await res.json();
             const list = data.eventos || data;
-            document.getElementById('home-events-list').innerHTML = list.slice(0,2).map(e => `<div class="stat-card" style="margin-top:10px; font-size:0.8rem;">${e.title || e.titulo}</div>`).join('') || '<p>Sin eventos.</p>';
+            
+            // Ordenar por fecha
+            list.sort((a, b) => new Date(a.start) - new Date(b.start));
+            
+            const proximos = list.filter(e => new Date(e.start) >= new Date());
+
+            document.getElementById('home-events-list').innerHTML = proximos.slice(0,3).map(e => {
+                const date = new Date(e.start);
+                const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const dayStr = date.toLocaleDateString([], { day: 'numeric', month: 'short' });
+                return `
+                    <div class="stat-card" style="display:flex; align-items:center; gap:12px; padding:12px; background: rgba(255,255,255,0.02); border-radius: 16px;">
+                        <div style="background: var(--acc-pink); color: #000; padding: 4px 8px; border-radius: 8px; text-align: center; min-width: 45px;">
+                            <div style="font-weight: 800; font-size: 0.8rem;">${dayStr}</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; font-size: 0.85rem;">${e.title || e.titulo}</div>
+                            <div style="font-size: 0.7rem; color: var(--txt-sub);">${timeStr}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('') || '<p style="font-size:0.8rem; color:var(--txt-sub);">No hay eventos próximos.</p>';
+
+            // Lista detallada para la pestaña de Eventos
+            document.getElementById('full-events-list').innerHTML = proximos.map(e => {
+                const date = new Date(e.start);
+                const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const dayStr = date.toLocaleDateString([], { day: 'numeric', month: 'long', year: 'numeric' });
+                return `
+                    <div class="song-item" onclick="showEventDetailsById(${e.id})" style="padding: 16px; display: flex; flex-direction: column; gap: 8px; border: 1px solid rgba(167,139,250,0.1); background: rgba(167,139,250,0.02);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="color: var(--acc-purple); font-size: 0.9rem;">${e.title || e.titulo}</strong>
+                            <span style="font-size: 0.7rem; background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 10px; color: var(--txt-sub);">${timeStr}</span>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--txt-sub); display: flex; align-items: center; gap: 6px;">
+                            <span>📅</span> ${dayStr}
+                        </div>
+                    </div>
+                `;
+            }).join('') || '<p style="font-size:0.8rem; color:var(--txt-sub); text-align:center;">No tienes eventos pendientes.</p>';
+            
             document.getElementById('val-eventos-home').textContent = list.length;
+        }
+
+        async function showEventDetailsById(id) {
+            const event = calendar.getEventById(id);
+            if(event) showEventDetails(event);
+            else {
+                // Si no está en el calendar actual, buscarlo en playlistData (reutilizando lógica si fuera necesario)
+                // Pero FullCalendar suele tenerlos todos si se cargaron.
+            }
+        }
+
+        function openEventModal() { document.getElementById('event-modal').style.display = 'flex'; }
+        function closeEventModal() { document.getElementById('event-modal').style.display = 'none'; }
+
+        async function handleEventSubmit(e) {
+            e.preventDefault();
+            const data = {
+                titulo: document.getElementById('event-titulo').value,
+                fecha: document.getElementById('event-fecha').value,
+                categoria: document.getElementById('event-categoria').value,
+                descripcion: document.getElementById('event-descripcion').value,
+                recordatorio: true
+            };
+            
+            const r = await fetch('/eventos/crear/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                body: JSON.stringify(data)
+            });
+            
+            if((await r.json()).status === 'ok') {
+                closeEventModal();
+                e.target.reset();
+                syncEvents();
+                if(calendar) calendar.refetchEvents();
+            }
         }
 
         function renderChart() {

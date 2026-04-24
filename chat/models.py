@@ -24,6 +24,10 @@ class Usuario(AbstractUser):
     fuente_chat     = models.CharField(max_length=50, default='DM Sans')    # nombre de la fuente
     musica_activa   = models.BooleanField(default=False)
 
+    # Clima (Guardado para no saturar API)
+    ciudad          = models.CharField(max_length=100, default='Quito')
+    clima_cache     = models.JSONField(null=True, blank=True)
+
     groups = models.ManyToManyField(
         Group,
         related_name='usuarios',
@@ -267,7 +271,7 @@ class Noticia(models.Model):
 class Cancion(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='playlist')
     titulo = models.CharField(max_length=200, help_text="Título de la canción o video")
-    youtube_url = models.URLField(help_text="Enlace de YouTube")
+    youtube_url = models.CharField(max_length=1000, help_text="Enlace de YouTube")
     miniatura_url = models.URLField(blank=True, null=True, help_text="URL de la miniatura del video")
     duracion = models.CharField(max_length=10, blank=True, null=True, help_text="Ej: 3:45")
     orden = models.PositiveIntegerField(default=0)

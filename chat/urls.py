@@ -40,8 +40,13 @@ urlpatterns = [
     # Entretenimiento
     path('entretenimiento/listar/',           views.listar_entretenimiento, name='listar_entretenimiento'),
     path('entretenimiento/crear/',            views.crear_entretenimiento,  name='crear_entretenimiento'),
+    path('entretenimiento/toggle/<int:item_id>/', views.toggle_entretenimiento, name='toggle_entretenimiento'),
 
     # Noticias
     path('noticias/listar/',                  views.listar_noticias,        name='listar_noticias'),
     path('noticias/crear/',                   views.crear_noticia,          name='crear_noticia'),
+
+    # Clima
+    path('clima/obtener/',                    views.obtener_clima,          name='obtener_clima'),
+    path('clima/actualizar_ciudad/',          views.actualizar_ciudad,      name='actualizar_ciudad'),
 ]

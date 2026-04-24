@@ -452,6 +452,15 @@ def crear_entretenimiento(request):
     item = Entretenimiento.objects.create(usuario=request.user, titulo=titulo, tipo=tipo)
     return JsonResponse({"status": "ok", "id": item.id})
 
+@login_required
+def toggle_entretenimiento(request, item_id):
+    if request.method == "POST":
+        item = get_object_or_404(Entretenimiento, id=item_id, usuario=request.user)
+        item.completado = not item.completado
+        item.save()
+        return JsonResponse({"status": "ok", "completado": item.completado})
+    return JsonResponse({"status": "error"}, status=400)
+
 # ==============================
 # 📰 NOTICIAS
 # ==============================
@@ -473,3 +482,56 @@ def crear_noticia(request):
 
     noticia = Noticia.objects.create(usuario=request.user, titulo=titulo, url=url, fuente=fuente)
     return JsonResponse({"status": "ok", "id": noticia.id})
+
+# ==============================
+# 🌤️ CLIMA
+# ==============================
+import requests
+
+@login_required
+def obtener_clima(request):
+    usuario = request.user
+    ciudad = usuario.ciudad or "Quito"
+    
+    try:
+        # Usamos wttr.in para clima gratuito sin API Key
+        url = f"https://wttr.in/{ciudad}?format=j1"
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            current = data['current_condition'][0]
+            
+            # Mapeo básico de iconos según descripción
+            desc_en = current['weatherDesc'][0]['value'].lower()
+            icon = "☀️"
+            if "cloud" in desc_en: icon = "☁️"
+            if "rain" in desc_en: icon = "🌧️"
+            if "snow" in desc_en: icon = "❄️"
+            if "thunder" in desc_en: icon = "⚡"
+            
+            weather_data = {
+                "temp": current['temp_C'],
+                "desc": current['weatherDesc'][0]['value'], # wttr.in a veces no traduce bien, usamos EN por ahora o intentamos ES
+                "humidity": current['humidity'],
+                "wind": current['windspeedKmph'],
+                "city": ciudad,
+                "icon": icon
+            }
+            usuario.clima_cache = weather_data
+            usuario.save()
+            return JsonResponse(weather_data)
+    except Exception as e:
+        print(f"Error clima: {e}")
+    
+    return JsonResponse(usuario.clima_cache or {"temp": "--", "desc": "Cargando...", "icon": "❓", "city": ciudad})
+
+@login_required
+def actualizar_ciudad(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        nueva_ciudad = data.get("ciudad", "").strip()
+        if nueva_ciudad:
+            request.user.ciudad = nueva_ciudad
+            request.user.save()
+            return JsonResponse({"status": "ok"})
+    return JsonResponse({"status": "error"}, status=400)
