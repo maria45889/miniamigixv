@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 
+app_name = 'chat'
+
 urlpatterns = [
     path('', views.index, name='index'),
 
@@ -11,6 +13,10 @@ urlpatterns = [
 
     # Chat
     path('send_message/', views.send_message, name='send_message'),
+    path('conversaciones/listar/', views.listar_conversaciones, name='listar_conversaciones'),
+    path('conversaciones/crear/', views.crear_conversacion, name='crear_conversacion'),
+    path('conversaciones/eliminar/<int:conversation_id>/', views.eliminar_conversacion, name='eliminar_conversacion'),
+    path('conversaciones/<int:conversation_id>/historial/', views.obtener_historial_chat, name='obtener_historial_chat'),
 
     # Eventos
     path('eventos/crear/',                    views.crear_evento,          name='create_event'),

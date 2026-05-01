@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Usuario, Message, ScheduledMessage, Evento, Task
+from .models import (
+    Usuario, Message, ScheduledMessage, Evento, Task,
+    Estudio, Trabajo, Entretenimiento, Blog, Noticia, Cancion
+)
 
 
 # ==============================
@@ -74,11 +77,10 @@ admin.site.site_header = "MiniAmigixV 💖 Admin"
 admin.site.site_title = "MiniAmigixV"
 admin.site.index_title = "Panel de administración"
 
+
 # ==============================
 # 📚 ESTUDIOS
 # ==============================
-from .models import Estudio, Trabajo, Entretenimiento, Blog, Noticia, Cancion
-
 @admin.register(Estudio)
 class EstudioAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'usuario', 'fecha_entrega', 'completado')
@@ -123,4 +125,4 @@ class NoticiaAdmin(admin.ModelAdmin):
 class CancionAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'usuario', 'duracion', 'orden')
     list_filter = ('usuario',)
-    ordering = ('orden',)
+    ordering = ('orden',)

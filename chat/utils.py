@@ -4,7 +4,7 @@ from .models import Message, ScheduledMessage
 
 CHECKINS = [
     "Oye, ¿cómo estás hoy? 💖 Ya extrañaba saber de ti",
-    "¡Hola! Solo pasaba a preguntarte cómo va todo 🌸",
+    "¡Buenas! Solo pasaba a preguntarte cómo va todo 🌸",
     "¿Cómo te sientes hoy? Cuéntame todo 💕",
     "Hey, hace rato no charlamos... ¿estás bien? 🥺",
 ]
@@ -38,7 +38,7 @@ MENSAJES_HISTORIAL = {
         "Tu energía positiva me contagia 🌸 ¡eres increíble!",
     ],
     "neutral": [
-        "Solo quería decirte hola y que pienso en ti 💖",
+        "Solo quería saludarte y decirte que pienso en ti 💖",
         "¿Cómo van las cosas por allá? Cuéntame 😊",
     ],
 }

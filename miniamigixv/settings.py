@@ -113,6 +113,13 @@ DATABASES = {
     }
 }
 
+# 🍃 MONGODB (PyMongo)
+# Para usarlo: from django.conf import settings; client = settings.MONGO_CLIENT
+import pymongo
+MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
+MONGO_CLIENT = pymongo.MongoClient(MONGO_URI)
+MONGO_DB = MONGO_CLIENT[os.getenv('MONGO_DB_NAME', 'miniamigixv_mongo')]
+
 # ==============================
 # 🔐 VALIDADORES
 # ==============================

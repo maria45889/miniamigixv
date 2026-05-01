@@ -5,9 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.db import IntegrityError
+from django.conf import settings
 
 
-from .models import Message, ScheduledMessage, Evento, Estudio, Trabajo, Entretenimiento, Blog, Noticia, Cancion
+from .models import Conversation, Message, ScheduledMessage, Evento, Estudio, Trabajo, Entretenimiento, Blog, Noticia, Cancion
 from .forms import RegistroForm
 
 import random
@@ -39,7 +40,7 @@ def generar_respuesta(msg, user):
     nombre = user.first_name or user.username
 
     if "hola" in msg_lower:
-        return f"Hola {nombre} 💖 ¿Cómo estás?"
+        return f"¡Saludos! ¿En qué puedo apoyarte hoy?"
     if "gracias" in msg_lower:
         return f"Siempre para ti {nombre} 💕"
     if "triste" in msg_lower or "mal" in msg_lower:
@@ -125,10 +126,42 @@ def index(request):
     entregar_mensajes_programados(request.user)
     verificar_eventos(request.user)
 
-    mensajes = Message.objects.filter(user=request.user)
+    mensajes = Message.objects.filter(user=request.user, conversation__isnull=True)
     eventos  = Evento.objects.filter(usuario=request.user)
+    conversaciones = Conversation.objects.filter(user=request.user)
 
-    return render(request, "chat/index.html", {"mensajes": mensajes, "eventos": eventos})
+    return render(request, "chat/index.html", {
+        "mensajes": mensajes, 
+        "eventos": eventos, 
+        "conversaciones": conversaciones
+    })
+
+@login_required
+def listar_conversaciones(request):
+    conversaciones = Conversation.objects.filter(user=request.user)
+    data = [{"id": c.id, "title": c.title, "icon": c.icon, "updated_at": c.updated_at.isoformat()} for c in conversaciones]
+    return JsonResponse({"conversaciones": data})
+
+@login_required
+def crear_conversacion(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body) if request.content_type == "application/json" else request.POST
+            titulo = data.get("title", "Conversación").strip()
+            icono = data.get("icon", "💬").strip()
+            if not titulo: titulo = "Conversación"
+            conv = Conversation.objects.create(user=request.user, title=titulo, icon=icono)
+            return JsonResponse({"status": "ok", "id": conv.id, "title": conv.title, "icon": conv.icon})
+        except Exception as e:
+            return JsonResponse({"status": "error", "error": str(e)})
+    return JsonResponse({"status": "error"}, status=405)
+
+@login_required
+def obtener_historial_chat(request, conversation_id):
+    conv = get_object_or_404(Conversation, id=conversation_id, user=request.user)
+    mensajes = conv.messages.all().order_by('created_at')
+    data = [{"content": m.content, "sender_type": m.sender_type, "created_at": m.created_at.isoformat()} for m in mensajes]
+    return JsonResponse({"mensajes": data})
 
 def login_view(request):
     if request.method == "POST":
@@ -139,7 +172,7 @@ def login_view(request):
         )
         if user:
             login(request, user)
-            return redirect("index")
+            return redirect("chat:index")
         return render(request, "chat/login.html", {"error": "Credenciales incorrectas"})
     return render(request, "chat/login.html")
 
@@ -152,12 +185,20 @@ def register_view(request):
             form.add_error('username', 'Usuario ya existe')
         else:
             login(request, user)
-            return redirect("index")
+            return redirect("chat:index")
     return render(request, "chat/register.html", {"form": form})
 
 def logout_view(request):
     logout(request)
-    return redirect("login")
+    return redirect("chat:login")
+
+@login_required
+def eliminar_conversacion(request, conversation_id):
+    if request.method == "POST":
+        conv = get_object_or_404(Conversation, id=conversation_id, user=request.user)
+        conv.delete()
+        return JsonResponse({"status": "ok"})
+    return JsonResponse({"status": "error"}, status=405)
 
 @login_required
 def send_message(request):
@@ -167,15 +208,26 @@ def send_message(request):
     if request.content_type == "application/json":
         data = json.loads(request.body)
         msg  = data.get("content", "").strip()
+        conv_id = data.get("conversation_id")
     else:
         msg = request.POST.get("message", "").strip()
+        conv_id = request.POST.get("conversation_id")
 
     if not msg:
         return JsonResponse({"reply": "Escribe algo 💖"})
 
-    Message.objects.create(user=request.user, content=msg, sender_type="user")
+    conversation = None
+    if conv_id:
+        conversation = get_object_or_404(Conversation, id=conv_id, user=request.user)
+
+    # 💾 GUARDADO EN SQLITE (Estándar)
+    # Las señales (signals.py) se encargarán automáticamente del respaldo en MongoDB
+    Message.objects.create(user=request.user, content=msg, sender_type="user", conversation=conversation)
     reply = generar_respuesta(msg, request.user)
-    Message.objects.create(user=request.user, content=reply, sender_type="bot")
+    Message.objects.create(user=request.user, content=reply, sender_type="bot", conversation=conversation)
+    
+    if conversation:
+        conversation.save() # actualiza updated_at
 
     return JsonResponse({"reply": reply})
 

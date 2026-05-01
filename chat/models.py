@@ -60,6 +60,26 @@ class Usuario(AbstractUser):
         self.save(update_fields=['racha_dias', 'ultima_visita'])
 
 
+class Conversation(models.Model):
+    user = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        related_name='conversations'
+    )
+    title = models.CharField(max_length=255, default="Nueva Conversación")
+    icon = models.CharField(max_length=10, default="💬")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+        verbose_name = "Conversación"
+        verbose_name_plural = "Conversaciones"
+
+    def __str__(self):
+        return f"{self.title} ({self.user.username})"
+
+
 class Message(models.Model):
 
     SENDER_CHOICES = [
@@ -72,6 +92,14 @@ class Message(models.Model):
         Usuario,
         on_delete=models.CASCADE,
         related_name='mensajes'
+    )
+
+    conversation = models.ForeignKey(
+        Conversation,
+        on_delete=models.CASCADE,
+        related_name='messages',
+        null=True,
+        blank=True
     )
 
     sender_type = models.CharField(

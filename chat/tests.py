@@ -53,7 +53,7 @@ class RegistroTest(TestCase):
         )
 
     def test_registro_usuario_duplicado_no_500(self):
-        response = self.client.post(reverse('register'), {
+        response = self.client.post(reverse('chat:register'), {
             'username': 'majo',
             'email': 'majo2@example.com',
             'password1': 'abc123def',
