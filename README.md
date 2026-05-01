@@ -40,12 +40,16 @@ Experiencias interactivas diseñadas para reducir la ansiedad:
 *   **Caja Mágica**: Cuadro interactivo con explosiones de partículas y sonidos binaurales.
 *   **Respiración Guiada**: Ciclos rítmicos para meditación profunda.
 
+### 🎬 Mi Bóveda de Contenido (Entretenimiento) - **NUEVO**
+*   **Gestor Personal de Medios**: Guarda tus videos, tutoriales, tableros de Pinterest y artículos para leer o ver después.
+*   **Interfaz Dinámica**: Interfaz organizada y premium con filtros para tu contenido favorito.
+
 ### 📅 Smart Event Manager
 *   **FullCalendar Integration**: Gestión visual de eventos y citas.
 *   **Quick Widgets**: Acceso rápido a eventos próximos desde el encabezado del inicio.
 
 ### 💾 Infinite Memory (Persistencia Total)
-*   **LocalStorage Integration**: Tu música, tus eventos y tu ciudad favorita se quedan guardados en tu computadora. ¡Nunca más pierdas tu configuración al refrescar!
+*   **LocalStorage Integration**: Tu música, tus eventos, enlaces de entretenimiento y tu ciudad favorita se quedan guardados en tu computadora. ¡Nunca más pierdas tu configuración al refrescar!
 
 ### 🎙️ Inteligencia Vocal & Clima
 *   **Voz IA Automática**: MiniAmigixV te guía por cada sección con síntesis de voz proactiva.
@@ -58,7 +62,7 @@ Experiencias interactivas diseñadas para reducir la ansiedad:
 | Tecnología | Uso |
 |-----------|------|
 | **Python / Django** | Corazón del Backend y arquitectura SPA |
-| **JavaScript (ES6+)** | Lógica de Pomodoro, Flashcards y Persistencia |
+| **JavaScript (ES6+)** | Lógica de Pomodoro, Flashcards, Feed y Persistencia |
 | **FullCalendar API** | Motor de gestión de eventos |
 | **LocalStorage API** | Almacenamiento persistente del lado del cliente |
 | **Canvas & Web Audio** | Motores de juegos Zen y feedback acústico |
