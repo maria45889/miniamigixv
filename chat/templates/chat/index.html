@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MiniAmigixV | Dashboard Premium 💙</title>
+<link rel="icon" type="image/png" sizes="512x512" href="{% static 'chat/img/logo.png' %}">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
     <link
         href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Outfit:wght@300;400;600;700&family=DM+Mono:wght@400;500&display=swap"
@@ -2486,9 +2487,9 @@
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
-        // ═══════════════════════════════════════════════════════════════
-        //  ESTADO GLOBAL
-        // ═══════════════════════════════════════════════════════════════
+// ==============================
+// 🎯 ESTADO GLOBAL
+// ==============================
         let currentYtUrl = "";
         let ytPlayer = null;
         let ytReady = false;
@@ -2503,9 +2504,9 @@
         let scrollInterval = null;
         let lastScrollPos = 0;
 
-        // ═══════════════════════════════════════════════════════════════
-        //  🎯 UTILIDADES (fetchSeguro & CSRF)
-        // ═══════════════════════════════════════════════════════════════
+// ==============================
+// 🔐 SEGURIDAD & UTILIDADES
+// ==============================
         function getCsrf() {
             const el = document.querySelector("[name=csrfmiddlewaretoken]");
             return el ? el.value : "";
@@ -2757,7 +2758,7 @@
             } else {
                 // Cambio directo de SRC si la API no está lista
                 const iframe = document.getElementById('player');
-                if (iframe) iframe.src = `https://www.youtube.com/embed/${vMatch[1]}?autoplay=1&enablejsapi=1`;
+                if (iframe) iframe.src = `https://www.youtube.com/embed/${vMatch[1]}?autoplay=1&enablejsapi=1&origin=${window.location.origin}`;
             }
 
             // Cargar letra si existe

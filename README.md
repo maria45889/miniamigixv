@@ -98,3 +98,33 @@ El chat mostrará los mensajes anteriores y los nuevos aparecerán al instante.
 <div align="center">
 <b>MiniAmigixV v3.5 (Hybrid Edition)</b> - Potencia relacional y flexibilidad NoSQL.
 </div>
+
+---
+
+## 📦 Uso rápido del Chat
+
+```bash
+# Inicia el servidor
+python manage.py runserver
+# Abre la URL del chat
+http://127.0.0.1:8000/chat/
+```
+
+Escribe cualquier mensaje y verás la respuesta del asistente en tiempo real.
+
+---
+
+## 🤝 Contribuir
+
+¡Las contribuciones son bienvenidas! Sigue estos pasos:
+1. Haz fork del repositorio.
+2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`).
+3. Implementa los cambios y escribe pruebas.
+4. Haz commit y push a tu fork.
+5. Abre un Pull Request.
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia MIT. Consulta el archivo `LICENSE` para más detalles.
