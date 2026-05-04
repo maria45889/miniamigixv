@@ -74,6 +74,27 @@ python manage.py runserver
 
 ---
 
+## 🗨️ Chat Interactivo
+
+El módulo **Chat** permite conversar con tu asistente virtual personal, almacenar mensajes en tiempo real y sincronizarlos con MongoDB para persistencia infinita.  
+### ¿Para qué sirve?
+- **Asistente personal**: Responde preguntas, guarda notas y ejecuta comandos simples.
+- **Comunicación en tiempo real**: Interfaz con actualizaciones instantáneas usando websockets/Django Channels.
+- **Almacenamiento robusto**: Cada mensaje se guarda tanto en la base relacional como en la NoSQL para recuperación y análisis posterior.
+### Requisitos
+- **MongoDB** corriendo y configurado en `.env` (`MONGODB_URI`).
+- **Django Channels** instalado (`pip install channels channels_redis`).
+- **Redis** como broker para los sockets (opcional pero recomendado).
+
+### Cómo probarlo
+1. Asegúrate de haber ejecutado `python manage.py migrate` y configurado la base de datos.  
+2. Inicia el servidor con `python manage.py runserver`.  
+3. Abre `http://127.0.0.1:8000/chat/` y escribe un mensaje.  
+
+El chat mostrará los mensajes anteriores y los nuevos aparecerán al instante.  
+
+---
+
 <div align="center">
 <b>MiniAmigixV v3.5 (Hybrid Edition)</b> - Potencia relacional y flexibilidad NoSQL.
 </div>
