@@ -1,109 +1,79 @@
 <div align="center">
 
-# 💖 MiniAmigixV: High-Performance Zen Edition
+# 💖 MiniAmigixV: Ultimate Hybrid FullStack Edition
 
-### 🌟 Centro de mando personal diseñado con Django + IA + Focus Zone Premium
+### 🌟 Centro de mando personal diseñado con Django 6 + PostgreSQL + MongoDB + API Rest
 
-<img src="miniamigixv_banner_1777032161216.png" width="100%" alt="MiniAmigixV Banner"/>
+<img src="static/chat/img/logo.png" width="200px" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" alt="MiniAmigixV Logo"/>
 
 <br>
 
-![Python](https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge&logo=python)
+![Python](https://img.shields.io/badge/Python-3.14-blue?style=for-the-badge&logo=python)
 ![Django](https://img.shields.io/badge/Django-6.0-green?style=for-the-badge&logo=django)
-![IA](https://img.shields.io/badge/Voz_IA-Activada-pink?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Activo-success?style=for-the-badge)
-![Memory](https://img.shields.io/badge/Memoria-LocalStorage_Infinite-yellow?style=for-the-badge)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-🐘-blue?style=for-the-badge&logo=postgresql)
+![MongoDB](https://img.shields.io/badge/MongoDB-🍃-green?style=for-the-badge&logo=mongodb)
+![API](https://img.shields.io/badge/API_Rest-Postman_Ready-orange?style=for-the-badge)
 
 </div>
 
 ---
 
-# ✨ Descripción
+# ✨ Arquitectura Híbrida de Vanguardia
 
-**MiniAmigixV** ha evolucionado de un dashboard minimalista a una **Suite de Alto Rendimiento y Bienestar**. Combinando el poder de **Django** con interacciones de **IA y Productividad Avanzada**, ofrece un entorno diseñado para el enfoque profundo, la organización y la relajación.
+**MiniAmigixV** utiliza un sistema de almacenamiento dual para maximizar el rendimiento y la seguridad:
 
-Desde conquistar tus exámenes en la **Focus Zone** hasta sumergirte en una sesión de relajación en la **Zen Zone**, MiniAmigixV es tu compañero digital de élite.
+*   **🐘 PostgreSQL (Relacional)**: Maneja el corazón de la aplicación (Usuarios, Eventos, Blogs, Tareas). Es el motor de la consistencia y la integridad de tus datos.
+*   **🍃 MongoDB (NoSQL)**: Actúa como nuestra **Bóveda de Respaldo Infinita**. Cada mensaje de chat se sincroniza automáticamente con MongoDB para asegurar que tu historial sea eterno y escalable.
 
 ---
 
-# 🚀 Características de Vanguardia
+# 🚀 Características de Élite
 
-### 🎓 Focus Zone (Zona de Enfoque) - **NUEVO**
-Diseñada para el máximo rendimiento académico y profesional:
-*   **Temporizador Pomodoro**: Reloj circular con anillo de progreso neon y alertas de sonido.
-*   **Flashcards 3D**: Repaso interactivo con animaciones de giro tridimensional.
-*   **Session Goals**: Gestor de objetivos inmediatos para mantener el flujo de trabajo.
+### 📡 FullStack API (Mobile Ready)
+*   **Django Rest Framework**: Integración de una arquitectura de API profesional.
+*   **Postman Collection**: Kit de pruebas incluido para controlar tu dashboard desde cualquier herramienta externa.
+*   **CORS Enabled**: Configuración lista para conectar con **Android Studio**.
 
-### 🧘 Zen Zone (Anti-Estrés)
-Experiencias interactivas diseñadas para reducir la ansiedad:
-*   **Pop It / Neon Snake / Memory Matrix**: Juegos minimalistas diseñados para el relax.
-*   **Caja Mágica**: Cuadro interactivo con explosiones de partículas y sonidos binaurales.
-*   **Respiración Guiada**: Ciclos rítmicos para meditación profunda.
+### ✍️ Mi Blog Personal
+*   **Módulo de Escritura**: Un espacio elegante para inmortalizar tus pensamientos, con gestión total y persistencia en PostgreSQL.
 
-### 🎬 Mi Bóveda de Contenido (Entretenimiento) - **NUEVO**
-*   **Gestor Personal de Medios**: Guarda tus videos, tutoriales, tableros de Pinterest y artículos para leer o ver después.
-*   **Interfaz Dinámica**: Interfaz organizada y premium con filtros para tu contenido favorito.
-
-### 📅 Smart Event Manager
-*   **FullCalendar Integration**: Gestión visual de eventos y citas.
-*   **Quick Widgets**: Acceso rápido a eventos próximos desde el encabezado del inicio.
-
-### 💾 Infinite Memory (Persistencia Total)
-*   **LocalStorage Integration**: Tu música, tus eventos, enlaces de entretenimiento y tu ciudad favorita se quedan guardados en tu computadora. ¡Nunca más pierdas tu configuración al refrescar!
-
-### 🎙️ Inteligencia Vocal & Clima
-*   **Voz IA Automática**: MiniAmigixV te guía por cada sección con síntesis de voz proactiva.
-*   **Sky Cast**: Datos meteorológicos en tiempo real con consejos de IA para tu día.
+### 🎨 Identidad & Branding
+*   **Logo Personalizado**: Sidebar con branding oficial y efectos de iluminación dinámica.
+*   **Avatar System**: Cambia tu foto de perfil y la de tu Chat usando URLs personalizadas.
 
 ---
 
 # 🛠 Stack Tecnológico
 
-| Tecnología | Uso |
+| Tecnología | Rol |
 |-----------|------|
-| **Python / Django** | Corazón del Backend y arquitectura SPA |
-| **JavaScript (ES6+)** | Lógica de Pomodoro, Flashcards, Feed y Persistencia |
-| **FullCalendar API** | Motor de gestión de eventos |
-| **LocalStorage API** | Almacenamiento persistente del lado del cliente |
-| **Canvas & Web Audio** | Motores de juegos Zen y feedback acústico |
-| **CSS3 (Glassmorphism)** | Interfaz premium con desenfoque de cristal y neón |
+| **Django 6.0** | Framework de alto rendimiento |
+| **PostgreSQL** | Motor SQL para datos estructurados |
+| **MongoDB** | Motor NoSQL para almacenamiento masivo de mensajes |
+| **DRF** | Motor de API Restful |
+| **Psycopg 3** | Adaptador moderno de base de datos |
+| **CSS3 & JS ES14** | Interfaz Glassmorphism y lógica dinámica |
 
 ---
 
-# 📷 Galería del Proyecto
-
-## 🎓 Focus Zone (Modo Estudio)
-<img src="static/img/focus_zone.png" width="100%" alt="Focus Zone View"/>
-
-## 🧘 Zen Zone & Games
-<img src="static/img/zen_zone.png" width="100%" alt="Zen Zone View"/>
-
-## 🌦️ Sky Cast Station
-<img src="static/img/weather.png" width="100%" alt="Weather View"/>
-
----
-
-# ⚙ Instalación y Despliegue
+# ⚙ Instalación Pro
 
 ```bash
-# Clonar el proyecto
+# 1. Clonar e instalar
 git clone https://github.com/maria45889/miniamigixv.git
-
-# Entrar al directorio
 cd miniamigixv
-
-# Instalar dependencias
 pip install -r requirements.txt
 
-# Preparar base de datos
+# 2. Configurar Bases de Datos
+# Configura PostgreSQL (pgAdmin) y MongoDB en tu .env
 python manage.py migrate
 
-# ¡Encender el Dashboard!
+# 3. ¡Desplegar Magia!
 python manage.py runserver
 ```
 
 ---
 
 <div align="center">
-Desarrollado con ❤️ para Majo por el equipo de MiniAmigixV
+<b>MiniAmigixV v3.5 (Hybrid Edition)</b> - Potencia relacional y flexibilidad NoSQL.
 </div>

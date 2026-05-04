@@ -34,6 +34,8 @@ urlpatterns = [
     # Blog
     path('blog/listar/',                      views.listar_blogs,           name='listar_blogs'),
     path('blog/crear/',                       views.crear_blog,             name='crear_blog'),
+    path('blog/editar/<int:blog_id>/',        views.editar_blog,            name='editar_blog'),
+    path('blog/eliminar/<int:blog_id>/',      views.eliminar_blog,          name='eliminar_blog'),
 
     # Estudios
     path('estudios/listar/',                  views.listar_estudios,        name='listar_estudios'),
@@ -56,3 +58,17 @@ urlpatterns = [
     path('clima/obtener/',                    views.obtener_clima,          name='obtener_clima'),
     path('clima/actualizar_ciudad/',          views.actualizar_ciudad,      name='actualizar_ciudad'),
 ]
+
+# 🚀 API Routes (Postman)
+from rest_framework.routers import DefaultRouter
+router = DefaultRouter()
+router.register(r'api/blogs',           views.BlogViewSet,            basename='api-blog')
+router.register(r'api/eventos',         views.EventoViewSet,          basename='api-evento')
+router.register(r'api/tasks',           views.TaskViewSet,            basename='api-task')
+router.register(r'api/estudios',        views.EstudioViewSet,         basename='api-estudio')
+router.register(r'api/trabajos',        views.TrabajoViewSet,         basename='api-trabajo')
+router.register(r'api/entretenimiento', views.EntretenimientoViewSet, basename='api-entretenimiento')
+router.register(r'api/noticias',        views.NoticiaViewSet,         basename='api-noticia')
+router.register(r'api/musica',          views.CancionViewSet,         basename='api-musica')
+
+urlpatterns += router.urls

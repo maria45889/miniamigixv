@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -330,10 +331,79 @@
             border: 10px solid #1a1a1a;
             margin: 0 auto 28px;
             animation: rotate 10s linear infinite;
-            animation-play-state: paused;
+            /* === MEJORA: CHAT HEADER & LEFT INFO === */
+        .chat-left-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            min-width: 180px;
+        }
+
+        .chat-ai-avatar-container {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            border: 2px solid var(--acc-pink);
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+            box-shadow: 0 0 15px rgba(233, 30, 99, 0.3);
+            overflow: hidden;
+        }
+
+        .chat-ai-avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .chat-title-group h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(45deg, #fff, var(--acc-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .chat-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: var(--txt-sub);
+            margin-top: 4px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4caf50;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #4caf50;
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+
+        .chat-sidebar-list {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+     justify-content: center;
             position: relative;
         }
 
@@ -1317,9 +1387,14 @@
          SIDEBAR
     ═══════════════════════════════════════ -->
     <aside class="sidebar">
-        <div class="logo-section">
-            <div class="logo-icon">✨</div>
-            <span class="logo-text">MiniAmigixV</span>
+        <div class="logo-section" style="margin-bottom: 30px; display: flex; flex-direction: column; align-items: center; padding: 10px 0;">
+            <!-- Logo personalizado -->
+            <img src="{% static 'chat/img/logo.png' %}" alt="Logo" 
+                 style="width: 140px; height: auto; filter: drop-shadow(0 0 15px rgba(255, 126, 179, 0.4)); transition: 0.3s;"
+                 onmouseover="this.style.transform='scale(1.05) rotate(-2deg)'" 
+                 onmouseout="this.style.transform='scale(1) rotate(0deg)'">
+            <!-- Nombre de la página -->
+            <span class="logo-text" style="margin-top: 12px; font-size: 1.4rem; letter-spacing: -0.5px;">MiniAmigixV</span>
         </div>
 
         <div class="nav-scroll">
@@ -1390,7 +1465,7 @@
                 style="font-family:'DM Mono'; color:var(--acc-blue); letter-spacing:5px; font-size:1.6rem; font-weight:800; text-shadow: 0 0 15px rgba(126,232,250,0.3);">
                 00:00:00</div>
             <div style="display:flex; gap:12px; align-items:center;">
-                <div id="theme-toggle"
+                <div id="theme-toggle" onclick="toggleTheme()"
                     style="width:40px; height:40px; background:var(--bg-card); border:1px solid var(--bdr); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; transition:0.3s;">
                     🌙</div>
             </div>
@@ -1456,7 +1531,7 @@
                     style="padding: 30px; display: flex; justify-content: space-around; align-items: center; margin-bottom: 25px;">
                     <div style="text-align: center; flex: 1;">
                         <div style="font-size: 1.5rem; margin-bottom: 8px;">🔥</div>
-                        <div style="font-size: 2.8rem; font-weight: 800; color: var(--acc-pink);" id="val-racha">1</div>
+                        <div style="font-size: 2.8rem; font-weight: 800; color: var(--acc-pink);" id="val-racha">{{ user.racha_dias }}</div>
                         <small
                             style="color: var(--txt-sub); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">Racha</small>
                     </div>
@@ -1515,15 +1590,19 @@
                 </div>
             </section>
 
-            <!-- ═══════ CHAT ═══════ -->
             <section id="view-chat" class="view-section">
-                <div class="section-header">
-                    <div>
-                        <h1 class="page-title">🤖 Neural Chat</h1>
-                        <p style="color:var(--txt-sub); font-size:0.85rem;">Tu asistente de IA personal</p>
+                <!-- 🛰️ CHAT HEADER (PREMIUM) -->
+                <div class="glass-card" style="margin-bottom: 25px; padding: 25px; display: flex; align-items: center; justify-content: center; gap: 30px; border-bottom: 3px solid var(--acc-purple);">
+                    <div id="chat-ai-avatar-container" style="position: relative;">
+                        <img id="chat-ai-img" src="{% static 'chat/images/img/asistente_cute.png' %}" alt="AI" style="width: 85px; height: 85px; border-radius: 50%; border: 3px solid var(--acc-purple); padding: 4px; background: rgba(0,0,0,0.4); box-shadow: 0 0 20px rgba(167,139,250,0.4);">
+                        <div style="position: absolute; bottom: 5px; right: 5px; width: 18px; height: 18px; background: #10b981; border: 3px solid #000; border-radius: 50%;"></div>
                     </div>
-                    <button class="btn-action" style="width:auto; padding:10px 20px;" onclick="clearChat()">🗑️
-                        LIMPIAR</button>
+                    <div style="text-align: left;">
+                        <h1 id="chat-bot-title" style="margin: 0; font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #fff, var(--acc-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">NEURAL CHAT</h1>
+                        <p style="margin: 5px 0 0; font-size: 0.9rem; color: var(--txt-sub); letter-spacing: 2px; text-transform: uppercase;">
+                            <span id="chat-bot-status-name">MiniAmigixV AI</span> • <span style="color: #10b981; font-weight: 700;">EN LÍNEA</span>
+                        </p>
+                    </div>
                 </div>
                 <div
                     style="display: grid; grid-template-columns: 280px 1fr; gap: 24px; height: calc(100vh - 200px); min-height: 500px;">
@@ -1631,7 +1710,7 @@
                     <h1 class="page-title">🎵 Sound Wave</h1>
                     <div class="badge">Playlist v2.0</div>
                 </div>
-                <div style="display:grid; grid-template-columns:1.1fr 1fr; gap:36px;">
+                <div style="display:grid; grid-template-columns:1.8fr 1fr; gap:36px;">
                     <!-- Player -->
                     <div class="player-card">
                         <div id="disc-player" class="disc">
@@ -1646,9 +1725,29 @@
                             style="color:var(--acc-pink); font-size:0.7rem; font-weight:800; margin-bottom:28px; text-transform:uppercase; letter-spacing:3px;">
                             OFFLINE</p>
 
-                        <div id="yt-player-wrap"
-                            style="border-radius:24px; overflow:hidden; width:100%; height:240px; background:#000; position:relative; box-shadow:0 20px 40px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.05);">
-                            <div id="player"></div>
+                        <div style="display:flex; gap:20px; margin-bottom:20px; align-items: stretch; height: 320px;">
+                            <div id="yt-player-wrap"
+                                style="flex: 1.4; border-radius:24px; overflow:hidden; background:#000; position:relative; box-shadow:0 20px 40px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.05);">
+                                <div id="player"></div>
+                            </div>
+
+                            <!-- Lyrics Panel -->
+                            <div id="lyrics-wrap" class="glass-card" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-color: rgba(126,232,250,0.15); text-align: left; transition: all 0.5s ease;">
+                                <div style="padding: 12px 18px; border-bottom: 1px solid var(--bdr); display: flex; justify-content: space-between; align-items: center; background: rgba(126,232,250,0.03);">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div id="lyrics-indicator" style="width: 8px; height: 8px; background: var(--acc-blue); border-radius: 50%; opacity: 0.5;"></div>
+                                        <span style="font-size: 0.65rem; font-weight: 800; color: var(--acc-blue); text-transform: uppercase; letter-spacing: 2px;">Letras en Vivo</span>
+                                    </div>
+                                    <div style="width: 20px;"></div> <!-- Espacio para equilibrio visual -->
+                                </div>
+                                <div id="lyrics-container" style="flex: 1; padding: 20px; overflow-y: auto; position: relative; background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, transparent 100%);">
+                                    <div id="lyrics-content" style="font-family: 'DM Mono', monospace; font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,255,0.7); white-space: pre-wrap; transition: opacity 0.3s;">Selecciona una canción...</div>
+                                    <textarea id="lyrics-edit" style="display: none; width: 100%; height: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--acc-blue); border-radius: 12px; padding: 15px; color: white; font-family: 'DM Mono', monospace; font-size: 0.85rem; line-height: 1.8; outline: none; resize: none; box-shadow: inset 0 0 15px rgba(0,0,0,0.5);"></textarea>
+                                </div>
+                                <div id="lyrics-save-bar" style="display: none; padding: 12px; background: rgba(52,235,168,0.1); border-top: 1px solid rgba(52,235,168,0.2); text-align: center;">
+                                    <button onclick="saveLyrics()" class="badge" style="background: #34eba8; color: #000; border: none; cursor: pointer; padding: 6px 16px; font-weight: 800; width: 100%;">GUARDAR CAMBIOS ✨</button>
+                                </div>
+                            </div>
                         </div>
 
                         <div
@@ -1693,92 +1792,103 @@
                 </div>
             </section>
 
-            <!-- ═══════ CLIMA ═══════ -->
+            <!-- ═══════ CLIMA (SKYCAST INTELLIGENCE STATION) ═══════ -->
             <section id="view-clima" class="view-section">
-                <div class="section-header">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
                     <div>
-                        <h1 class="page-title" style="letter-spacing:-1px;">🌤️ <span
-                                style="font-weight:300;">SKY</span><span
-                                style="font-weight:800; color:var(--acc-blue);">CAST</span></h1>
-                        <p
-                            style="color:var(--txt-sub); font-size:0.75rem; text-transform:uppercase; letter-spacing:2px; font-weight:700;">
-                            Weather Intelligence System</p>
+                        <h1 class="page-title" style="letter-spacing:-1px; margin:0;">🌤️ <span style="font-weight:300;">SKY</span><span style="font-weight:900; color:var(--acc-blue);">CAST</span></h1>
+                        <p style="font-size: 0.65rem; color: var(--acc-blue); letter-spacing: 3px; font-weight: 800; text-transform: uppercase; margin-top: 5px;">Weather Intelligence System</p>
                     </div>
-                    <div style="display:flex; gap:12px;">
-                        <input id="city-search" placeholder="Enter Location..."
-                            style="background:rgba(0,0,0,0.2); border:1px solid var(--bdr); border-radius:10px; padding:10px 18px; color:white; outline:none; width:240px; font-size:0.85rem;"
-                            onkeydown="if(event.key==='Enter') changeCitySearch()">
-                        <button class="btn-action"
-                            style="width:auto; padding:10px 20px; border-radius:10px; font-weight:800;"
-                            onclick="changeCitySearch()">SCAN</button>
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <div class="input-group" style="margin:0; width: 240px;">
+                            <input type="text" id="city-search" placeholder="Enter Location..." style="padding: 11px 18px; font-size: 0.85rem;" onkeydown="if(event.key==='Enter') changeCitySearch()">
+                        </div>
+                        <button class="btn-action" onclick="changeCitySearch()" style="width: auto; padding: 11px 25px; background: linear-gradient(135deg, var(--acc-blue), #4fa8c5); color: #000; font-weight: 800; border-radius: 12px;">SCAN</button>
                     </div>
                 </div>
 
-                <div class="glass-card"
-                    style="padding:0; overflow:hidden; border-radius:24px; border:1px solid var(--bdr); background:rgba(10,10,20,0.4); display:grid; grid-template-columns:1fr 1.5fr;">
-                    <!-- Columna Izquierda: Main Info -->
-                    <div
-                        style="padding:50px; border-right:1px solid var(--bdr); background:linear-gradient(180deg, rgba(126,232,250,0.05), transparent); display:flex; flex-direction:column; align-items:center; text-align:center;">
-                        <div id="full-weather-icon" style="font-size:7rem; margin-bottom:30px;">☀️</div>
-                        <h1 id="full-weather-temp"
-                            style="font-size:5.5rem; font-weight:300; line-height:1; margin-bottom:10px;">--°</h1>
-                        <h2 id="full-weather-city"
-                            style="font-size:1.2rem; font-weight:800; letter-spacing:4px; text-transform:uppercase; color:var(--acc-blue);">
-                            QUITO</h2>
-                        <p id="full-weather-desc"
-                            style="font-size:0.9rem; opacity:0.6; margin-top:8px; font-weight:400;">Retrieving satellite
-                            data...</p>
-                    </div>
+                <div class="glass-card" style="padding:0; overflow:hidden; border-radius: 30px; border: 2px solid rgba(126,232,250,0.2); background: linear-gradient(145deg, rgba(10,10,20,0.85) 0%, rgba(20,20,40,0.7) 100%);">
+                    <div style="display: grid; grid-template-columns: 1fr 1.6fr; min-height: 480px;">
+                        
+                        <!-- Panel Izquierdo: Estado Actual Principal -->
+                        <div style="padding: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(126,232,250,0.04); border-right: 1px solid rgba(255,255,255,0.08); text-align: center; position: relative;">
+                            <div id="full-weather-icon" style="font-size: 8.5rem; filter: drop-shadow(0 0 35px rgba(255,255,255,0.2)); margin-bottom: 20px; animation: float 6s ease-in-out infinite;">☀️</div>
+                            <div id="full-weather-temp" style="font-size: 7.5rem; font-weight: 900; line-height: 0.9; font-family: 'DM Mono', monospace; background: linear-gradient(180deg, #fff, rgba(255,255,255,0.5)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">15°</div>
+                            <div id="full-weather-city" style="font-size: 1.8rem; font-weight: 800; letter-spacing: 5px; margin-top: 15px; color: var(--acc-blue); text-transform: uppercase;">QUITO</div>
+                            <div id="full-weather-desc" style="font-size: 0.95rem; color: var(--txt-sub); text-transform: uppercase; letter-spacing: 2px; margin-top: 8px; opacity: 0.8;">Parcialmente nublado</div>
+                            
+                            <!-- Radar de escaneo animado (Premium) -->
+                            <div style="position: absolute; top: 25px; left: 25px; width: 45px; height: 45px; border: 1px solid rgba(126,232,250,0.25); border-radius: 50%;">
+                                <div style="position: absolute; top: 50%; left: 50%; width: 50%; height: 2px; background: linear-gradient(90deg, var(--acc-blue), transparent); transform-origin: left center; animation: rotate 3s linear infinite;"></div>
+                                <div style="width: 100%; height: 100%; border-radius: 50%; box-shadow: inset 0 0 15px rgba(126,232,250,0.3); opacity: 0.4;"></div>
+                            </div>
+                        </div>
 
-                    <!-- Columna Derecha: Details -->
-                    <div style="padding:50px; display:flex; flex-direction:column; justify-content:center; gap:40px;">
-                        <div>
-                            <h4
-                                style="font-size:0.7rem; color:var(--acc-blue); text-transform:uppercase; letter-spacing:3px; margin-bottom:25px; font-weight:800;">
-                                Meteorology Metrics</h4>
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px;">
-                                <div>
-                                    <div
-                                        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                        <span
-                                            style="font-size:0.75rem; opacity:0.6; text-transform:uppercase; font-weight:700;">Humedad</span>
-                                        <span id="full-weather-hum"
-                                            style="font-size:1rem; font-weight:800; color:var(--acc-blue);">--%</span>
-                                    </div>
-                                    <div
-                                        style="height:4px; width:100%; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
-                                        <div id="hum-bar"
-                                            style="height:100%; width:0%; background:var(--acc-blue); transition:1s;">
+                        <!-- Panel Derecho: Métricas y Pronóstico -->
+                        <div style="padding: 50px; display: flex; flex-direction: column; justify-content: space-between; gap: 30px;">
+                            
+                            <!-- Métricas de Aire -->
+                            <div>
+                                <h4 style="font-size: 0.75rem; color: var(--acc-blue); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 25px; font-weight: 800; display: flex; align-items: center; gap: 10px;">
+                                    <span style="width: 20px; height: 1px; background: var(--acc-blue);"></span> Meteorology Metrics
+                                </h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                                    <!-- Humedad -->
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem; font-weight: 700;">
+                                            <span style="color: var(--txt-sub); opacity: 0.7;">HUMEDAD</span>
+                                            <span id="full-weather-hum" style="color: var(--acc-blue); font-family: 'DM Mono';">75%</span>
+                                        </div>
+                                        <div style="height: 6px; background: rgba(255,255,255,0.06); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);">
+                                            <div id="hum-bar" style="width: 75%; height: 100%; background: var(--acc-blue); box-shadow: 0 0 15px var(--acc-blue); transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1);"></div>
                                         </div>
                                     </div>
-                                </div>
-                                <div>
-                                    <div
-                                        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                        <span
-                                            style="font-size:0.75rem; opacity:0.6; text-transform:uppercase; font-weight:700;">Viento</span>
-                                        <span id="full-weather-wind"
-                                            style="font-size:1rem; font-weight:800; color:var(--acc-pink);">--
-                                            km/h</span>
-                                    </div>
-                                    <div
-                                        style="height:4px; width:100%; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
-                                        <div id="wind-bar"
-                                            style="height:100%; width:0%; background:var(--acc-pink); transition:1s;">
+                                    <!-- Viento -->
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem; font-weight: 700;">
+                                            <span style="color: var(--txt-sub); opacity: 0.7;">VIENTO</span>
+                                            <span id="full-weather-wind" style="color: #34eba8; font-family: 'DM Mono';">12 km/h</span>
+                                        </div>
+                                        <div style="height: 6px; background: rgba(255,255,255,0.06); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);">
+                                            <div id="wind-bar" style="width: 40%; height: 100%; background: #34eba8; box-shadow: 0 0 15px #34eba8; transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1);"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div
-                            style="background:rgba(255,255,255,0.02); padding:25px; border-radius:16px; border:1px solid rgba(255,255,255,0.05);">
-                            <div
-                                style="font-size:0.65rem; color:var(--acc-blue); text-transform:uppercase; letter-spacing:2px; font-weight:800; margin-bottom:12px;">
-                                AI Assistant Status</div>
-                            <p id="weather-tip"
-                                style="font-size:0.9rem; line-height:1.6; opacity:0.8; font-family:'DM Mono', monospace;">
-                                Waiting for environmental scan...</p>
+                            <!-- Pronóstico de 3 días (Nuevo) -->
+                            <div>
+                                <h4 style="font-size: 0.75rem; color: var(--acc-pink); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px;">
+                                    <span style="width: 20px; height: 1px; background: var(--acc-pink);"></span> 3-Day Forecast
+                                </h4>
+                                <div style="display: flex; gap: 15px;">
+                                    <div style="flex: 1; background: rgba(255,255,255,0.03); padding: 18px 10px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.06); transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                                        <div style="font-size: 0.6rem; color: var(--txt-sub); margin-bottom: 10px; font-weight: 800;">MAÑANA</div>
+                                        <div style="font-size: 2.2rem; margin-bottom: 8px;">⛅</div>
+                                        <div style="font-size: 1.1rem; font-weight: 800; font-family: 'DM Mono';">18°C</div>
+                                    </div>
+                                    <div style="flex: 1; background: rgba(255,255,255,0.03); padding: 18px 10px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.06); transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                                        <div style="font-size: 0.6rem; color: var(--txt-sub); margin-bottom: 10px; font-weight: 800;">PRÓXIMO</div>
+                                        <div style="font-size: 2.2rem; margin-bottom: 8px;">🌧️</div>
+                                        <div style="font-size: 1.1rem; font-weight: 800; font-family: 'DM Mono';">14°C</div>
+                                    </div>
+                                    <div style="flex: 1; background: rgba(255,255,255,0.03); padding: 18px 10px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.06); transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                                        <div style="font-size: 0.6rem; color: var(--txt-sub); margin-bottom: 10px; font-weight: 800;">FIN SEM.</div>
+                                        <div style="font-size: 2.2rem; margin-bottom: 8px;">☀️</div>
+                                        <div style="font-size: 1.1rem; font-weight: 800; font-family: 'DM Mono';">22°C</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- IA Assistant Advice -->
+                            <div class="glass-card" style="padding: 22px; border-color: rgba(167,139,250,0.25); background: rgba(167,139,250,0.03); border-radius: 18px;">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                    <div style="width: 12px; height: 12px; background: var(--acc-purple); border-radius: 50%; box-shadow: 0 0 15px var(--acc-purple); animation: pulse 2s infinite;"></div>
+                                    <span style="font-size: 0.65rem; font-weight: 800; color: var(--acc-purple); text-transform: uppercase; letter-spacing: 3px;">AI Weather Analysis</span>
+                                </div>
+                                <p id="weather-tip" style="font-size: 0.9rem; line-height: 1.6; color: rgba(255,255,255,0.85); margin: 0; font-family: 'DM Mono', monospace; font-style: italic;">"System online. Scanning satellite data for real-time environmental optimization..."</p>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -1799,6 +1909,16 @@
                             <div class="game-tab" onclick="switchZen('matrix', this)">Memory Matrix 🧠</div>
                             <div class="game-tab" onclick="switchZen('breathe', this)">Respiración</div>
                             <div class="game-tab" onclick="switchZen('particles', this)">Partículas</div>
+                        </div>
+                        
+                        <!-- ⚡ SELECTOR DE DIFICULTAD (SOLO PARA SNAKE Y MATRIX) -->
+                        <div id="difficulty-selector" style="display:none; align-items:center; gap:12px; margin-top:15px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 12px; width: fit-content; animation: fadeIn 0.3s;">
+                            <span style="font-size: 0.65rem; font-weight: 800; color: var(--txt-sub); text-transform: uppercase; letter-spacing: 1px;">Dificultad:</span>
+                            <div style="display:flex; gap:6px;">
+                                <button id="diff-easy" class="badge" onclick="setDifficulty('easy')" style="cursor:pointer; background: rgba(52,235,168,0.15); color: #34eba8; border-color: #34eba8;">Fácil</button>
+                                <button id="diff-medium" class="badge" onclick="setDifficulty('medium')" style="cursor:pointer; background: rgba(255,255,255,0.05); color: var(--txt-sub); border-color: rgba(255,255,255,0.1);">Medio</button>
+                                <button id="diff-hard" class="badge" onclick="setDifficulty('hard')" style="cursor:pointer; background: rgba(255,255,255,0.05); color: var(--txt-sub); border-color: rgba(255,255,255,0.1);">Difícil</button>
+                            </div>
                         </div>
                     </div>
                     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
@@ -1993,77 +2113,271 @@
                     </div>
                 </div>
             </section>
-        </div>
-        </section>
 
-        <!-- ⭐ ENTRETE. (FEED) -->
+        <!-- ⭐ ENTRETE. (MINI-JUEGOS) -->
         <section id="view-entrete" class="view-section">
             <div class="section-header">
-                <h1 class="page-title">🎬 Mi Bóveda de Contenido</h1>
+                <h1 class="page-title">✨ Zona de Entretenimiento</h1>
             </div>
 
-            <div class="glass-card" style="padding: 20px; margin-bottom: 25px; max-width: 850px;">
-                <h3 style="font-size: 0.8rem; color: var(--acc-blue); margin-bottom: 12px;">Guardar Nuevo Enlace</h3>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch;">
-                    <input type="text" id="feed-title-input" placeholder="Título (ej: Canción Lofi...)" style="flex: 1; min-width: 150px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 14px; color: white; outline: none; font-size: 0.85rem;">
-                    <input type="url" id="feed-url-input" placeholder="URL (https://...)" style="flex: 1.5; min-width: 200px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 14px; color: white; outline: none; font-size: 0.85rem;">
-                    <select id="feed-type-select" style="flex: 0 0 auto; min-width: 120px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 14px; color: white; outline: none; font-size: 0.85rem;">
-                        <option value="Video" style="color: black;">Video</option>
-                        <option value="Inspiración" style="color: black;">Inspiración</option>
-                        <option value="Artículo" style="color: black;">Artículo</option>
-                    </select>
-                    <button class="btn-action" onclick="addFeedItem()" style="flex: 0 0 auto; width: auto; background: var(--acc-blue); color: #000; font-weight: bold; padding: 0 25px; border:none; cursor:pointer; border-radius:10px; font-size: 0.85rem;">GUARDAR</button>
+            <!-- BENTO GRID -->
+            <div style="display: grid; grid-template-columns: 1.4fr 1fr 1fr; grid-template-rows: auto auto; gap: 16px; width: 100%;">
+
+                <!-- 🔮 ORÁCULO — tarjeta grande izquierda (rowspan 2) -->
+                <div style="grid-row: 1 / 3; background: linear-gradient(145deg, rgba(30,10,60,0.85), rgba(10,5,30,0.95)); border: 1px solid rgba(167,139,250,0.3); border-radius: 20px; padding: 28px; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(167,139,250,0.08);">
+                    <div style="font-size: 2.8rem; margin-bottom: 8px;">🔮</div>
+                    <h2 style="font-size: 1.2rem; color: #c4b5fd; margin-bottom: 6px; font-weight: 700;">Oráculo Zodiacal</h2>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-bottom: 24px; line-height: 1.5;">Elige tu signo y descubre qué te tiene preparado el universo para hoy.</p>
+
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: auto;">
+                        <select id="zodiac-select" style="background: rgba(167,139,250,0.12); border: 2px solid rgba(167,139,250,0.4); border-radius: 12px; padding: 12px 16px; color: white; outline: none; font-size: 0.95rem; width: 100%; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.2);" onfocus="this.style.borderColor='var(--acc-pink)'; this.style.boxShadow='0 0 15px rgba(255,126,179,0.2)'" onblur="this.style.borderColor='rgba(167,139,250,0.4)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)'">
+                            <option value="" disabled selected style="background: #1a0b2e; color: rgba(255,255,255,0.5);">Elige tu signo...</option>
+                            <option value="Aries" style="background: #1a0b2e; color: #fff;">♈ Aries</option>
+                            <option value="Tauro" style="background: #1a0b2e; color: #fff;">♉ Tauro</option>
+                            <option value="Géminis" style="background: #1a0b2e; color: #fff;">♊ Géminis</option>
+                            <option value="Cáncer" style="background: #1a0b2e; color: #fff;">♋ Cáncer</option>
+                            <option value="Leo" style="background: #1a0b2e; color: #fff;">♌ Leo</option>
+                            <option value="Virgo" style="background: #1a0b2e; color: #fff;">♍ Virgo</option>
+                            <option value="Libra" style="background: #1a0b2e; color: #fff;">♎ Libra</option>
+                            <option value="Escorpio" style="background: #1a0b2e; color: #fff;">♏ Escorpio</option>
+                            <option value="Sagitario" style="background: #1a0b2e; color: #fff;">♐ Sagitario</option>
+                            <option value="Capricornio" style="background: #1a0b2e; color: #fff;">♑ Capricornio</option>
+                            <option value="Acuario" style="background: #1a0b2e; color: #fff;">♒ Acuario</option>
+                            <option value="Piscis" style="background: #1a0b2e; color: #fff;">♓ Piscis</option>
+                        </select>
+                        <button onclick="readZodiac()" style="background: linear-gradient(135deg, #a78bfa, #7c3aed); color: #fff; border: none; border-radius: 12px; padding: 12px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.2s; letter-spacing: 0.05em;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">✨ CONSULTAR ASTROS</button>
+                    </div>
+
+                    <div id="zodiac-result" style="display: none; margin-top: 20px; padding: 16px; background: rgba(167,139,250,0.08); border-radius: 12px; border-left: 3px solid #a78bfa;">
+                        <p id="zodiac-text" style="font-size: 0.88rem; line-height: 1.6; color: rgba(255,255,255,0.85); margin: 0; font-style: italic;"></p>
+                    </div>
                 </div>
-            </div>
-            
-            <div style="display:flex; gap:12px; margin-bottom:15px;">
-                <button class="badge" onclick="renderFeed('todos', this)" style="background:var(--acc-blue); color:#000; cursor:pointer;">Todos</button>
-                <button class="badge" onclick="renderFeed('Video', this)" style="background:rgba(255,255,255,0.05); color:var(--txt-main); cursor:pointer;">Videos</button>
-                <button class="badge" onclick="renderFeed('Inspiración', this)" style="background:rgba(255,255,255,0.05); color:var(--txt-main); cursor:pointer;">Inspiración</button>
-                <button class="badge" onclick="renderFeed('Artículo', this)" style="background:rgba(255,255,255,0.05); color:var(--txt-main); cursor:pointer;">Artículos</button>
+
+                <!-- 🥠 GALLETA — arriba derecha -->
+                <div style="background: linear-gradient(145deg, rgba(60,10,40,0.85), rgba(20,5,15,0.95)); border: 1px solid rgba(255,126,179,0.25); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 0 25px rgba(255,126,179,0.06);">
+                    <div id="fortune-cookie-icon" style="font-size: 3.2rem; cursor: pointer; transition: transform 0.3s; filter: drop-shadow(0 0 12px rgba(255,126,179,0.35)); margin-bottom: 12px;" onclick="crackCookie()" onmouseover="this.style.transform='scale(1.15) rotate(8deg)'" onmouseout="this.style.transform='scale(1)'">🥠</div>
+                    <h3 style="font-size: 1rem; color: #fb7eb3; font-weight: 700; margin-bottom: 4px;">Galleta de la Fortuna</h3>
+                    <p style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-bottom: 12px;">Toca la galleta para abrir tu mensaje.</p>
+                    <div id="cookie-result" style="display: none; padding: 10px 14px; width: 100%; background: rgba(255,126,179,0.08); border-radius: 10px; font-style: italic; font-size: 0.82rem; color: #ffc0d9; border: 1px solid rgba(255,126,179,0.2);"></div>
+                </div>
+
+                <!-- 🎱 BOLA 8 — abajo centro -->
+                <div style="background: linear-gradient(145deg, rgba(10,10,40,0.9), rgba(5,5,20,0.95)); border: 1px solid rgba(126,232,250,0.2); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 0 25px rgba(126,232,250,0.05);">
+                    <h3 style="font-size: 0.9rem; color: rgba(255,255,255,0.5); font-weight: 600; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.08em;">🎱 Bola 8 Mágica</h3>
+                    <input type="text" id="magic-8-input" placeholder="Escribe tu pregunta de sí o no..." style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 14px; color: white; outline: none; font-size: 0.82rem; text-align: center; margin-bottom: 12px;">
+                    <div id="magic-8-ball" style="font-size: 3.5rem; cursor: pointer; transition: 0.4s; filter: drop-shadow(0 0 12px rgba(100,100,255,0.3));" onclick="shakeMagic8Ball()" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🎱</div>
+                    <div id="magic-8-result" style="opacity: 0; transition: 0.4s; font-size: 1rem; font-weight: 700; color: #7ee8fa; margin-top: 10px; min-height: 22px;"></div>
+                </div>
+
+                <!-- 🪙 MONEDA — abajo izquierda segunda fila ultima col -->
+                <div style="background: linear-gradient(145deg, rgba(50,40,5,0.85), rgba(20,15,5,0.95)); border: 1px solid rgba(250,218,94,0.2); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 0 25px rgba(250,218,94,0.05);">
+                    <div style="display: flex; gap: 12px; width: 100%; justify-content: center; align-items: center; flex-direction: column;">
+                        <div id="coin-toss" style="font-size: 3.5rem; cursor: pointer; transition: 0.6s; filter: drop-shadow(0 0 12px rgba(250,218,94,0.25));" onclick="flipCoin()" onmouseover="this.style.transform='scale(1.1) rotate(10deg)'" onmouseout="this.style.transform='scale(1)'">🪙</div>
+                        <h3 style="font-size: 1rem; color: #fada5e; font-weight: 700; margin: 0;">Lanzar Moneda</h3>
+                        <p style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin: 0;">¿Cara o Cruz?</p>
+                        <div id="coin-result" style="opacity: 0; transition: 0.4s; font-size: 1rem; font-weight: 700; color: #fada5e; min-height: 22px;"></div>
+                    </div>
+                </div>
+
             </div>
 
-            <div id="inspiration-feed" class="feed-grid">
-                <!-- Se llena con JS -->
+            <!-- FILA INFERIOR: Dado centrado -->
+            <div style="margin-top: 16px; background: linear-gradient(145deg, rgba(5,40,25,0.85), rgba(5,20,15,0.95)); border: 1px solid rgba(52,235,168,0.2); border-radius: 20px; padding: 24px 40px; display: flex; align-items: center; gap: 30px; box-shadow: 0 0 25px rgba(52,235,168,0.05);">
+                <div id="dice-roll" style="font-size: 4rem; cursor: pointer; transition: 0.5s; filter: drop-shadow(0 0 12px rgba(52,235,168,0.25)); flex-shrink: 0;" onclick="rollDice()" onmouseover="this.style.transform='scale(1.15) rotate(20deg)'" onmouseout="this.style.transform='scale(1)'">🎲</div>
+                <div>
+                    <h3 style="font-size: 1.1rem; color: #34eba8; font-weight: 700; margin-bottom: 4px;">Tirar Dado</h3>
+                    <p style="font-size: 0.82rem; color: rgba(255,255,255,0.4); margin: 0;">Haz clic en el dado para obtener un número del 1 al 6. Útil para decisiones o juegos de mesa.</p>
+                </div>
+                <div id="dice-result" style="opacity: 0; transition: 0.4s; font-size: 2rem; font-weight: 900; color: #34eba8; margin-left: auto; min-width: 60px; text-align: center;"></div>
             </div>
+
         </section>
 
         <!-- 🔤 TRADUCTOR -->
+        <!-- TRADUCTOR -->
         <section id="view-traductor" class="view-section">
             <div class="section-header">
-                <h1 class="page-title">🔤 Traductor IA</h1>
+                <h1 class="page-title">&#127760; Traductor Universal</h1>
             </div>
-            <div class="glass-card" style="padding:60px; text-align:center; border-style: dashed; opacity: 0.8;">
-                <div style="font-size:4rem; margin-bottom:24px;">🌐</div>
-                <h3 style="font-size:1.5rem; margin-bottom:10px;">Traductor Universal</h3>
-                <p style="color:var(--txt-sub); max-width:400px; margin:0 auto;">Traduce textos y documentos al instante
-                    con tecnología de Inteligencia Artificial.</p>
+
+            <div style="display: flex; align-items: flex-end; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="font-size: 0.75rem; color: var(--txt-sub); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em;">Idioma de origen</label>
+                    <select id="trans-from" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 11px 14px; color: white; outline: none; font-size: 0.9rem; cursor: pointer;">
+                        <option value="es" style="background:#0a0a1a;">Espanol</option>
+                        <option value="en" style="background:#0a0a1a;">Ingles</option>
+                        <option value="fr" style="background:#0a0a1a;">Frances</option>
+                        <option value="de" style="background:#0a0a1a;">Aleman</option>
+                        <option value="it" style="background:#0a0a1a;">Italiano</option>
+                        <option value="pt" style="background:#0a0a1a;">Portugues</option>
+                        <option value="ja" style="background:#0a0a1a;">Japones</option>
+                        <option value="ko" style="background:#0a0a1a;">Coreano</option>
+                        <option value="zh" style="background:#0a0a1a;">Chino</option>
+                        <option value="ru" style="background:#0a0a1a;">Ruso</option>
+                        <option value="ar" style="background:#0a0a1a;">Arabe</option>
+                        <option value="hi" style="background:#0a0a1a;">Hindi</option>
+                        <option value="tr" style="background:#0a0a1a;">Turco</option>
+                    </select>
+                </div>
+                <button onclick="swapLanguages()" style="flex-shrink: 0; background: rgba(126,232,250,0.1); border: 1px solid rgba(126,232,250,0.2); color: var(--acc-blue); border-radius: 50%; width: 44px; height: 44px; font-size: 1.3rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(126,232,250,0.25)'" onmouseout="this.style.background='rgba(126,232,250,0.1)'">&#8644;</button>
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="font-size: 0.75rem; color: var(--txt-sub); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em;">Idioma de destino</label>
+                    <select id="trans-to" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 11px 14px; color: white; outline: none; font-size: 0.9rem; cursor: pointer;">
+                        <option value="en" style="background:#0a0a1a;">Ingles</option>
+                        <option value="es" style="background:#0a0a1a;">Espanol</option>
+                        <option value="fr" style="background:#0a0a1a;">Frances</option>
+                        <option value="de" style="background:#0a0a1a;">Aleman</option>
+                        <option value="it" style="background:#0a0a1a;">Italiano</option>
+                        <option value="pt" style="background:#0a0a1a;">Portugues</option>
+                        <option value="ja" style="background:#0a0a1a;">Japones</option>
+                        <option value="ko" style="background:#0a0a1a;">Coreano</option>
+                        <option value="zh" style="background:#0a0a1a;">Chino</option>
+                        <option value="ru" style="background:#0a0a1a;">Ruso</option>
+                        <option value="ar" style="background:#0a0a1a;">Arabe</option>
+                        <option value="hi" style="background:#0a0a1a;">Hindi</option>
+                        <option value="tr" style="background:#0a0a1a;">Turco</option>
+                    </select>
+                </div>
+                <button onclick="translateText()" id="trans-btn" style="flex-shrink: 0; background: linear-gradient(135deg, var(--acc-blue), #4fa8c5); color: #000; border: none; border-radius: 12px; padding: 11px 28px; font-weight: 700; font-size: 0.9rem; cursor: pointer; height: 44px; transition: 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">TRADUCIR</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.75rem; color: var(--txt-sub); text-transform: uppercase; letter-spacing: 0.06em;">Texto original</span>
+                        <button onclick="document.getElementById('trans-input').value=''; updateCharCount()" style="background: none; border: none; color: var(--txt-sub); font-size: 0.78rem; cursor: pointer; padding: 2px 6px;">Borrar</button>
+                    </div>
+                    <textarea id="trans-input" placeholder="Escribe o pega el texto aqui..." oninput="updateCharCount()" style="width: 100%; height: 220px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 16px; color: white; outline: none; font-size: 0.92rem; resize: none; font-family: inherit; line-height: 1.6; box-sizing: border-box; transition: 0.2s;" onfocus="this.style.borderColor='rgba(126,232,250,0.35)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
+                    <span id="char-count" style="font-size: 0.75rem; color: var(--txt-sub); text-align: right;">0 / 500</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.75rem; color: var(--txt-sub); text-transform: uppercase; letter-spacing: 0.06em;">Traduccion</span>
+                        <button onclick="copyTranslation()" style="background: none; border: none; color: var(--acc-blue); font-size: 0.78rem; cursor: pointer; padding: 2px 6px;">Copiar</button>
+                    </div>
+                    <div id="trans-output" style="width: 100%; height: 220px; background: rgba(126,232,250,0.03); border: 1px solid rgba(126,232,250,0.12); border-radius: 14px; padding: 16px; color: rgba(255,255,255,0.85); font-size: 0.92rem; line-height: 1.6; overflow-y: auto; box-sizing: border-box;">
+                        <span style="color: rgba(255,255,255,0.25); font-style: italic;">La traduccion aparecera aqui...</span>
+                    </div>
+                    <span style="font-size: 0.72rem; color: rgba(255,255,255,0.2); text-align: right;">Powered by MyMemory</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <p style="font-size: 0.75rem; color: var(--txt-sub); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">Frases rapidas</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button onclick="quickPhrase('Como estas?')" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--txt-main); border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">Como estas?</button>
+                    <button onclick="quickPhrase('Hola, mucho gusto')" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--txt-main); border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">Hola, mucho gusto</button>
+                    <button onclick="quickPhrase('Muchas gracias')" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--txt-main); border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">Muchas gracias</button>
+                    <button onclick="quickPhrase('Te quiero mucho')" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--txt-main); border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">Te quiero mucho</button>
+                    <button onclick="quickPhrase('Tengo hambre')" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--txt-main); border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">Tengo hambre</button>
+                    <button onclick="quickPhrase('No hablo este idioma')" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--txt-main); border-radius: 20px; padding: 6px 14px; font-size: 0.8rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">No hablo este idioma</button>
+                </div>
             </div>
         </section>
 
+
         <!-- 🚀 BLOG -->
+        <!-- BLOG -->
         <section id="view-blog" class="view-section">
             <div class="section-header">
-                <h1 class="page-title">🚀 Mi Blog Personal</h1>
+                <h1 class="page-title">&#9998; Mi Blog Personal</h1>
             </div>
-            <div class="glass-card" style="padding:60px; text-align:center; border-style: dashed; opacity: 0.8;">
-                <div style="font-size:4rem; margin-bottom:24px;">✍️</div>
-                <h3 style="font-size:1.5rem; margin-bottom:10px;">Publicaciones</h3>
-                <p style="color:var(--txt-sub); max-width:400px; margin:0 auto;">Tu espacio personal para escribir y
-                    compartir ideas está siendo procesado.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 20px; align-items: start;">
+
+                <!-- Panel izquierdo: Escribir nueva entrada -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 24px; position: sticky; top: 20px;">
+                    <h3 id="blog-form-title" style="font-size: 1rem; color: var(--acc-purple); margin-bottom: 16px; font-weight: 700;">+ Nueva entrada</h3>
+                    <input type="hidden" id="blog-edit-id" value="">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <input type="text" id="blog-titulo" placeholder="Titulo de tu entrada..." maxlength="255" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 16px; color: white; outline: none; font-size: 0.9rem; box-sizing: border-box;" onfocus="this.style.borderColor='rgba(167,139,250,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                        <textarea id="blog-contenido" placeholder="Escribe aqui tu entrada... Puedes escribir sobre tu dia, tus pensamientos, ideas, lo que quieras!" style="width: 100%; height: 200px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 16px; color: white; outline: none; font-size: 0.88rem; resize: vertical; font-family: inherit; line-height: 1.6; box-sizing: border-box;" onfocus="this.style.borderColor='rgba(167,139,250,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="guardarBlog()" style="flex: 1; background: linear-gradient(135deg, #a78bfa, #7c3aed); color: #fff; border: none; border-radius: 12px; padding: 11px; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">GUARDAR</button>
+                            <button onclick="cancelarEditarBlog()" id="blog-cancel-btn" style="display:none; flex: 0 0 auto; background: rgba(255,255,255,0.06); color: var(--txt-sub); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 11px 16px; font-size: 0.88rem; cursor: pointer;">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel derecho: Lista de entradas -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <span style="font-size: 0.75rem; color: var(--txt-sub); text-transform: uppercase; letter-spacing: 0.06em;">Mis entradas</span>
+                        <span id="blog-count" style="font-size: 0.75rem; background: rgba(167,139,250,0.12); color: var(--acc-purple); padding: 3px 10px; border-radius: 10px; font-weight: 700;">0 entradas</span>
+                    </div>
+                    <div id="blog-list" style="display: flex; flex-direction: column; gap: 14px;">
+                        <p style="color: var(--txt-sub); font-size: 0.85rem; text-align: center; padding: 40px 0;">Cargando entradas...</p>
+                    </div>
+                </div>
             </div>
         </section>
+
 
         <!-- ⚙️ CONFIGURACIÓN -->
         <section id="view-config" class="view-section">
             <div class="section-header">
-                <h1 class="page-title">⚙️ Configuración</h1>
+                <h1 class="page-title">⚙️ Centro de Control</h1>
+                <span class="badge">Personaliza tu experiencia</span>
             </div>
-            <div class="glass-card" style="padding:60px; text-align:center; border-style: dashed; opacity: 0.8;">
-                <div style="font-size:4rem; margin-bottom:24px;">🔧</div>
-                <h3 style="font-size:1.5rem; margin-bottom:10px;">Ajustes del Sistema</h3>
-                <p style="color:var(--txt-sub); max-width:400px; margin:0 auto;">Aquí podrás personalizar los temas,
-                    colores y preferencias de tu dashboard.</p>
+
+            <div class="grid-2">
+                <!-- PANEL IZQUIERDO: IDENTIDAD -->
+                <div class="glass-card" style="padding: 30px;">
+                    <h3 style="font-size: 1.1rem; color: var(--acc-pink); margin-bottom: 24px; font-weight: 700;">👤 Perfil e Identidad</h3>
+                    
+                    <div class="input-group">
+                        <label>Tu Nombre / Apodo</label>
+                        <input type="text" id="cfg-user-name" placeholder="¿Cómo quieres que te llame?" value="{{ user.username }}">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Nombre de tu Asistente IA</label>
+                        <input type="text" id="cfg-bot-name" placeholder="Ej: MiniAmigixV 2.0" value="{{ user.bot_nombre }}">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Tu Avatar (Emoji o Foto)</label>
+                        <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 15px;">
+                            <div class="emoji-btn" onclick="setAvatar('👤')">👤</div>
+                            <div class="emoji-btn" onclick="setAvatar('👑')">👑</div>
+                            <div class="emoji-btn" onclick="setAvatar('🐱')">🐱</div>
+                            <div class="emoji-btn" onclick="setAvatar('🦋')">🦋</div>
+                            <div class="emoji-btn" onclick="setAvatar('⚡')">⚡</div>
+                            <div class="emoji-btn" onclick="setAvatar('💖')">💖</div>
+                        </div>
+                        <input type="text" id="cfg-user-img" placeholder="Enlace a tu foto personalizada (URL)" onchange="setUserPhoto(this.value)">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Foto de tu Chat (URL)</label>
+                        <input type="text" id="cfg-ai-img" placeholder="Enlace a la foto de tu Chat" onchange="setAiPhoto(this.value)">
+                        <small style="color:var(--txt-sub); font-size:0.65rem; margin-top:5px; display:block;">Pega aquí el enlace a la imagen que quieras para el chat.</small>
+                    </div>
+                </div>
+
+                <!-- PANEL DERECHO: VISUALES -->
+                <div class="glass-card" style="padding: 30px;">
+                    <h3 style="font-size: 1.1rem; color: var(--acc-blue); margin-bottom: 24px; font-weight: 700;">🎨 Visuales y Entorno</h3>
+                    
+                    <div class="input-group">
+                        <label>Color de Acento (Tema)</label>
+                        <div style="display: flex; gap: 12px;">
+                            <div onclick="setAccent('pink')" style="width: 32px; height: 32px; border-radius: 50%; background: #ff7eb3; cursor: pointer; border: 2px solid white;"></div>
+                            <div onclick="setAccent('purple')" style="width: 32px; height: 32px; border-radius: 50%; background: #a78bfa; cursor: pointer;"></div>
+                            <div onclick="setAccent('blue')" style="width: 32px; height: 32px; border-radius: 50%; background: #7ee8fa; cursor: pointer;"></div>
+                            <div onclick="setAccent('green')" style="width: 32px; height: 32px; border-radius: 50%; background: #34d399; cursor: pointer;"></div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Tu Ciudad (Clima)</label>
+                        <input type="text" id="cfg-city" placeholder="Ej: Madrid, Quito..." value="{{ user.ciudad }}">
+                    </div>
+
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--bdr);">
+                        <button onclick="saveAllConfig()" class="btn-action" style="width: 100%;">GUARDAR TODOS LOS CAMBIOS ✨</button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -2145,6 +2459,23 @@
         </div>
     </div>
 
+    <!-- ═══════ MODAL LEER BLOG ═══════ -->
+    <div id="blog-read-modal" class="modal-overlay" onclick="if(event.target===this) closeBlogReadModal()">
+        <div class="modal-card" style="max-width: 700px; padding: 40px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <div style="font-size: 0.65rem; color: var(--acc-purple); font-weight: 800; text-transform: uppercase; letter-spacing: 2px;" id="read-blog-date">01 MAY 2026</div>
+                <button onclick="closeBlogReadModal()" style="background: none; border: none; color: var(--txt-sub); cursor: pointer; font-size: 1.2rem;">✕</button>
+            </div>
+            <h2 id="read-blog-title" style="font-size: 2rem; line-height: 1.2; margin-bottom: 25px; background: linear-gradient(135deg, #fff, var(--acc-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Título del Blog</h2>
+            <div id="read-blog-content" style="font-size: 1.05rem; line-height: 1.8; color: rgba(255,255,255,0.85); white-space: pre-wrap; max-height: 50vh; overflow-y: auto; padding-right: 15px;">
+                Contenido...
+            </div>
+            <div style="margin-top: 40px; display: flex; justify-content: flex-end;">
+                <button class="btn-action" onclick="closeBlogReadModal()">VOLVER</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div class="toast" id="toast">
         <span id="toast-icon">✅</span>
@@ -2166,10 +2497,54 @@
         let playlistData = [];
         let activeSongId = null;
         let userEmoji = localStorage.getItem('user_emoji') || '👤';
+        let userPhoto = localStorage.getItem('user_photo') || '';
+        let aiPhoto = localStorage.getItem('ai_photo') || '';
+
+        let scrollInterval = null;
+        let lastScrollPos = 0;
+
+        // ═══════════════════════════════════════════════════════════════
+        //  🎯 UTILIDADES (fetchSeguro & CSRF)
+        // ═══════════════════════════════════════════════════════════════
+        function getCsrf() {
+            const el = document.querySelector("[name=csrfmiddlewaretoken]");
+            return el ? el.value : "";
+        }
+
+        async function fetchSeguro(url, options = {}) {
+            try {
+                const res = await fetch(url, options);
+                if (!res.ok) return null;
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await res.json();
+                }
+                return null;
+            } catch (e) {
+                console.error("❌ Error API:", e);
+                return null;
+            }
+        }
+
+        function scrollBottom() {
+            const chatMessages = document.getElementById('chat-messages');
+            if (chatMessages) {
+                chatMessages.scrollTo({
+                    top: chatMessages.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }
+        }
 
         function syncAvatarDisplay() {
             const el = document.getElementById('user-avatar-display');
-            if (el) el.textContent = userEmoji;
+            if (!el) return;
+            if (userPhoto) {
+                el.innerHTML = `<img src="${userPhoto}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+            } else {
+                el.textContent = userEmoji;
+                el.style.fontSize = '1.3rem';
+            }
         }
 
         // Datos locales (con persistencia en LocalStorage)
@@ -2185,6 +2560,47 @@
         let nextSongId = localSongs.length ? Math.max(...localSongs.map(s => s.id)) + 1 : 1;
         let nextEventId = localEvents.length ? Math.max(...localEvents.map(e => e.id)) + 1 : 1;
 
+        // 🎮 DIFICULTAD GLOBAL DE JUEGOS
+        let gameDifficulty = localStorage.getItem('miniamigix_difficulty') || 'easy';
+
+        function setDifficulty(level) {
+            gameDifficulty = level;
+            localStorage.setItem('miniamigix_difficulty', level);
+            
+            // Actualizar UI de botones
+            const diffs = ['easy', 'medium', 'hard'];
+            const colors = {
+                easy: { bg: 'rgba(52,235,168,0.15)', text: '#34eba8', border: '#34eba8' },
+                medium: { bg: 'rgba(255,235,59,0.15)', text: '#ffeb3b', border: '#ffeb3b' },
+                hard: { bg: 'rgba(244,67,54,0.15)', text: '#f44336', border: '#f44336' }
+            };
+
+            diffs.forEach(d => {
+                const btn = document.getElementById(`diff-${d}`);
+                if (btn) {
+                    if (d === level) {
+                        btn.style.background = colors[d].bg;
+                        btn.style.color = colors[d].text;
+                        btn.style.borderColor = colors[d].border;
+                    } else {
+                        btn.style.background = 'rgba(255,255,255,0.05)';
+                        btn.style.color = 'var(--txt-sub)';
+                        btn.style.borderColor = 'rgba(255,255,255,0.1)';
+                    }
+                }
+            });
+
+            showToast(`Dificultad: ${level.toUpperCase()} ⚡`, "🎮");
+            
+            if (activeView === 'juegos') {
+                if (activeZen === 'snake') initSnake();
+                if (activeZen === 'matrix') initMatrix();
+            }
+        }
+
+        // Aplicar dificultad guardada al cargar
+        setTimeout(() => setDifficulty(gameDifficulty), 500);
+
         function saveSongs() {
             localStorage.setItem('miniamigix_songs', JSON.stringify(localSongs));
         }
@@ -2196,9 +2612,19 @@
         // (Funciones de navegación y tema se movieron al final para mayor claridad)
 
         function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-            document.getElementById('theme-toggle').textContent =
-                document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+            const isLight = document.body.classList.toggle('light-mode');
+            localStorage.setItem('miniamigix_theme', isLight ? 'light' : 'dark');
+            document.getElementById('theme-toggle').textContent = isLight ? '☀️' : '🌙';
+            showToast(isLight ? "Modo Claro activado ☀️" : "Modo Oscuro activado 🌙", "🌓");
+        }
+
+        // Aplicar tema guardado al cargar
+        if (localStorage.getItem('miniamigix_theme') === 'light') {
+            document.body.classList.add('light-mode');
+            setTimeout(() => {
+                const btn = document.getElementById('theme-toggle');
+                if (btn) btn.textContent = '☀️';
+            }, 100);
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -2278,18 +2704,31 @@
                     status.textContent = "REPRODUCIENDO 🎶";
                     btn.textContent = "⏸";
                     document.getElementById('yt-hint')?.style.setProperty('display', 'none');
+                    // Efecto en letras
+                    document.getElementById('lyrics-wrap').style.borderColor = 'var(--acc-blue)';
+                    document.getElementById('lyrics-wrap').style.boxShadow = '0 0 20px rgba(126,232,250,0.15)';
+                    document.getElementById('lyrics-indicator').style.opacity = '1';
+                    document.getElementById('lyrics-indicator').style.boxShadow = '0 0 10px var(--acc-blue)';
+                    startLyricsAutoScroll();
                     break;
                 case YT.PlayerState.PAUSED:
                     disc.classList.remove('playing');
                     status.textContent = "PAUSADO ⏸";
                     btn.textContent = "▶";
+                    document.getElementById('lyrics-wrap').style.borderColor = 'rgba(126,232,250,0.15)';
+                    document.getElementById('lyrics-wrap').style.boxShadow = 'none';
+                    document.getElementById('lyrics-indicator').style.opacity = '0.5';
+                    document.getElementById('lyrics-indicator').style.boxShadow = 'none';
+                    stopLyricsAutoScroll();
                     break;
                 case YT.PlayerState.ENDED:
                     disc.classList.remove('playing');
+                    stopLyricsAutoScroll();
                     playNext();
                     break;
                 default:
                     disc.classList.remove('playing');
+                    stopLyricsAutoScroll();
             }
         }
 
@@ -2320,6 +2759,10 @@
                 const iframe = document.getElementById('player');
                 if (iframe) iframe.src = `https://www.youtube.com/embed/${vMatch[1]}?autoplay=1&enablejsapi=1`;
             }
+
+            // Cargar letra si existe
+            const song = localSongs.find(s => s.id === id);
+            updateLyricsDisplay(song ? song.lyrics : "");
 
             clearTimeout(playTimeout);
             playTimeout = setTimeout(() => {
@@ -2371,82 +2814,186 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        //  MÚSICA (CRUD local — en Django usa fetch a tus endpoints)
+        //  LYRICS LOGIC
         // ═══════════════════════════════════════════════════════════════
-        function syncMusic() {
-            playlistData = [...localSongs];
-            document.getElementById('val-songs').textContent = playlistData.length;
-            renderPlaylistUI();
-        }
-
-        function syncSongsCount() {
-            document.getElementById('val-songs').textContent = localSongs.length;
-        }
-
-        function renderPlaylistUI() {
-            const el = document.getElementById('playlist-content');
-            if (!playlistData.length) {
-                el.innerHTML = '<p style="padding:20px; font-size:0.8rem; color:var(--txt-sub); text-align:center;">Tu playlist está vacía 🎼</p>';
+        function toggleEditLyrics() {
+            if (activeSongId === null) {
+                showToast("Primero selecciona una canción", "🎵");
                 return;
             }
-            el.innerHTML = playlistData.map((s, i) => `
-            <div class="song-item ${s.id === activeSongId ? 'active' : ''}" id="song-${s.id}">
-                <div onclick="playSong('${escapeAttr(s.youtube_url)}','${escapeAttr(s.titulo)}',${s.id})"
-                     style="flex:1; display:flex; align-items:center; gap:12px; cursor:pointer;">
-                    <div style="width:34px; height:34px; background:rgba(255,255,255,0.04); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:0.9rem; flex-shrink:0;">
-                        ${s.id === activeSongId ? '▶' : (i + 1)}
+            const content = document.getElementById('lyrics-content');
+            const edit = document.getElementById('lyrics-edit');
+            const bar = document.getElementById('lyrics-save-bar');
+            
+            if (edit.style.display === 'none') {
+                edit.value = content.innerText === 'Selecciona una canción...' || content.innerText === 'Letra no disponible. ¡Añádela tú!' ? '' : content.innerText;
+                content.style.display = 'none';
+                edit.style.display = 'block';
+                bar.style.display = 'block';
+                edit.focus();
+            } else {
+                content.style.display = 'block';
+                edit.style.display = 'none';
+                bar.style.display = 'none';
+            }
+        }
+
+        function saveLyrics() {
+            const edit = document.getElementById('lyrics-edit');
+            const lyrics = edit.value.trim();
+            
+            const song = localSongs.find(s => s.id === activeSongId);
+            if (song) {
+                song.lyrics = lyrics;
+                saveSongs();
+                updateLyricsDisplay(lyrics);
+                toggleEditLyrics();
+                showToast("Letra guardada correctamente", "📝");
+            }
+        }
+
+        function updateLyricsDisplay(text) {
+            const container = document.getElementById('lyrics-container');
+            const content = document.getElementById('lyrics-content');
+            if (!content) return;
+            
+            stopLyricsAutoScroll();
+            container.scrollTop = 0;
+
+            if (!text) {
+                content.innerHTML = '<span style="opacity:0.3; font-style:italic;">Letra no disponible. ¡Añádela tú! ✍️</span>';
+                return;
+            }
+
+            // Efecto de suavizado inicial
+            content.style.opacity = '0';
+            setTimeout(() => {
+                content.textContent = text;
+                content.style.opacity = '1';
+                content.style.fontStyle = 'normal';
+                
+                // Si el reproductor ya está sonando, iniciar scroll de inmediato
+                if (ytPlayer && ytPlayer.getPlayerState && ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                    startLyricsAutoScroll();
+                }
+            }, 300);
+        }
+
+        function startLyricsAutoScroll() {
+            stopLyricsAutoScroll();
+            const container = document.getElementById('lyrics-container');
+            if (!container || !ytPlayer || !ytPlayer.getDuration) return;
+
+            // Esperar un poco a que el reproductor tenga la duración lista
+            scrollInterval = setInterval(() => {
+                const duration = ytPlayer.getDuration();
+                if (duration <= 0) return;
+
+                const currentTime = ytPlayer.getCurrentTime();
+                const progress = currentTime / duration;
+                const scrollHeight = container.scrollHeight - container.clientHeight;
+                
+                if (scrollHeight > 0) {
+                    container.scrollTo({
+                        top: scrollHeight * progress,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 1000);
+        }
+
+        function stopLyricsAutoScroll() {
+            if (scrollInterval) clearInterval(scrollInterval);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        //  PLAYLIST MANAGER
+        // ═══════════════════════════════════════════════════════════════
+        function initMusic() {
+            renderPlaylist();
+            if (localSongs.length > 0) {
+                // No reproducir auto, solo preparar UI
+                const first = localSongs[0];
+                document.getElementById('current-song-title').textContent = first.titulo;
+                activeSongId = first.id;
+            }
+        }
+
+        function renderPlaylist() {
+            playlistData = localSongs;
+            const container = document.getElementById('playlist-content');
+            if (!container) return;
+
+            if (playlistData.length === 0) {
+                container.innerHTML = '<p style="padding:20px; font-size:0.8rem; color:var(--txt-sub); text-align:center;">Tu playlist está vacía. 🎵</p>';
+                return;
+            }
+
+            container.innerHTML = playlistData.map(s => `
+                <div class="song-item ${activeSongId === s.id ? 'active' : ''}" id="song-${s.id}" onclick="playSong('${s.youtube_url}', '${escapeAttr(s.titulo)}', ${s.id})">
+                    <div style="width:36px; height:36px; background:rgba(255,255,255,0.03); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:0.9rem;">
+                        ${activeSongId === s.id ? '🎵' : '💿'}
                     </div>
-                    <div>
-                        <div style="font-size:0.83rem; font-weight:700;">${escapeHtml(s.titulo)}</div>
-                        <div style="font-size:0.65rem; color:var(--acc-pink); margin-top:2px;">YouTube Music</div>
+                    <div style="flex:1; overflow:hidden;">
+                        <div style="font-size:0.85rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(s.titulo)}</div>
+                        <div style="font-size:0.65rem; color:var(--txt-sub); text-transform:uppercase;">YouTube Audio</div>
+                    </div>
+                    <div class="song-actions">
+                        <div class="action-icon" onclick="event.stopPropagation(); deleteSong(${s.id})" title="Eliminar">🗑️</div>
                     </div>
                 </div>
-                <div class="song-actions">
-                    <div class="action-icon" onclick="editSong(${s.id}, '${escapeAttr(s.titulo)}')" title="Editar">✏️</div>
-                    <div class="action-icon" onclick="deleteSong(${s.id})" title="Eliminar" style="color:#f87171;">🗑️</div>
-                </div>
-            </div>
-        `).join('');
+            `).join('');
+            
+            // Si la canción actual tiene letra, mostrarla
+            if (activeSongId !== null) {
+                const current = localSongs.find(s => s.id === activeSongId);
+                if (current) updateLyricsDisplay(current.lyrics);
+            }
         }
 
         function handleMusicSubmit(e) {
             e.preventDefault();
             const titulo = document.getElementById('song-titulo').value.trim();
             const url = document.getElementById('song-url').value.trim();
+
             if (!titulo || !url) return;
 
-            localSongs.push({ id: nextSongId++, titulo, youtube_url: url });
+            const newSong = { id: nextSongId++, titulo, youtube_url: url, lyrics: "" };
+            localSongs.push(newSong);
             saveSongs();
-            e.target.reset();
-            syncMusic();
-            showToast("Canción añadida 🎵", "🎵");
-        }
+            renderPlaylist();
 
-        function editSong(id, oldTitle) {
-            const n = prompt("Nuevo nombre:", oldTitle);
-            if (n && n.trim()) {
-                const s = localSongs.find(s => s.id === id);
-                if (s) {
-                    s.titulo = n.trim();
-                    saveSongs();
-                    renderPlaylistUI();
-                    showToast("Nombre actualizado ✅", "✅");
-                }
-            }
+            document.getElementById('song-titulo').value = "";
+            document.getElementById('song-url').value = "";
+            showToast("¡Añadida a la colección! ✨", "🎵");
+            
+            playSong(url, titulo, newSong.id);
         }
 
         function deleteSong(id) {
-            if (!confirm("¿Eliminar esta canción?")) return;
+            if (!confirm("¿Eliminar canción?")) return;
             localSongs = localSongs.filter(s => s.id !== id);
             saveSongs();
-            if (activeSongId === id) {
-                activeSongId = null;
-                document.getElementById('current-song-title').textContent = "Selecciona una canción";
-                document.getElementById('current-song-status').textContent = "OFFLINE";
-            }
-            syncMusic();
-            showToast("Canción eliminada 🗑️", "🗑️");
+            renderPlaylist();
+            showToast("Canción eliminada", "🗑️");
         }
+
+        function escapeAttr(str) {
+            return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+
+        function playPrev() {
+            if (!playlistData.length) return;
+            let idx = playlistData.findIndex(s => s.id === activeSongId);
+            idx = (idx - 1 + playlistData.length) % playlistData.length;
+            const prev = playlistData[idx];
+            playSong(prev.youtube_url, prev.titulo, prev.id);
+        }
+
+        function syncSongsCount() {
+            document.getElementById('val-songs').textContent = localSongs.length;
+        }
+
 
         // ═══════════════════════════════════════════════════════════════
         //  EVENTOS (CRUD local)
@@ -2502,16 +3049,17 @@
             if (calendar) calendar.refetchEvents();
         }
 
-        function initMusic() {
-            syncMusic();
-        }
-
+        // ═══════════════════════════════════════════════════════════════
+        //  CALENDAR INITIALIZER
+        // ═══════════════════════════════════════════════════════════════
         function initCalendar() {
             syncEvents();
+            // También podemos renderizar el calendario de una vez si estamos en esa vista
         }
 
         function renderCalendar() {
             const el = document.getElementById('calendar');
+            if (!el) return;
             if (calendar) { calendar.destroy(); calendar = null; }
             calendar = new FullCalendar.Calendar(el, {
                 initialView: 'dayGridMonth',
@@ -2539,7 +3087,7 @@
 
             document.getElementById('btn-delete-event').onclick = () => {
                 if (!confirm("¿Eliminar este evento?")) return;
-                localEvents = localEvents.filter(e => e.id != event.id);
+                localEvents = localEvents.filter(e => e.id != (event.id || event.extendedProps?.id));
                 saveEvents();
                 closeViewEventModal();
                 syncEvents();
@@ -2551,7 +3099,6 @@
         function showEventDetailsById(id) {
             const e = localEvents.find(ev => ev.id === id);
             if (!e) return;
-            // Construir objeto pseudo-event
             showEventDetails({
                 title: e.title,
                 start: e.start,
@@ -2579,6 +3126,8 @@
             syncEvents();
             showToast("Evento creado ✅", "📅");
         }
+
+
 
         // ═══════════════════════════════════════════════════════════════
         //  CHART
@@ -3036,6 +3585,7 @@
             if (view === 'juegos') initPopIt();
             if (view === 'clima') syncWeather(true);
             if (view === 'eventos') setTimeout(renderCalendar, 100);
+            if (view === 'blog') cargarBlogs();
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -3134,6 +3684,16 @@
 
             // Leer reglas automáticamente
             readZenRules();
+
+            // ⚡ Mostrar/Ocultar selector de dificultad (Solo Snake y Matrix)
+            const diffSelector = document.getElementById('difficulty-selector');
+            if (diffSelector) {
+                if (game === 'snake' || game === 'matrix') {
+                    diffSelector.style.display = 'flex';
+                } else {
+                    diffSelector.style.display = 'none';
+                }
+            }
         }
 
         // 1. POP IT
@@ -3328,8 +3888,9 @@
         }
 
         // 6. NEON SNAKE
-        let snakeGame = null;
+        let snakeRaf = null;
         function initSnake() {
+            if (snakeRaf) cancelAnimationFrame(snakeRaf);
             const canvas = document.getElementById('snake-canvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
@@ -3349,7 +3910,8 @@
             let food = { x: 15, y: 15 };
             let dx = 1, dy = 0;
             let score = 0;
-            let speed = 100;
+            // Dificultad dinámica: Fácil(120), Medio(80), Difícil(50)
+            let speed = gameDifficulty === 'easy' ? 120 : (gameDifficulty === 'medium' ? 80 : 50);
             let lastTime = 0;
 
             overEl.style.display = 'none';
@@ -3438,10 +4000,10 @@
                     draw();
                     lastTime = timestamp;
                 }
-                requestAnimationFrame(loop);
+                snakeRaf = requestAnimationFrame(loop);
             }
 
-            requestAnimationFrame(loop);
+            snakeRaf = requestAnimationFrame(loop);
         }
 
         // 7. MEMORY MATRIX
@@ -3485,9 +4047,10 @@
             document.getElementById('matrix-start-btn').style.opacity = '0.5';
             document.getElementById('matrix-start-btn').textContent = 'OBSERVA...';
 
-            // Mostrar secuencia
+            // Mostrar secuencia con velocidad según dificultad
+            let baseDelay = gameDifficulty === 'easy' ? 800 : (gameDifficulty === 'medium' ? 600 : 400);
             for (let id of matrixSequence) {
-                await new Promise(r => setTimeout(r, 600 - (matrixLevel * 20)));
+                await new Promise(r => setTimeout(r, baseDelay - (matrixLevel * 15)));
                 const cell = document.querySelector(`.matrix-cell[data-id="${id}"]`);
                 if (cell) highlightCell(cell, 'active');
             }
@@ -3501,10 +4064,11 @@
             const color = colors[type];
             cell.style.background = color;
             cell.style.boxShadow = `0 0 20px ${color}`;
+            let flashDuration = gameDifficulty === 'easy' ? 500 : (gameDifficulty === 'medium' ? 400 : 250);
             setTimeout(() => {
                 cell.style.background = 'rgba(255,255,255,0.03)';
                 cell.style.boxShadow = 'none';
-            }, 400);
+            }, flashDuration);
             if (type === 'active') playZenSound('magic');
         }
 
@@ -3750,83 +4314,8 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        //  ENTRETENIMIENTO (Bóveda de Contenido Personal)
+        //  ENTRETENIMIENTO (Bóveda eliminada)
         // ═══════════════════════════════════════════════════════════════
-        let localFeed = JSON.parse(localStorage.getItem('miniamigix_feed')) || [
-            { id: 1, title: 'Lofi Hip Hop Radio', url: 'https://www.youtube.com/watch?v=jfKfPfyJRdk', type: 'Video' },
-            { id: 2, title: 'Diseño en Dribbble', url: 'https://dribbble.com', type: 'Inspiración' }
-        ];
-
-        function saveFeed() {
-            localStorage.setItem('miniamigix_feed', JSON.stringify(localFeed));
-            renderFeed();
-        }
-
-        function addFeedItem() {
-            const titleInput = document.getElementById('feed-title-input');
-            const urlInput = document.getElementById('feed-url-input');
-            const typeInput = document.getElementById('feed-type-select');
-            
-            const title = titleInput.value.trim();
-            const url = urlInput.value.trim();
-            const type = typeInput.value;
-            
-            if (!title || !url) {
-                showToast('Llena todos los campos ⚠️', '⚠️');
-                return;
-            }
-
-            localFeed.unshift({
-                id: Date.now(),
-                title: title,
-                url: url,
-                type: type
-            });
-
-            saveFeed();
-            titleInput.value = '';
-            urlInput.value = '';
-            showToast('Contenido guardado ✨', '🎬');
-            playZenSound('pop');
-        }
-
-        function deleteFeedItem(id) {
-            localFeed = localFeed.filter(item => item.id !== id);
-            saveFeed();
-            showToast('Enlace eliminado 🗑️', '🗑️');
-        }
-
-        function renderFeed(filter = 'todos', btnElement = null) {
-            const grid = document.getElementById('inspiration-feed');
-            if (!grid) return;
-
-            if (btnElement) {
-                const btns = document.querySelectorAll('#view-entrete .badge');
-                btns.forEach(b => {
-                    b.style.background = 'rgba(255,255,255,0.05)';
-                    b.style.color = 'var(--txt-main)';
-                });
-                btnElement.style.background = 'var(--acc-blue)';
-                btnElement.style.color = '#000';
-            }
-
-            const filtered = filter === 'todos' ? localFeed : localFeed.filter(i => i.type === filter);
-            
-            grid.innerHTML = filtered.map(item => `
-                <div class="feed-item" style="padding: 20px; justify-content: space-between; min-height: 140px;">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--acc-blue); font-weight: bold; margin-bottom: 8px; text-transform: uppercase;">
-                            ${escapeHtml(item.type)}
-                        </div>
-                        <h4 style="color: white; font-size: 1.1rem; line-height: 1.3; margin-bottom: 15px;">${escapeHtml(item.title)}</h4>
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center; margin-top: auto;">
-                        <a href="${escapeAttr(item.url)}" target="_blank" class="btn-action" style="flex: 1; text-align: center; text-decoration: none; font-size: 0.85rem; padding: 10px; background: rgba(255,255,255,0.05); color: white; border-radius: 10px; transition: 0.2s;">ABRIR ↗️</a>
-                        <button onclick="deleteFeedItem(${item.id})" style="background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2); padding: 10px; border-radius: 10px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(248,113,113,0.2)'" onmouseout="this.style.background='rgba(248,113,113,0.1)'">🗑️</button>
-                    </div>
-                </div>
-            `).join('') || '<p style="color: var(--txt-sub); grid-column: 1 / -1; text-align: center; padding: 40px;">No hay enlaces aquí. ¡Guarda tu contenido favorito!</p>';
-        }
 
         // ═══════════════════════════════════════════════════════════════
         //  INICIALIZACIÓN (INITDASHBOARD)
@@ -3842,7 +4331,8 @@
             syncSongsCount();
             renderStudyTasks();
             checkProactiveNotifications(); // ¡Cerebro proactivo activo!
-            renderFeed(); // Iniciar Feed de Inspiración
+            cargarBlogs(); // Cargar entradas del blog
+
 
             if (typeof loadConversations === 'function') loadConversations();
         }
@@ -3878,6 +4368,479 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (activeView === 'juegos') initPopIt();
         });
+
+        // ═════════ ORÁCULO Y GALLETA ═════════
+        const prediccionesZodiaco = [
+            "Hoy es un día excelente para tomar riesgos. Confía en tu intuición.",
+            "Alguien de tu pasado volverá con buenas noticias. Abre tu mente.",
+            "Tu energía está por los cielos. Aprovecha para terminar ese proyecto pendiente.",
+            "Es momento de soltar lo que no te sirve y enfocarte en tu paz mental.",
+            "Una sorpresa financiera alegrará tu día. Mantente receptivo/a.",
+            "Cuidado con las palabras apresuradas; la paciencia será tu mejor aliada hoy.",
+            "El romance y la amistad están muy bien aspectados en tu constelación.",
+            "Un viaje corto o un cambio de rutina te dará la inspiración que buscas.",
+            "Presta atención a tus sueños esta noche, tendrán un mensaje oculto importante.",
+            "El universo conspira a tu favor. Da ese primer paso hoy mismo."
+        ];
+
+        const frasesGalleta = [
+            "La fortuna favorece a los valientes. ✨",
+            "El éxito es un viaje, no un destino. 🚀",
+            "Tu sonrisa iluminará el día de alguien hoy. 😊",
+            "Una gran oportunidad está a la vuelta de la esquina. 🍀",
+            "La creatividad requiere el coraje de dejar ir las certezas. 🎨",
+            "Lo que buscas, te está buscando a ti. 💫",
+            "Hoy serás el motivo de la alegría de alguien. 💖",
+            "No cuentes los días, haz que los días cuenten. ⌛",
+            "Confía en el tiempo de tu vida. Todo llega. 🌸",
+            "Un obstáculo es solo un escalón hacia tu meta. 🧗‍♀️"
+        ];
+
+        function readZodiac() {
+            const select = document.getElementById('zodiac-select');
+            const resultBox = document.getElementById('zodiac-result');
+            const textEl = document.getElementById('zodiac-text');
+            
+            if (!select.value) {
+                showToast("Por favor selecciona tu signo primero.", "🔮");
+                return;
+            }
+            
+            // Animación pseudo-aleatoria basada en el signo y el día
+            const day = new Date().getDate();
+            const signLen = select.value.length;
+            const idx = (day + signLen) % prediccionesZodiaco.length;
+            
+            textEl.textContent = "Consultando a los astros...";
+            resultBox.style.display = 'block';
+            resultBox.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                textEl.innerHTML = `<strong>${select.value}:</strong> ${prediccionesZodiaco[idx]}`;
+                resultBox.style.opacity = '1';
+                showToast("Predicción revelada", "✨");
+            }, 800);
+        }
+
+        function crackCookie() {
+            const cookieIcon = document.getElementById('fortune-cookie-icon');
+            const resultBox = document.getElementById('cookie-result');
+            
+            cookieIcon.style.transform = 'scale(1.2) rotate(-15deg)';
+            
+            setTimeout(() => {
+                cookieIcon.textContent = '🥠✨';
+                cookieIcon.style.transform = 'scale(1)';
+                
+                const randomIdx = Math.floor(Math.random() * frasesGalleta.length);
+                resultBox.textContent = `"${frasesGalleta[randomIdx]}"`;
+                resultBox.style.display = 'block';
+                
+                showToast("Has abierto tu galleta", "🥠");
+                
+                // Restaurar la galleta después de 10 segundos
+                setTimeout(() => {
+                    cookieIcon.textContent = '🥠';
+                    resultBox.style.display = 'none';
+                }, 10000);
+            }, 400);
+        }
+
+        // 🎱 BOLA 8 MÁGICA
+        const respuestasBola8 = [
+            "Es cierto.", "Sin lugar a dudas.", "Sí, definitivamente.",
+            "Puedes confiar en ello.", "Como yo lo veo, sí.", "Lo más probable.",
+            "Perspectiva buena.", "Sí.", "Las señales apuntan a que sí.",
+            "Respuesta confusa, vuelve a intentarlo.", "Vuelve a preguntar más tarde.",
+            "Mejor no decirte ahora.", "No se puede predecir ahora.",
+            "Concéntrate y vuelve a preguntar.", "No cuentes con ello.",
+            "Mi respuesta es no.", "Mis fuentes dicen que no.",
+            "Las perspectivas no son buenas.", "Muy dudoso."
+        ];
+
+        function shakeMagic8Ball() {
+            const input = document.getElementById('magic-8-input');
+            const ball = document.getElementById('magic-8-ball');
+            const result = document.getElementById('magic-8-result');
+            
+            if (!input.value.trim()) {
+                showToast("Haz una pregunta primero", "🎱");
+                return;
+            }
+            
+            result.style.opacity = '0';
+            ball.style.transform = 'rotate(15deg) scale(1.1)';
+            
+            setTimeout(() => {
+                ball.style.transform = 'rotate(-15deg) scale(1.1)';
+            }, 150);
+            
+            setTimeout(() => {
+                ball.style.transform = 'rotate(10deg) scale(1.1)';
+            }, 300);
+            
+            setTimeout(() => {
+                ball.style.transform = 'rotate(0deg) scale(1)';
+                const randomIdx = Math.floor(Math.random() * respuestasBola8.length);
+                result.textContent = respuestasBola8[randomIdx];
+                result.style.opacity = '1';
+                showToast("El destino ha hablado", "✨");
+            }, 500);
+        }
+
+        // 🪙 LANZAR MONEDA
+        function flipCoin() {
+            const coin = document.getElementById('coin-toss');
+            const result = document.getElementById('coin-result');
+            
+            result.style.opacity = '0';
+            coin.style.transform = 'rotateY(1080deg) scale(1.2)';
+            
+            setTimeout(() => {
+                const isHeads = Math.random() < 0.5;
+                coin.style.transform = 'rotateY(0deg) scale(1)';
+                result.textContent = isHeads ? '¡CARA! 🌝' : '¡CRUZ! 🌚';
+                result.style.opacity = '1';
+                showToast("Moneda lanzada", "🪙");
+            }, 600);
+        }
+
+        // 🎲 TIRAR DADO
+        function rollDice() {
+            const dice = document.getElementById('dice-roll');
+            const result = document.getElementById('dice-result');
+            
+            result.style.opacity = '0';
+            dice.style.transform = 'rotate(720deg) scale(1.2)';
+            
+            setTimeout(() => {
+                const num = Math.floor(Math.random() * 6) + 1;
+                dice.style.transform = 'rotate(0deg) scale(1)';
+                result.textContent = `¡Sacaste un ${num}! 🎲`;
+                result.style.opacity = '1';
+                showToast("Dado tirado", "🎲");
+            }, 400);
+        }
+
+        // ════════════════════════════════════════
+        //  TRADUCTOR (MyMemory free API)
+        // ════════════════════════════════════════
+        function updateCharCount() {
+            const input = document.getElementById('trans-input');
+            const counter = document.getElementById('char-count');
+            if (!input || !counter) return;
+            const len = input.value.length;
+            counter.textContent = `${len} / 500`;
+            counter.style.color = len > 450 ? '#f87171' : 'var(--txt-sub)';
+            if (len > 500) input.value = input.value.substring(0, 500);
+        }
+
+        async function translateText() {
+            const input = document.getElementById('trans-input');
+            const output = document.getElementById('trans-output');
+            const btn = document.getElementById('trans-btn');
+            const from = document.getElementById('trans-from').value;
+            const to = document.getElementById('trans-to').value;
+
+            if (!input || !input.value.trim()) {
+                showToast('Escribe algo para traducir', '🌐');
+                return;
+            }
+
+            btn.textContent = 'Traduciendo...';
+            btn.style.opacity = '0.7';
+            output.innerHTML = '<span style="color:rgba(255,255,255,0.3); font-style:italic; animation: pulse 1s infinite;">Consultando...&#8203;</span>';
+
+            try {
+                const langPair = `${from}|${to}`;
+                const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(input.value)}&langpair=${langPair}`;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.responseStatus === 200) {
+                    output.textContent = data.responseData.translatedText;
+                    showToast('Traduccion lista', '🌐');
+                } else {
+                    output.innerHTML = '<span style="color:#f87171;">Error al traducir. Intenta de nuevo.</span>';
+                }
+            } catch(e) {
+                output.innerHTML = '<span style="color:#f87171;">Sin conexion. Revisa tu internet.</span>';
+            }
+
+            btn.textContent = 'TRADUCIR';
+            btn.style.opacity = '1';
+        }
+
+        function swapLanguages() {
+            const from = document.getElementById('trans-from');
+            const to = document.getElementById('trans-to');
+            const tmp = from.value;
+            from.value = to.value;
+            to.value = tmp;
+            showToast('Idiomas intercambiados', '&#8644;');
+        }
+
+        function copyTranslation() {
+            const output = document.getElementById('trans-output');
+            const text = output.textContent.trim();
+            if (!text || text.includes('aparecera aqui')) {
+                showToast('No hay texto para copiar', '📋');
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copiado al portapapeles', '📋');
+            });
+        }
+
+        function quickPhrase(phrase) {
+            const input = document.getElementById('trans-input');
+            if (input) {
+                input.value = phrase;
+                updateCharCount();
+                translateText();
+            }
+        }
+
+
+        // ════════════════════════════════════════
+        //  BLOG LOGIC (Gama Alta)
+        // ════════════════════════════════════════
+        let blogData = [];
+
+        async function cargarBlogs() {
+            const list = document.getElementById('blog-list');
+            try {
+                const res = await fetch('/blog/listar/');
+                const data = await res.json();
+                blogData = data.blogs || [];
+                renderBlogs();
+                const counter = document.getElementById('blog-count');
+                if (counter) counter.textContent = `${blogData.length} entrada${blogData.length !== 1 ? 's' : ''}`;
+            } catch (e) {
+                console.error("Error cargando blog:", e);
+                if (list) list.innerHTML = '<p style="color:#f87171; text-align:center; padding:20px;">Error al conectar con el servidor 📡</p>';
+            }
+        }
+
+        function renderBlogs() {
+            const list = document.getElementById('blog-list');
+            if (!list) return;
+
+            if (blogData.length === 0) {
+                list.innerHTML = `
+                    <div style="text-align:center; padding:60px 20px; border: 1px dashed rgba(255,255,255,0.1); border-radius:20px; background: rgba(255,255,255,0.02);">
+                        <div style="font-size:2.5rem; margin-bottom:15px; opacity:0.5;">✍️</div>
+                        <p style="color:var(--txt-sub); font-size:0.9rem;">Aún no tienes entradas. <br>¡Escribe tu primer pensamiento!</p>
+                    </div>`;
+                return;
+            }
+
+            list.innerHTML = blogData.map(b => {
+                const preview = b.contenido.length > 120 ? b.contenido.substring(0, 117) + '...' : b.contenido;
+                return `
+                <div class="glass-card" style="padding:20px; border-color:rgba(167,139,250,0.15); transition: 0.3s; position:relative; overflow:hidden; cursor:pointer;" onclick="verBlog(${b.id})" onmouseover="this.style.borderColor='rgba(167,139,250,0.4)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(167,139,250,0.15)'; this.style.transform='translateY(0)'">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 15px;">
+                        <h3 style="font-size: 1.1rem; color: #fff; font-weight: 700; margin: 0; line-height: 1.3; flex: 1;">${escapeHtml(b.titulo)}</h3>
+                        <div style="display: flex; gap: 8px; flex-shrink: 0;" onclick="event.stopPropagation()">
+                            <button onclick="editarBlog(${b.id})" class="btn-like" style="padding: 6px; font-size: 0.9rem;" title="Editar">✏️</button>
+                            <button onclick="eliminarBlog(${b.id})" class="btn-like" style="padding: 6px; font-size: 0.9rem; color: #f87171;" title="Eliminar">🗑️</button>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.88rem; color: rgba(255,255,255,0.6); line-height: 1.7; margin: 0 0 16px; white-space: pre-wrap;">${escapeHtml(preview)}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); pt: 12px; margin-top: 5px;">
+                        <span style="font-size: 0.7rem; color: var(--acc-purple); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">${b.creado_en}</span>
+                        <span style="font-size: 0.65rem; color: rgba(255,255,255,0.2); font-family: 'DM Mono', monospace;">ID: #${b.id}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function guardarBlog() {
+            const titulo = document.getElementById('blog-titulo').value.trim();
+            const contenido = document.getElementById('blog-contenido').value.trim();
+            const editId = document.getElementById('blog-edit-id').value;
+
+            if (!titulo || !contenido) {
+                showToast('Escribe un titulo y contenido', '&#9998;');
+                return;
+            }
+
+            const url = editId ? `/blog/editar/${editId}/` : '/blog/crear/';
+
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken()},
+                    body: JSON.stringify({titulo, contenido, publicado: true})
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    showToast(editId ? 'Entrada actualizada' : 'Entrada guardada', '&#10003;');
+                    cancelarEditarBlog();
+                    cargarBlogs();
+                }
+            } catch(e) {
+                showToast('Error al guardar', '&#10007;');
+            }
+        }
+
+        function editarBlog(id) {
+            const b = blogData.find(x => x.id === id);
+            if (!b) return;
+            document.getElementById('blog-titulo').value = b.titulo;
+            document.getElementById('blog-contenido').value = b.contenido;
+            document.getElementById('blog-edit-id').value = id;
+            document.getElementById('blog-form-title').textContent = 'Editando entrada';
+            document.getElementById('blog-cancel-btn').style.display = 'block';
+            document.getElementById('blog-titulo').focus();
+        }
+
+        function verBlog(id) {
+            const b = blogData.find(x => x.id === id);
+            if (!b) return;
+            document.getElementById('read-blog-title').textContent = b.titulo;
+            document.getElementById('read-blog-content').textContent = b.contenido;
+            document.getElementById('read-blog-date').textContent = b.creado_en;
+            document.getElementById('blog-read-modal').classList.add('active');
+        }
+
+        function closeBlogReadModal() {
+            document.getElementById('blog-read-modal').classList.remove('active');
+        }
+
+        function cancelarEditarBlog() {
+            document.getElementById('blog-titulo').value = '';
+            document.getElementById('blog-contenido').value = '';
+            document.getElementById('blog-edit-id').value = '';
+            document.getElementById('blog-form-title').textContent = '+ Nueva entrada';
+            document.getElementById('blog-cancel-btn').style.display = 'none';
+        }
+
+        async function eliminarBlog(id) {
+            if (!confirm('Borrar esta entrada permanentemente?')) return;
+            try {
+                const res = await fetch(`/blog/eliminar/${id}/`, {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': getCsrfToken()}
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    showToast('Entrada eliminada', '&#128465;');
+                    cargarBlogs();
+                }
+            } catch(e) {
+                showToast('Error al eliminar', '&#10007;');
+            }
+        }
+
+        // ⚙️ CONFIG LOGIC
+        function setAvatar(emoji) {
+            userEmoji = emoji;
+            userPhoto = ''; // Limpiar foto si elige emoji
+            localStorage.setItem('user_emoji', emoji);
+            localStorage.removeItem('user_photo');
+            syncAvatarDisplay();
+            showToast("Avatar actualizado: " + emoji, "👤");
+        }
+
+        function setUserPhoto(url) {
+            if (!url) return;
+            userPhoto = url;
+            localStorage.setItem('user_photo', url);
+            syncAvatarDisplay();
+            showToast("Foto de perfil actualizada", "🖼️");
+        }
+
+        function setAiPhoto(url) {
+            if (!url) return;
+            aiPhoto = url;
+            localStorage.setItem('ai_photo', url);
+            updateChatAiVisuals();
+            showToast("Foto de la IA actualizada", "🤖");
+        }
+
+        function updateChatAiVisuals() {
+            const img = document.getElementById('chat-ai-img');
+            if (img && aiPhoto) {
+                img.src = aiPhoto;
+            }
+            const botName = localStorage.getItem('miniamigix_bot_name') || 'MiniAmigixV AI';
+            const titleEl = document.getElementById('chat-bot-title');
+            const statusEl = document.getElementById('chat-bot-status-name');
+            if (titleEl) titleEl.textContent = "🤖 " + botName;
+            if (statusEl) statusEl.textContent = botName;
+        }
+
+        function setAccent(color) {
+            const root = document.documentElement;
+            const colors = {
+                pink: '#ff7eb3',
+                purple: '#a78bfa',
+                blue: '#7ee8fa',
+                green: '#34d399'
+            };
+            root.style.setProperty('--acc-pink', colors[color]);
+            localStorage.setItem('miniamigix_accent', color);
+            showToast("Tema de color actualizado", "🎨");
+        }
+
+        async function saveAllConfig() {
+            const botName = document.getElementById('cfg-bot-name').value.trim();
+            const city = document.getElementById('cfg-city').value.trim();
+            const userName = document.getElementById('cfg-user-name').value.trim();
+            
+            if (botName) localStorage.setItem('miniamigix_bot_name', botName);
+            if (city) {
+                localStorage.setItem('miniamigix_city', city);
+                localCity = city;
+                syncWeather();
+            }
+
+            updateChatAiVisuals();
+            showToast("¡Configuración guardada! ✨", "⚙️");
+            setTimeout(() => switchView('home'), 1000);
+        }
+
+        // Aplicar preferencias al cargar
+        const savedAccent = localStorage.getItem('miniamigix_accent');
+        if (savedAccent) setTimeout(() => setAccent(savedAccent), 100);
+        
+        const savedUserPhoto = localStorage.getItem('user_photo');
+        if (savedUserPhoto) {
+            userPhoto = savedUserPhoto;
+            setTimeout(syncAvatarDisplay, 200);
+        }
+
+        const savedAiPhoto = localStorage.getItem('ai_photo');
+        if (savedAiPhoto) {
+            aiPhoto = savedAiPhoto;
+            setTimeout(updateChatAiVisuals, 200);
+        }
+
+        // 🔮 ORÁCULO
+        function readZodiac() {
+            const sign = document.getElementById('zodiac-select').value;
+            const resDiv = document.getElementById('zodiac-result');
+            const textEl = document.getElementById('zodiac-text');
+
+            if (!sign) {
+                showToast("El universo espera que elijas un signo... ✨", "🔮");
+                return;
+            }
+
+            const predictions = [
+                "Hoy los astros te favorecen. Una sorpresa inesperada llegará antes del atardecer. 🌟",
+                "Es un buen momento para cerrar ciclos y empezar proyectos nuevos con pasión. 🔥",
+                "Escucha tu intuición. Alguien de tu pasado podría contactarte pronto. 🌙",
+                "Tu energía está en su punto máximo. Úsala para inspirar a los que te rodean. ✨",
+                "La paciencia será tu mejor aliada hoy. Respira y confía en el proceso del cosmos. 🪐",
+                "Un encuentro fortuito cambiará tu perspectiva sobre un problema reciente. 💫"
+            ];
+
+            resDiv.style.display = 'block';
+            textEl.innerHTML = `<strong>${sign}:</strong> ${predictions[Math.floor(Math.random() * predictions.length)]}`;
+            showToast(`Predicción para ${sign} lista`, "🔮");
+        }
 
     </script>
 </body>

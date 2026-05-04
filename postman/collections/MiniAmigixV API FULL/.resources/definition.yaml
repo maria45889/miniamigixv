@@ -1,0 +1,9 @@
+$kind: collection
+description: Colección completa para probar todos los módulos de MiniAmigixV.
+auth:
+  - id: 21a6ea71-650a-48b7-8047-1d07947d8a9c
+    type: basic
+    name: basic auth
+    credentials:
+      password: "{{password}}"
+      username: "{{username}}"

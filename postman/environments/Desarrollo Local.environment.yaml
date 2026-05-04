@@ -1,0 +1,8 @@
+name: Desarrollo Local
+values:
+  - key: baseUrl
+    value: 'http://127.0.0.1:8000'
+  - key: username
+    value: tu_usuario
+  - key: password
+    value: tu_password

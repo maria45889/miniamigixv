@@ -14,6 +14,12 @@ from .forms import RegistroForm
 import random
 
 import json
+from rest_framework import viewsets, permissions, authentication
+from .serializers import (
+    BlogSerializer, EventoSerializer, TaskSerializer, 
+    EstudioSerializer, TrabajoSerializer, EntretenimientoSerializer, 
+    NoticiaSerializer, CancionSerializer
+)
 
 Usuario = get_user_model()
 
@@ -122,6 +128,7 @@ def verificar_eventos(user):
 
 @login_required
 def index(request):
+    request.user.actualizar_racha() # 🔥 Actualizar racha diaria
     programar_mensajes(request.user)
     entregar_mensajes_programados(request.user)
     verificar_eventos(request.user)
@@ -587,3 +594,135 @@ def actualizar_ciudad(request):
             request.user.save()
             return JsonResponse({"status": "ok"})
     return JsonResponse({"status": "error"}, status=400)
+# Blog views — appended by script
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from .models import Blog
+import json
+
+
+@login_required
+def listar_blogs(request):
+    blogs = Blog.objects.filter(usuario=request.user).order_by('-creado_en')
+    data = [{
+        "id": b.id,
+        "titulo": b.titulo,
+        "contenido": b.contenido,
+        "publicado": b.publicado,
+        "creado_en": b.creado_en.strftime("%d %b %Y"),
+        "actualizado_en": b.actualizado_en.strftime("%d %b %Y"),
+    } for b in blogs]
+    return JsonResponse({"blogs": data})
+
+
+@login_required
+def crear_blog(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        titulo = data.get("titulo", "").strip()
+        contenido = data.get("contenido", "").strip()
+        if not titulo or not contenido:
+            return JsonResponse({"status": "error", "msg": "Titulo y contenido son requeridos"}, status=400)
+        blog = Blog.objects.create(
+            usuario=request.user,
+            titulo=titulo,
+            contenido=contenido,
+            publicado=data.get("publicado", True)
+        )
+        return JsonResponse({"status": "ok", "id": blog.id, "creado_en": blog.creado_en.strftime("%d %b %Y")})
+    return JsonResponse({"status": "error"}, status=405)
+
+
+@login_required
+def editar_blog(request, blog_id):
+    blog = get_object_or_404(Blog, id=blog_id, usuario=request.user)
+    if request.method == "POST":
+        data = json.loads(request.body)
+        blog.titulo = data.get("titulo", blog.titulo).strip()
+        blog.contenido = data.get("contenido", blog.contenido).strip()
+        blog.publicado = data.get("publicado", blog.publicado)
+        blog.save()
+        return JsonResponse({"status": "ok"})
+    return JsonResponse({"status": "error"}, status=405)
+
+
+@login_required
+def eliminar_blog(request, blog_id):
+    blog = get_object_or_404(Blog, id=blog_id, usuario=request.user)
+    if request.method == "POST":
+        blog.delete()
+        return JsonResponse({"status": "ok"})
+    return JsonResponse({"status": "error"}, status=405)
+
+class BlogViewSet(viewsets.ModelViewSet):
+    serializer_class = BlogSerializer
+    authentication_classes = [authentication.SessionAuthentication, authentication.BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        return Blog.objects.filter(usuario=self.request.user).order_by('-creado_en')
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
+
+class EventoViewSet(viewsets.ModelViewSet):
+    serializer_class = EventoSerializer
+    authentication_classes = [authentication.SessionAuthentication, authentication.BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        return Evento.objects.filter(usuario=self.request.user).order_by('fecha')
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
+
+class TaskViewSet(viewsets.ModelViewSet):
+    serializer_class = TaskSerializer
+    authentication_classes = [authentication.SessionAuthentication, authentication.BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        return Task.objects.filter(usuario=self.request.user).order_by('completada', '-creada_en')
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
+
+class EstudioViewSet(viewsets.ModelViewSet):
+    serializer_class = EstudioSerializer
+    authentication_classes = [authentication.SessionAuthentication, authentication.BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        return Estudio.objects.filter(usuario=self.request.user).order_by('-creado_en')
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
+
+class TrabajoViewSet(viewsets.ModelViewSet):
+    serializer_class = TrabajoSerializer
+    authentication_classes = [authentication.SessionAuthentication, authentication.BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        return Trabajo.objects.filter(usuario=self.request.user).order_by('-creado_en')
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
+
+class EntretenimientoViewSet(viewsets.ModelViewSet):
+    serializer_class = EntretenimientoSerializer
+    authentication_classes = [authentication.SessionAuthentication, authentication.BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        return Entretenimiento.objects.filter(usuario=self.request.user).order_by('-creado_en')
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
+
+class NoticiaViewSet(viewsets.ModelViewSet):
+    serializer_class = NoticiaSerializer
+    authentication_classes = [authentication.SessionAuthentication, authentication.BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        return Noticia.objects.filter(usuario=self.request.user).order_by('-creado_en')
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
+
+class CancionViewSet(viewsets.ModelViewSet):
+    serializer_class = CancionSerializer
+    authentication_classes = [authentication.SessionAuthentication, authentication.BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        return Cancion.objects.filter(usuario=self.request.user).order_by('orden', 'creado_en')
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)

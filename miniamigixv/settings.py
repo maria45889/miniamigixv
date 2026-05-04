@@ -58,6 +58,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django_extensions',
     'chat',
+    'rest_framework',
+    'corsheaders',
     # 🔐 Allauth (Google OAuth)
     'allauth',
     'allauth.account',
@@ -69,6 +71,7 @@ INSTALLED_APPS = [
 # 🧠 MIDDLEWARE
 # ==============================
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -79,6 +82,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
+
+# Configuración CORS (Permitir todo para desarrollo)
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'miniamigixv.urls'
 
@@ -104,12 +110,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'miniamigixv.wsgi.application'
 
 # ==============================
-# 🗄️ BASE DE DATOS
+# 🗄️ BASE DE DATOS (PostgreSQL - Modern Psycopg 3)
 # ==============================
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME', 'miniamigix_db'),
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 

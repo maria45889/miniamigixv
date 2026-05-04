@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{baseUrl}}/send_message/"
+method: POST
+body:
+  type: json
+  content: '{"message": "Hola!"}'
+order: 1000
