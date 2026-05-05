@@ -18,29 +18,31 @@
            VARIABLES & RESET
         ═══════════════════════════════════════ */
         :root {
-            --bg-deep: #05050f;
-            --bg-sidebar: #0a0a1a;
+            --bg-deep: #03030b;
+            --bg-sidebar: #050512;
             --bg-card: rgba(255, 255, 255, 0.03);
-            --acc-pink: #ff7eb3;
-            --acc-purple: #a78bfa;
-            --acc-blue: #7ee8fa;
-            --txt-main: #e8eaf6;
-            --txt-sub: rgba(232, 234, 246, 0.6);
-            --bdr: rgba(255, 255, 255, 0.08);
-            --radius: 24px;
-            --sidebar-width: 260px;
+            --acc-pink: #ff2d95;
+            --acc-purple: #9254ff;
+            --acc-blue: #00e5ff;
+            --txt-main: #f0f0f5;
+            --txt-sub: rgba(240, 240, 245, 0.5);
+            --bdr: rgba(126, 232, 250, 0.12);
+            --radius: 28px;
+            --sidebar-width: 270px;
+            --glass-bg: rgba(10, 10, 25, 0.7);
+            --neon-glow: 0 0 15px rgba(0, 229, 255, 0.3);
         }
 
         body.light-mode {
-            --bg-deep: #f0f2ff;
+            --bg-deep: #f5f7ff;
             --bg-sidebar: #ffffff;
             --bg-card: #ffffff;
-            --txt-main: #1a1a2e;
-            --txt-sub: #6b7280;
-            --bdr: rgba(0, 0, 0, 0.06);
-            --acc-pink: #e91e8c;
-            --acc-purple: #7c3aed;
-            --acc-blue: #0ea5e9;
+            --txt-main: #0a0a20;
+            --txt-sub: #5c627a;
+            --bdr: rgba(0, 0, 0, 0.08);
+            --acc-pink: #e91e63;
+            --acc-purple: #6200ea;
+            --acc-blue: #0288d1;
         }
 
         *,
@@ -49,16 +51,20 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
             background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(146, 84, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 229, 255, 0.05) 0%, transparent 20%);
             color: var(--txt-main);
-            font-family: 'Sora', sans-serif;
+            font-family: 'Outfit', 'Sora', sans-serif;
             height: 100vh;
             overflow: hidden;
             display: flex;
-            transition: background 0.4s, color 0.4s;
+            transition: all 0.5s ease;
         }
 
         /* ═══════════════════════════════════════
@@ -109,62 +115,69 @@
             border-radius: 10px;
         }
 
-        .logo-section {
-            margin-bottom: 40px;
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--bdr);
             display: flex;
-            align-items: center;
-            gap: 12px;
+            flex-direction: column;
+            padding: 24px;
+            z-index: 100;
+            transition: 0.4s;
+            position: relative;
         }
 
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--acc-pink), var(--acc-purple));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .logo-text {
-            font-family: 'Outfit';
-            font-weight: 800;
-            font-size: 1.3rem;
-            background: linear-gradient(135deg, var(--acc-pink), var(--acc-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .sidebar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, var(--acc-blue), transparent);
+            opacity: 0.3;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            border-radius: 14px;
+            gap: 15px;
+            padding: 14px 20px;
+            border-radius: 18px;
             color: var(--txt-sub);
             font-size: 0.9rem;
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             cursor: pointer;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
             border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
         }
 
         .nav-item:hover {
-            background: rgba(255, 126, 179, 0.08);
-            color: var(--acc-pink);
+            color: var(--acc-blue);
+            background: rgba(0, 229, 255, 0.05);
+            border-color: rgba(0, 229, 255, 0.1);
+            transform: translateX(5px);
         }
 
         .nav-item.active {
-            background: rgba(255, 126, 179, 0.12);
-            color: var(--acc-pink);
-            border-color: rgba(255, 126, 179, 0.2);
+            background: linear-gradient(90deg, rgba(0, 229, 255, 0.12), transparent);
+            color: var(--acc-blue);
+            border-left: 4px solid var(--acc-blue);
+            box-shadow: inset 10px 0 20px rgba(0, 229, 255, 0.05);
         }
 
-        .nav-item .nav-icon {
-            font-size: 1.1rem;
+        .nav-icon {
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+
+        .nav-item:hover .nav-icon {
+            transform: scale(1.2) rotate(-5deg);
+            filter: drop-shadow(0 0 8px var(--acc-blue));
         }
 
         /* ═══════════════════════════════════════
@@ -242,11 +255,48 @@
            CARDS & GLASS
         ═══════════════════════════════════════ */
         .glass-card {
-            background: var(--bg-card);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--bdr);
             border-radius: var(--radius);
-            backdrop-filter: blur(10px);
-            transition: border-color 0.3s, transform 0.3s;
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(126, 232, 250, 0.25);
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        /* Botones de acción futuristas */
+        .btn-action {
+            background: linear-gradient(135deg, var(--acc-blue), var(--acc-purple));
+            color: #000;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 24px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 229, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-action:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 229, 255, 0.4);
+            filter: brightness(1.1);
         }
 
         .glass-card:hover {
@@ -332,7 +382,13 @@
             border: 10px solid #1a1a1a;
             margin: 0 auto 28px;
             animation: rotate 10s linear infinite;
-            /* === MEJORA: CHAT HEADER & LEFT INFO === */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* === MEJORA: CHAT HEADER & LEFT INFO === */
         .chat-left-info {
             display: flex;
             flex-direction: column;
@@ -403,9 +459,6 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-        }
-     justify-content: center;
-            position: relative;
         }
 
         .disc::before {
@@ -1379,6 +1432,141 @@
             transform: scale(1.2);
             text-shadow: 0 0 10px rgba(255,111,165,0.5);
         }
+
+        /* Lyrics Indicator Pulse */
+        @keyframes pulse-blue {
+            0% { transform: scale(1); opacity: 0.5; box-shadow: 0 0 0 0 rgba(126, 232, 250, 0.4); }
+            70% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 0 10px rgba(126, 232, 250, 0); }
+            100% { transform: scale(1); opacity: 0.5; box-shadow: 0 0 0 0 rgba(126, 232, 250, 0); }
+        }
+        .lyrics-active #lyrics-indicator {
+            animation: pulse-blue 2s infinite;
+            background: var(--acc-blue) !important;
+            opacity: 1 !important;
+        }
+
+        /* 🎵 PREMIUM MUSIC MODULE STYLES 🎵 */
+        #music-section {
+            background: radial-gradient(circle at top right, rgba(126, 232, 250, 0.05), transparent),
+                        radial-gradient(circle at bottom left, rgba(255, 126, 179, 0.05), transparent);
+            border-radius: 30px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #yt-player-wrap {
+            border: 1px solid rgba(126, 232, 250, 0.2) !important;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8), 0 0 15px rgba(126, 232, 250, 0.1) !important;
+            transition: 0.5s ease;
+        }
+
+        #yt-player-wrap:hover {
+            border-color: var(--acc-blue) !important;
+            box-shadow: 0 0 40px rgba(126, 232, 250, 0.2) !important;
+        }
+
+        #lyrics-wrap {
+            background: rgba(15, 15, 35, 0.4) !important;
+            backdrop-filter: blur(25px) !important;
+            border: 1px solid rgba(126, 232, 250, 0.15) !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        }
+
+        .lyrics-active #lyrics-wrap {
+            border-color: var(--acc-blue) !important;
+            box-shadow: 0 0 25px rgba(126, 232, 250, 0.15) !important;
+        }
+
+        /* Music Controls Geniales */
+        .music-control-btn {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            width: 45px !important;
+            height: 45px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 1.2rem !important;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            cursor: pointer;
+        }
+
+        .music-control-btn:hover {
+            background: rgba(126, 232, 250, 0.1) !important;
+            border-color: var(--acc-blue) !important;
+            color: var(--acc-blue) !important;
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        #btn-play-pause {
+            width: 65px !important;
+            height: 65px !important;
+            background: linear-gradient(135deg, var(--acc-blue), var(--acc-purple)) !important;
+            border: none !important;
+            color: #000 !important;
+            font-size: 1.5rem !important;
+        }
+
+        #btn-play-pause:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 0 30px rgba(126, 232, 250, 0.4) !important;
+        }
+
+        /* Playlist Item Styles */
+        .song-item {
+            border-left: 3px solid transparent;
+            transition: 0.3s;
+        }
+
+        .song-item:hover {
+            background: rgba(126, 232, 250, 0.05) !important;
+            border-left-color: var(--acc-blue);
+            padding-left: 20px !important;
+        }
+
+        .song-item.active {
+            background: rgba(126, 232, 250, 0.1) !important;
+            border-left-color: var(--acc-blue);
+        }
+
+        /* Lyric Line Styles */
+        .lyric-line {
+            font-family: 'Outfit', 'Sora', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: default;
+            user-select: none;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            letter-spacing: -0.2px;
+        }
+
+        .lyric-line.active {
+            opacity: 1 !important;
+            transform: scale(1.15) !important;
+            background: linear-gradient(90deg, transparent, rgba(126, 232, 250, 0.08), transparent);
+            color: #fff !important;
+            font-weight: 900 !important;
+            text-shadow: 0 0 20px rgba(126, 232, 250, 0.6);
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+        }
+
+        .lyric-line.passed {
+            opacity: 0.15 !important;
+            transform: scale(0.9) !important;
+            filter: blur(1px);
+        }
+
+        .lyric-line.upcoming {
+            opacity: 0.4 !important;
+            transform: scale(0.95) !important;
+        }
     </style>
 </head>
 
@@ -1474,18 +1662,20 @@
 
         <div class="content-body">
 
-            <!-- ═══════ HOME (FINAL STABLE VERSION) ═══════ -->
+            <!-- ═══════ HOME (NEURAL COMMAND CENTER) ═══════ -->
             <section id="view-home" class="view-section active">
-                <!-- Saludo Superior -->
-                <div
-                    style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start;">
+                <!-- Saludo Superior (ESTILO NEURAL) -->
+                <div style="margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 25px;">
                     <div>
-                        <h1
-                            style="font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg, #fff, var(--acc-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px;">
-                            Hola, Majo! ✨</h1>
-                        <p style="color: var(--txt-sub); font-size: 0.9rem;">Bienvenida de vuelta • <span
-                                style="color: #34eba8; font-weight: 700;">En línea</span></p>
+                        <p style="color: var(--acc-blue); font-size: 0.7rem; letter-spacing: 4px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; opacity: 0.8;">Neural Command Center</p>
+                        <h1 style="font-size: 3.5rem; font-weight: 900; letter-spacing: -2px; line-height: 1; background: linear-gradient(135deg, #fff, var(--acc-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0;">
+                            Welcome, <span style="font-weight: 300;">Majo.</span></h1>
                     </div>
+                    <div style="text-align: right;">
+                        <div class="badge" style="background: rgba(0, 255, 136, 0.1); color: #00ff88; border-color: rgba(0, 255, 136, 0.2); font-weight: 800;">SYSTEM ONLINE</div>
+                        <p style="color: var(--txt-sub); font-size: 0.75rem; margin-top: 8px; font-family: 'DM Mono'; opacity: 0.6;">v5.0.2-NeuralCore</p>
+                    </div>
+                </div>
                     <div style="display: flex; gap: 15px;">
                         <!-- Widget Clima -->
                         <div class="glass-card"
@@ -1525,7 +1715,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
                 <!-- Stats Row (Estadísticas bien ordenadas - SIN DUPLICADOS) -->
                 <div class="glass-card"
@@ -1592,16 +1781,20 @@
             </section>
 
             <section id="view-chat" class="view-section">
-                <!-- 🛰️ CHAT HEADER (PREMIUM) -->
-                <div class="glass-card" style="margin-bottom: 25px; padding: 25px; display: flex; align-items: center; justify-content: center; gap: 30px; border-bottom: 3px solid var(--acc-purple);">
-                    <div id="chat-ai-avatar-container" style="position: relative;">
-                        <img id="chat-ai-img" src="{% static 'chat/images/img/asistente_cute.png' %}" alt="AI" style="width: 85px; height: 85px; border-radius: 50%; border: 3px solid var(--acc-purple); padding: 4px; background: rgba(0,0,0,0.4); box-shadow: 0 0 20px rgba(167,139,250,0.4);">
-                        <div style="position: absolute; bottom: 5px; right: 5px; width: 18px; height: 18px; background: #10b981; border: 3px solid #000; border-radius: 50%;"></div>
+                <!-- 🛰️ NEURAL CORE CHAT HEADER -->
+                <div class="glass-card" style="margin-bottom: 25px; padding: 30px; display: flex; align-items: center; justify-content: flex-start; gap: 35px; border-left: 5px solid var(--acc-blue); background: linear-gradient(90deg, rgba(0, 229, 255, 0.05), transparent);">
+                    <!-- AI Logo Container - Sin círculos, diseño libre para el logo -->
+                    <div id="chat-ai-avatar-container" style="position: relative; flex-shrink: 0; display: flex; align-items: center; justify-content: center; height: 90px; width: auto; min-width: 90px;">
+                        <div class="avatar-glow" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120%; height: 120%; background: var(--acc-blue); filter: blur(30px); opacity: 0.15; z-index: 0;"></div>
+                        
+                        <img id="chat-ai-img" src="{% static 'chat/img/logo.png' %}" alt="MiniAmigixV" style="height: 100%; max-width: 150px; object-fit: contain; position: relative; z-index: 1; filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.3));">
+                        
+                        <div style="position: absolute; bottom: 0; right: -10px; width: 22px; height: 22px; background: #00ff88; border: 4px solid #03030b; border-radius: 50%; z-index: 2; box-shadow: 0 0 10px #00ff88; animation: pulse 2s infinite;"></div>
                     </div>
                     <div style="text-align: left;">
-                        <h1 id="chat-bot-title" style="margin: 0; font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #fff, var(--acc-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">NEURAL CHAT</h1>
-                        <p style="margin: 5px 0 0; font-size: 0.9rem; color: var(--txt-sub); letter-spacing: 2px; text-transform: uppercase;">
-                            <span id="chat-bot-status-name">MiniAmigixV AI</span> • <span style="color: #10b981; font-weight: 700;">EN LÍNEA</span>
+                        <h1 id="chat-bot-title" style="margin: 0; font-size: 2.8rem; font-weight: 900; letter-spacing: -1px; background: linear-gradient(135deg, #fff, var(--acc-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MiniAmigix<span style="font-weight: 300; color: var(--acc-blue); -webkit-text-fill-color: var(--acc-blue);">V</span></h1>
+                        <p style="margin: 8px 0 0; font-size: 0.8rem; color: var(--acc-blue); letter-spacing: 4px; font-weight: 800; text-transform: uppercase; opacity: 0.7;">
+                            <span id="chat-bot-status-name">QUANTUM ASSISTANT</span> • <span style="color: #00ff88;">ACTIVE PULSE</span>
                         </p>
                     </div>
                 </div>
@@ -1739,10 +1932,20 @@
                                         <div id="lyrics-indicator" style="width: 8px; height: 8px; background: var(--acc-blue); border-radius: 50%; opacity: 0.5;"></div>
                                         <span style="font-size: 0.65rem; font-weight: 800; color: var(--acc-blue); text-transform: uppercase; letter-spacing: 2px;">Letras en Vivo</span>
                                     </div>
-                                    <div style="width: 20px;"></div> <!-- Espacio para equilibrio visual -->
+                                    <!-- Traductor y Reintento -->
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <button onclick="autoFetchLyrics(document.getElementById('current-song-title').textContent, activeSongId)" class="action-icon" style="background: transparent; border: none; color: var(--acc-blue); cursor: pointer; font-size: 0.8rem; opacity: 0.6; transition: 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'" title="Reintentar búsqueda">🔄</button>
+                                        <select id="lyrics-lang" onchange="translateLyrics()" style="background: rgba(15, 15, 35, 0.9); border: 1px solid var(--bdr); color: var(--acc-blue); font-size: 0.65rem; border-radius: 6px; padding: 2px 8px; outline: none; cursor: pointer; font-weight: 800; appearance: none; -webkit-appearance: none; text-align: center;">
+                                            <option value="original" style="background: #0f0f23; color: #fff;">Original 🏳️</option>
+                                            <option value="es" style="background: #0f0f23; color: #fff;">Español 🇪🇸</option>
+                                            <option value="en" style="background: #0f0f23; color: #fff;">English 🇺🇸</option>
+                                            <option value="fr" style="background: #0f0f23; color: #fff;">Français 🇫🇷</option>
+                                            <option value="pt" style="background: #0f0f23; color: #fff;">Português 🇧🇷</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div id="lyrics-container" style="flex: 1; padding: 20px; overflow-y: auto; position: relative; background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, transparent 100%);">
-                                    <div id="lyrics-content" style="font-family: 'DM Mono', monospace; font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,255,0.7); white-space: pre-wrap; transition: opacity 0.3s;">Selecciona una canción...</div>
+                                <div id="lyrics-container" style="flex: 1; padding: 25px; overflow-y: auto; position: relative; background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 100%); scroll-behavior: smooth;">
+                                    <div id="lyrics-content" style="font-family: 'Sora', sans-serif; font-size: 1rem; line-height: 2; color: rgba(255,255,255,0.85); white-space: pre-wrap; transition: all 0.4s ease; text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">Selecciona una canción...</div>
                                     <textarea id="lyrics-edit" style="display: none; width: 100%; height: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--acc-blue); border-radius: 12px; padding: 15px; color: white; font-family: 'DM Mono', monospace; font-size: 0.85rem; line-height: 1.8; outline: none; resize: none; box-shadow: inset 0 0 15px rgba(0,0,0,0.5);"></textarea>
                                 </div>
                                 <div id="lyrics-save-bar" style="display: none; padding: 12px; background: rgba(52,235,168,0.1); border-top: 1px solid rgba(52,235,168,0.2); text-align: center;">
@@ -1752,15 +1955,12 @@
                         </div>
 
                         <div
-                            style="margin-top:28px; display:flex; justify-content:center; align-items:center; gap:15px;">
-                            <button onclick="changeVolume(-10)" class="control-btn"
-                                style="width:36px; height:36px; font-size:0.9rem;" title="Bajar Volumen">🔉</button>
-                            <button onclick="playPrev()" class="control-btn" title="Anterior">⏮</button>
-                            <button onclick="togglePlay()" id="btn-play-pause" class="control-btn main"
-                                title="Play/Pause">▶</button>
-                            <button onclick="playNext()" class="control-btn" title="Siguiente">⏭</button>
-                            <button onclick="changeVolume(10)" class="control-btn"
-                                style="width:36px; height:36px; font-size:0.9rem;" title="Subir Volumen">🔊</button>
+                        <div style="margin-top:28px; display:flex; justify-content:center; align-items:center; gap:20px;">
+                            <button onclick="changeVolume(-10)" class="music-control-btn" title="Bajar Volumen">🔉</button>
+                            <button onclick="playPrev()" class="music-control-btn" title="Anterior">⏮</button>
+                            <button onclick="togglePlay()" id="btn-play-pause" class="music-control-btn" style="width:65px; height:65px; font-size:1.5rem;" title="Reproducir/Pausar">▶</button>
+                            <button onclick="playNext()" class="music-control-btn" title="Siguiente">⏭</button>
+                            <button onclick="changeVolume(10)" class="music-control-btn" title="Subir Volumen">🔊</button>
                         </div>
 
                     </div>
@@ -1780,13 +1980,13 @@
                                 <button type="submit" class="btn-action">AÑADIR A PLAYLIST</button>
                             </form>
                         </div>
-                        <div>
-                            <h4
-                                style="margin-bottom:12px; font-size:0.8rem; color:var(--txt-sub); padding-left:8px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">
-                                Tu Colección</h4>
-                            <div class="playlist" id="playlist-content">
-                                <p style="padding:20px; font-size:0.8rem; color:var(--txt-sub); text-align:center;">
-                                    Cargando playlist...</p>
+                        <div class="glass-card" style="padding:24px; border-color: rgba(126,232,250,0.1);">
+                            <h4 style="margin-bottom:15px; font-size:0.8rem; font-weight:800; color:var(--acc-blue); text-transform:uppercase; letter-spacing:2px; display:flex; justify-content:space-between; align-items:center;">
+                                Tu Colección <span style="font-size:0.6rem; opacity:0.5; color:var(--acc-blue);">PREMIUM</span>
+                            </h4>
+                            <div class="playlist" id="playlist-content" style="max-height: 400px;">
+                                <p style="padding:20px; font-size:0.8rem; color:var(--txt-sub); text-align:center; opacity:0.6;">
+                                    Sincronizando biblioteca... ✨</p>
                             </div>
                         </div>
                     </div>
@@ -1795,16 +1995,16 @@
 
             <!-- ═══════ CLIMA (SKYCAST INTELLIGENCE STATION) ═══════ -->
             <section id="view-clima" class="view-section">
-                <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 35px; border-bottom: 1px solid rgba(0, 229, 255, 0.1); padding-bottom: 20px;">
                     <div>
-                        <h1 class="page-title" style="letter-spacing:-1px; margin:0;">🌤️ <span style="font-weight:300;">SKY</span><span style="font-weight:900; color:var(--acc-blue);">CAST</span></h1>
-                        <p style="font-size: 0.65rem; color: var(--acc-blue); letter-spacing: 3px; font-weight: 800; text-transform: uppercase; margin-top: 5px;">Weather Intelligence System</p>
+                        <h1 class="page-title" style="letter-spacing:-2px; margin:0; font-size: 3rem;">🛰️ <span style="font-weight:300; opacity: 0.7;">SKY</span><span style="font-weight:900; color:var(--acc-blue); text-shadow: 0 0 20px rgba(0, 229, 255, 0.3);">CAST</span></h1>
+                        <p style="font-size: 0.7rem; color: var(--acc-blue); letter-spacing: 5px; font-weight: 800; text-transform: uppercase; margin-top: 8px; opacity: 0.8;">Atmosferic Intelligence Station</p>
                     </div>
                     <div style="display: flex; gap: 15px; align-items: center;">
-                        <div class="input-group" style="margin:0; width: 240px;">
-                            <input type="text" id="city-search" placeholder="Enter Location..." style="padding: 11px 18px; font-size: 0.85rem;" onkeydown="if(event.key==='Enter') changeCitySearch()">
+                        <div class="input-group" style="margin:0; width: 260px; position: relative;">
+                            <input type="text" id="city-search" placeholder="Scanning Location..." style="padding: 13px 20px; font-size: 0.85rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 14px; color: #fff; width: 100%; outline: none;" onkeydown="if(event.key==='Enter') changeCitySearch()">
                         </div>
-                        <button class="btn-action" onclick="changeCitySearch()" style="width: auto; padding: 11px 25px; background: linear-gradient(135deg, var(--acc-blue), #4fa8c5); color: #000; font-weight: 800; border-radius: 12px;">SCAN</button>
+                        <button class="btn-action" onclick="changeCitySearch()" style="padding: 13px 30px; font-weight: 900;">SCAN CORE</button>
                     </div>
                 </div>
 
@@ -1895,14 +2095,13 @@
                 </div>
             </section>
 
-            <!-- ═══════ ZEN ZONE (ANTI-ESTRÉS) ═══════ -->
+            <!-- ═══════ JUEGOS (CYBER ARCADE) ═══════ -->
             <section id="view-juegos" class="view-section">
-                <div class="section-header">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 35px; border-bottom: 1px solid rgba(255, 45, 149, 0.1); padding-bottom: 20px;">
                     <div>
-                        <h1 class="page-title"
-                            style="background:linear-gradient(135deg, #7ee8fa, #a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
-                            🧘 Zen Zone</h1>
-                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+                        <h1 class="page-title" style="letter-spacing:-2px; margin:0; font-size: 3rem;">🕹️ <span style="font-weight:300; opacity: 0.7;">CYBER</span><span style="font-weight:900; color:var(--acc-pink); text-shadow: 0 0 20px rgba(255, 45, 149, 0.3);">ARCADE</span></h1>
+                        <p style="font-size: 0.7rem; color: var(--acc-pink); letter-spacing: 5px; font-weight: 800; text-transform: uppercase; margin-top: 8px; opacity: 0.8;">Neural Gaming Center</p>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:15px;">
                             <div class="game-tab active" onclick="switchZen('pop', this)">Pop It</div>
                             <div class="game-tab" onclick="switchZen('magic', this)">Caja Mágica</div>
                             <div class="game-tab" onclick="switchZen('sand', this)">Arena Zen</div>
@@ -1911,23 +2110,10 @@
                             <div class="game-tab" onclick="switchZen('breathe', this)">Respiración</div>
                             <div class="game-tab" onclick="switchZen('particles', this)">Partículas</div>
                         </div>
-                        
-                        <!-- ⚡ SELECTOR DE DIFICULTAD (SOLO PARA SNAKE Y MATRIX) -->
-                        <div id="difficulty-selector" style="display:none; align-items:center; gap:12px; margin-top:15px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 12px; width: fit-content; animation: fadeIn 0.3s;">
-                            <span style="font-size: 0.65rem; font-weight: 800; color: var(--txt-sub); text-transform: uppercase; letter-spacing: 1px;">Dificultad:</span>
-                            <div style="display:flex; gap:6px;">
-                                <button id="diff-easy" class="badge" onclick="setDifficulty('easy')" style="cursor:pointer; background: rgba(52,235,168,0.15); color: #34eba8; border-color: #34eba8;">Fácil</button>
-                                <button id="diff-medium" class="badge" onclick="setDifficulty('medium')" style="cursor:pointer; background: rgba(255,255,255,0.05); color: var(--txt-sub); border-color: rgba(255,255,255,0.1);">Medio</button>
-                                <button id="diff-hard" class="badge" onclick="setDifficulty('hard')" style="cursor:pointer; background: rgba(255,255,255,0.05); color: var(--txt-sub); border-color: rgba(255,255,255,0.1);">Difícil</button>
-                            </div>
-                        </div>
                     </div>
                     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-                        <div class="badge" style="color:#7ee8fa; border-color:rgba(126,232,250,0.2);">MINDFULNESS ACTIVE
-                        </div>
-                        <button class="btn-action btn-ghost"
-                            style="font-size:0.7rem; padding:6px 12px; border-radius:20px;"
-                            onclick="readZenRules()">¿Cómo jugar? 💡</button>
+                        <div class="badge" style="color:var(--acc-pink); border-color:rgba(255, 45, 149, 0.2);">ULTRA LOW LATENCY</div>
+                        <button class="btn-action" style="font-size:0.6rem; padding:8px 15px;" onclick="readZenRules()">SISTEMA DE AYUDA 💡</button>
                     </div>
                 </div>
 
@@ -1994,6 +2180,7 @@
                     <div id="zen-snake" class="zen-panel"
                         style="display:none; height:550px; position:relative; background:#05050f; overflow:hidden;">
                         <!-- Snake Content ... -->
+                        
                         <div id="snake-ui"
                             style="position:absolute; top:20px; left:20px; z-index:10; pointer-events:none;">
                             <div
@@ -2033,14 +2220,14 @@
                 </div>
             </section>
 
-            <!-- 🎓 ESTUDIO (MÁXIMO RENDIMIENTO) -->
+            <!-- 🎓 ESTUDIO (FOCUS STATION) -->
             <section id="view-estudio" class="view-section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                    <h2
-                        style="font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #fff, var(--acc-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0;">
-                        🎓 Zona de Enfoque</h2>
-                    <div class="badge" style="color: var(--acc-blue); border-color: rgba(126,232,250,0.3);">MODO
-                        ULTRA-APRENDIZAJE</div>
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 35px; border-bottom: 1px solid rgba(0, 229, 255, 0.1); padding-bottom: 20px;">
+                    <div>
+                        <h1 class="page-title" style="letter-spacing:-2px; margin:0; font-size: 3rem;">🎓 <span style="font-weight:300; opacity: 0.7;">FOCUS</span><span style="font-weight:900; color:var(--acc-blue); text-shadow: 0 0 20px rgba(0, 229, 255, 0.3);">STATION</span></h1>
+                        <p style="font-size: 0.7rem; color: var(--acc-blue); letter-spacing: 5px; font-weight: 800; text-transform: uppercase; margin-top: 8px; opacity: 0.8;">Cognitive Performance Center</p>
+                    </div>
+                    <div class="badge" style="background: rgba(0, 229, 255, 0.1); border-color: var(--acc-blue); color: var(--acc-blue); font-weight: 800; letter-spacing: 2px;">ULTRA-LEARNING ACTIVE</div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px;">
@@ -2115,11 +2302,15 @@
                 </div>
             </section>
 
-        <!-- ⭐ ENTRETE. (MINI-JUEGOS) -->
-        <section id="view-entrete" class="view-section">
-            <div class="section-header">
-                <h1 class="page-title">✨ Zona de Entretenimiento</h1>
-            </div>
+            <!-- ⭐ ENTRETE. (COSMIC ORACLE) -->
+            <section id="view-entrete" class="view-section">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 35px; border-bottom: 1px solid rgba(255, 45, 149, 0.1); padding-bottom: 20px;">
+                    <div>
+                        <h1 class="page-title" style="letter-spacing:-2px; margin:0; font-size: 3rem;">⭐ <span style="font-weight:300; opacity: 0.7;">COSMIC</span><span style="font-weight:900; color:var(--acc-pink); text-shadow: 0 0 20px rgba(255, 45, 149, 0.3);">ORACLE</span></h1>
+                        <p style="font-size: 0.7rem; color: var(--acc-pink); letter-spacing: 5px; font-weight: 800; text-transform: uppercase; margin-top: 8px; opacity: 0.8;">Mystical Entertainment Node</p>
+                    </div>
+                    <div class="badge" style="background: rgba(255, 45, 149, 0.1); border-color: var(--acc-pink); color: var(--acc-pink); font-weight: 800; letter-spacing: 2px;">DESTINY SYNC</div>
+                </div>
 
             <!-- BENTO GRID -->
             <div style="display: grid; grid-template-columns: 1.4fr 1fr 1fr; grid-template-rows: auto auto; gap: 16px; width: 100%;">
@@ -2194,11 +2385,14 @@
 
         </section>
 
-        <!-- 🔤 TRADUCTOR -->
-        <!-- TRADUCTOR -->
+        <!-- ═══════ TRADUCTOR (UNIVERSAL DECODER) ═══════ -->
         <section id="view-traductor" class="view-section">
-            <div class="section-header">
-                <h1 class="page-title">&#127760; Traductor Universal</h1>
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 35px; border-bottom: 1px solid rgba(146, 84, 255, 0.1); padding-bottom: 20px;">
+                <div>
+                    <h1 class="page-title" style="letter-spacing:-2px; margin:0; font-size: 3rem;">🔤 <span style="font-weight:300; opacity: 0.7;">NEURAL</span><span style="font-weight:900; color:var(--acc-purple); text-shadow: 0 0 20px rgba(146, 84, 255, 0.3);">DECODER</span></h1>
+                    <p style="font-size: 0.7rem; color: var(--acc-purple); letter-spacing: 5px; font-weight: 800; text-transform: uppercase; margin-top: 8px; opacity: 0.8;">Universal Translation Matrix</p>
+                </div>
+                <div class="badge" style="background: rgba(146, 84, 255, 0.1); border-color: var(--acc-purple); color: var(--acc-purple); font-weight: 800; letter-spacing: 2px;">POLYGLOT CORE</div>
             </div>
 
             <div style="display: flex; align-items: flex-end; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
@@ -2314,12 +2508,15 @@
         </section>
 
 
-        <!-- ⚙️ CONFIGURACIÓN -->
-        <section id="view-config" class="view-section">
-            <div class="section-header">
-                <h1 class="page-title">⚙️ Centro de Control</h1>
-                <span class="badge">Personaliza tu experiencia</span>
-            </div>
+            <!-- ═══════ CONFIG (SYSTEM CORE) ═══════ -->
+            <section id="view-config" class="view-section">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 35px; border-bottom: 1px solid rgba(126, 232, 250, 0.1); padding-bottom: 20px;">
+                    <div>
+                        <h1 class="page-title" style="letter-spacing:-2px; margin:0; font-size: 3rem;">⚙️ <span style="font-weight:300; opacity: 0.7;">SYSTEM</span><span style="font-weight:900; color:var(--acc-blue); text-shadow: 0 0 20px rgba(126, 232, 250, 0.3);">CORE</span></h1>
+                        <p style="font-size: 0.7rem; color: var(--acc-blue); letter-spacing: 5px; font-weight: 800; text-transform: uppercase; margin-top: 8px; opacity: 0.8;">Interface & Identity Management</p>
+                    </div>
+                    <div class="badge" style="background: rgba(126, 232, 250, 0.1); border-color: var(--acc-blue); color: var(--acc-blue); font-weight: 800; letter-spacing: 2px;">SECURE ACCESS</div>
+                </div>
 
             <div class="grid-2">
                 <!-- PANEL IZQUIERDO: IDENTIDAD -->
@@ -2706,16 +2903,17 @@
                     btn.textContent = "⏸";
                     document.getElementById('yt-hint')?.style.setProperty('display', 'none');
                     // Efecto en letras
-                    document.getElementById('lyrics-wrap').style.borderColor = 'var(--acc-blue)';
-                    document.getElementById('lyrics-wrap').style.boxShadow = '0 0 20px rgba(126,232,250,0.15)';
-                    document.getElementById('lyrics-indicator').style.opacity = '1';
-                    document.getElementById('lyrics-indicator').style.boxShadow = '0 0 10px var(--acc-blue)';
+                    const wrap = document.getElementById('lyrics-wrap');
+                    wrap.classList.add('lyrics-active');
+                    wrap.style.borderColor = 'var(--acc-blue)';
+                    wrap.style.boxShadow = '0 0 20px rgba(126,232,250,0.15)';
                     startLyricsAutoScroll();
                     break;
                 case YT.PlayerState.PAUSED:
                     disc.classList.remove('playing');
                     status.textContent = "PAUSADO ⏸";
                     btn.textContent = "▶";
+                    document.getElementById('lyrics-wrap').classList.remove('lyrics-active');
                     document.getElementById('lyrics-wrap').style.borderColor = 'rgba(126,232,250,0.15)';
                     document.getElementById('lyrics-wrap').style.boxShadow = 'none';
                     document.getElementById('lyrics-indicator').style.opacity = '0.5';
@@ -2761,9 +2959,13 @@
                 if (iframe) iframe.src = `https://www.youtube.com/embed/${vMatch[1]}?autoplay=1&enablejsapi=1&origin=${window.location.origin}`;
             }
 
-            // Cargar letra si existe
+            // Cargar letra si existe, si no, intentar buscarla automáticamente
             const song = localSongs.find(s => s.id === id);
-            updateLyricsDisplay(song ? song.lyrics : "");
+            if (song && song.lyrics) {
+                updateLyricsDisplay(song.lyrics);
+            } else {
+                autoFetchLyrics(title, id);
+            }
 
             clearTimeout(playTimeout);
             playTimeout = setTimeout(() => {
@@ -2853,31 +3055,181 @@
             }
         }
 
+        async function autoFetchLyrics(title, id) {
+            const content = document.getElementById('lyrics-content');
+            if (!content) return;
+
+            content.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.6;"><div class="chat-typing" style="margin:0 auto 15px;"><span></span><span></span><span></span></div><p style="font-size:0.8rem;">Sincronizando con el video... ✨</p></div>';
+
+            try {
+                // Filtro ultra-agresivo para limpiar títulos (Elimina Covers, Idiomas, Barras, Paréntesis)
+                let cleanTitle = title.split('|')[0].split('(')[0].split('[')[0].split(' - ')[0];
+                cleanTitle = cleanTitle.replace(/Cover|Español Latino|Castellano|Latino|Lyrics|Video Oficial|Official|Video|Audio/gi, '').trim();
+                
+                let videoId = null;
+                try {
+                    if (ytPlayer && typeof ytPlayer.getVideoData === 'function') {
+                        const vData = ytPlayer.getVideoData();
+                        if (vData) videoId = vData.video_id;
+                    }
+                } catch(e) {}
+                
+                // Aumentamos a 12 segundos para evitar AbortError innecesarios
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+                let url = `https://lrclib.net/api/get?track_name=${encodeURIComponent(cleanTitle)}&youtube_id=${videoId || ''}`;
+                let response;
+                
+                try {
+                    response = await fetch(url, { signal: controller.signal, mode: 'cors' });
+                } catch(e) {
+                    // Segundo intento con búsqueda general
+                    url = `https://lrclib.net/api/search?q=${encodeURIComponent(cleanTitle)}`;
+                    response = await fetch(url, { signal: controller.signal, mode: 'cors' });
+                }
+                
+                clearTimeout(timeoutId);
+
+                if (response && response.ok) {
+                    const data = await response.json();
+                    const results = Array.isArray(data) ? data : [data];
+
+                    if (results && results.length > 0 && (results[0].plainLyrics || results[0].syncedLyrics)) {
+                        const match = results[0];
+                        const lyrics = match.syncedLyrics || match.plainLyrics;
+                        
+                        const song = localSongs.find(s => s.id === id);
+                        if (song) {
+                            song.lyrics = lyrics;
+                            saveSongs();
+                        }
+                        
+                        updateLyricsDisplay(lyrics);
+                        showToast("¡Letra sincronizada! 🎤", "✨");
+                        return;
+                    }
+                }
+                
+                updateLyricsDisplay(""); 
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    console.warn("Lyrics fetch timed out (12s)");
+                } else {
+                    console.warn("Fetch failed:", error);
+                }
+                updateLyricsDisplay("");
+            }
+        }
+
+        function searchLyricsOnline() {
+            if (activeSongId === null) {
+                showToast("Primero selecciona una canción", "🎵");
+                return;
+            }
+            const song = localSongs.find(s => s.id === activeSongId);
+            if (song) {
+                const query = encodeURIComponent(`${song.titulo} lyrics`);
+                window.open(`https://www.google.com/search?q=${query}`, '_blank');
+                showToast("Buscando letra... 🔍", "🌐");
+            }
+        }
+
+        let originalLyrics = ""; // Variable para guardar la letra original antes de traducir
+
+        async function translateLyrics() {
+            const lang = document.getElementById('lyrics-lang').value;
+            const content = document.getElementById('lyrics-content');
+            
+            if (lang === 'original') {
+                updateLyricsDisplay(originalLyrics); // Usar updateLyricsDisplay para restaurar formato
+                return;
+            }
+
+            if (!originalLyrics || originalLyrics.includes('No disponible')) return;
+
+            content.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;"><div class="chat-typing" style="margin:0 auto 10px;"><span></span><span></span><span></span></div><p style="font-size:0.7rem;">Traduciendo letra...</p></div>';
+
+            try {
+                // Si la letra es sincronizada, limpiamos los timestamps para la traducción
+                // ya que los corchetes [00:00.00] rompen la API de traducción
+                const cleanText = originalLyrics.replace(/\[\d+:\d+\.\d+\]/g, '').substring(0, 1000);
+
+                const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(cleanText)}&langpair=auto|${lang}`;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.responseStatus === 200) {
+                    content.innerHTML = `<div style="padding:10px; line-height:1.8; color:rgba(255,255,255,0.9); font-size:0.95rem;">${data.responseData.translatedText}</div>`;
+                    showToast(`Traducido a ${lang.toUpperCase()} 🌐`, "✨");
+                    stopLyricsAutoScroll(); // Detener scroll porque ya no coincide el tiempo
+                } else {
+                    showToast("Límite de traducciones alcanzado", "❌");
+                    updateLyricsDisplay(originalLyrics);
+                }
+            } catch (e) {
+                showToast("Error de conexión", "📡");
+                updateLyricsDisplay(originalLyrics);
+            }
+        }
+
+        let lyricsArray = []; // Array de {time, text} para letras sincronizadas
+
         function updateLyricsDisplay(text) {
             const container = document.getElementById('lyrics-container');
             const content = document.getElementById('lyrics-content');
             if (!content) return;
             
+            originalLyrics = text; 
+            document.getElementById('lyrics-lang').value = 'original'; 
+            
             stopLyricsAutoScroll();
             container.scrollTop = 0;
+            lyricsArray = [];
 
             if (!text) {
-                content.innerHTML = '<span style="opacity:0.3; font-style:italic;">Letra no disponible. ¡Añádela tú! ✍️</span>';
+                content.innerHTML = `
+                    <div style="text-align:center; padding:40px 10px; opacity:0.5;">
+                        <div style="font-size:2rem; margin-bottom:15px;">✍️</div>
+                        <p style="font-size:0.8rem; margin-bottom:20px;">Letra no encontrada automáticamente.</p>
+                        <button onclick="searchLyricsOnline()" class="badge" style="background: rgba(126,232,250,0.1); border: 1px solid var(--acc-blue); color: var(--acc-blue); cursor: pointer; padding: 6px 12px; font-size: 0.65rem; border-radius: 8px; transition: 0.3s;" onmouseover="this.style.background='rgba(126,232,250,0.2)'" onmouseout="this.style.background='rgba(126,232,250,0.1)'">BUSCAR EN GOOGLE 🔍</button>
+                    </div>
+                `;
                 return;
             }
 
-            // Efecto de suavizado inicial
-            content.style.opacity = '0';
-            setTimeout(() => {
+            // Detectar si es formato LRC (tiene timestamps como [00:12.34])
+            const lrcRegex = /\[(\d+):(\d+\.\d+)\](.*)/g;
+            let match;
+            const lines = [];
+
+            while ((match = lrcRegex.exec(text)) !== null) {
+                const mins = parseInt(match[1]);
+                const secs = parseFloat(match[2]);
+                const time = mins * 60 + secs;
+                const lineText = match[3].trim();
+                if (lineText) lines.push({ time, text: lineText });
+            }
+
+            if (lines.length > 0) {
+                lyricsArray = lines;
+                content.innerHTML = lines.map((l, i) => `
+                    <div class="lyric-line upcoming" id="lyric-line-${i}" data-time="${l.time}">
+                        ${escapeHtml(l.text)}
+                    </div>
+                `).join('');
+                content.style.textAlign = 'center';
+            } else {
+                // Formato normal (no sincronizado)
                 content.textContent = text;
-                content.style.opacity = '1';
-                content.style.fontStyle = 'normal';
-                
-                // Si el reproductor ya está sonando, iniciar scroll de inmediato
-                if (ytPlayer && ytPlayer.getPlayerState && ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
-                    startLyricsAutoScroll();
-                }
-            }, 300);
+                content.style.textAlign = 'center';
+            }
+
+            content.style.opacity = '1';
+            
+            if (ytPlayer && ytPlayer.getPlayerState && ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                startLyricsAutoScroll();
+            }
         }
 
         function startLyricsAutoScroll() {
@@ -2885,22 +3237,58 @@
             const container = document.getElementById('lyrics-container');
             if (!container || !ytPlayer || !ytPlayer.getDuration) return;
 
-            // Esperar un poco a que el reproductor tenga la duración lista
             scrollInterval = setInterval(() => {
-                const duration = ytPlayer.getDuration();
-                if (duration <= 0) return;
-
                 const currentTime = ytPlayer.getCurrentTime();
-                const progress = currentTime / duration;
-                const scrollHeight = container.scrollHeight - container.clientHeight;
-                
-                if (scrollHeight > 0) {
-                    container.scrollTo({
-                        top: scrollHeight * progress,
-                        behavior: 'smooth'
-                    });
+
+                if (lyricsArray.length > 0) {
+                    // MODO KARAOKE (Sincronizado)
+                    let activeIdx = -1;
+                    for (let i = 0; i < lyricsArray.length; i++) {
+                        if (currentTime >= lyricsArray[i].time) {
+                            activeIdx = i;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    if (activeIdx !== -1) {
+                        // Actualizar estados de todas las líneas
+                        document.querySelectorAll('.lyric-line').forEach((el, index) => {
+                            el.classList.remove('active', 'passed', 'upcoming');
+                            
+                            if (index < activeIdx) {
+                                el.classList.add('passed');
+                            } else if (index === activeIdx) {
+                                el.classList.add('active');
+                            } else {
+                                el.classList.add('upcoming');
+                            }
+                        });
+
+                        const activeEl = document.getElementById(`lyric-line-${activeIdx}`);
+                        if (activeEl) {
+                            // Centrar la línea activa con un offset más suave
+                            const targetScroll = activeEl.offsetTop - (container.clientHeight / 2) + (activeEl.clientHeight / 2);
+                            container.scrollTo({
+                                top: targetScroll,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                } else {
+                    // MODO NORMAL (Scroll Lineal)
+                    const duration = ytPlayer.getDuration();
+                    if (duration <= 0) return;
+                    const progress = currentTime / duration;
+                    const scrollHeight = container.scrollHeight - container.clientHeight;
+                    if (scrollHeight > 0) {
+                        container.scrollTo({
+                            top: scrollHeight * progress,
+                            behavior: 'smooth'
+                        });
+                    }
                 }
-            }, 1000);
+            }, 500);
         }
 
         function stopLyricsAutoScroll() {
@@ -4765,11 +5153,10 @@
             if (img && aiPhoto) {
                 img.src = aiPhoto;
             }
-            const botName = localStorage.getItem('miniamigix_bot_name') || 'MiniAmigixV AI';
-            const titleEl = document.getElementById('chat-bot-title');
+            const botName = localStorage.getItem('miniamigix_bot_name') || 'MiniAmigixV';
             const statusEl = document.getElementById('chat-bot-status-name');
-            if (titleEl) titleEl.textContent = "🤖 " + botName;
-            if (statusEl) statusEl.textContent = botName;
+            // We no longer overwrite chat-bot-title so we preserve the awesome 'MiniAmigixV' gradient formatting.
+            if (statusEl) statusEl.textContent = botName.toUpperCase();
         }
 
         function setAccent(color) {
